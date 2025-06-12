@@ -1,0 +1,36 @@
+header img {
+    height: 40%;
+    width: 100%;
+}
+div.scrollmenu {
+  background-color: #487ac0;
+  color: rgb(29, 180, 214);
+  overflow: auto;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+div.scrollmenu a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+div.scrollmenu a:hover {
+  color: rgb(29, 180, 214);
+  background-color: #0d0c0c;
+}
+
+.text-container {
+  margin: 0 10%;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+
+
+
+
