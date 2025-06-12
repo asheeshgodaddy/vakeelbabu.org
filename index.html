@@ -27,7 +27,14 @@
             <a href=""></a>
             <a>Dial us: +91-xxxxx xxxxx</a>
         </div>
-
+        <div class="language-selector"; id="google_translate_element">
+            <img src="images/change_language.png" style="height:20px; width:50px; margin-top:5px;">
+            <select>
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
       </div>
      
     <header>
@@ -71,7 +78,7 @@
         function googleTranslateElementInit() {
           new google.translate.TranslateElement({
             pageLanguage: 'en',
-            includedLanguages: 'en,hi,es,fr,de', // customize the languages
+            includedLanguages: 'en,hi,bn,fr,de,ta,te,ur,kn,gu', // customize the languages
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE
           }, 'google_translate_element');
         }
