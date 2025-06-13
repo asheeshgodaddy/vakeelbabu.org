@@ -31,6 +31,23 @@ div.scrollmenu a:hover {
   text-align: justify;
 }
 
+.table {
+  border-collapse: collapse;
+  width: 70%;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  font-size: 18px; 
+}
+
+.th, td {
+  border: 1px solid #999;
+  padding: 10px;
+  text-align: center;
+}
+
+.th {
+  background-color: #ddd;
+}
 
 
 
