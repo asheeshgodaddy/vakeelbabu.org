@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home Page -->
+  <url>
+    <loc>https://www.vakeelbabu.org/index.html</loc>
+    <priority>1.00</priority>
+    <changefreq>daily</changefreq>
+  </url>
+
+  <!-- About Page -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/about.html</loc>
+    <priority>0.80</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Find a Lawyer -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/find_lawyer.html</loc>
+    <priority>0.90</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- Legal Advice -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/legal_advice.html</loc>
+    <priority>0.90</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- IPC Section -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/ipc.html</loc>
+    <priority>0.80</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- BNS Section -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/bns.html</loc>
+    <priority>0.80</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Blogs -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/blog.html</loc>
+    <priority>0.70</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <!-- My Account -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/myaccount.html</loc>
+    <priority>0.60</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+  <!-- Contact Page -->
+  <url>
+    <loc>https://www.vakeelbabu.org/src/contact.html</loc>
+    <priority>0.60</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+
+</urlset>
