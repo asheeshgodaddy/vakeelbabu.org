@@ -19,6 +19,14 @@ div.scrollmenu a {
   font-weight: bold;
 }
 
+div.scrollmenu.fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 div.scrollmenu a:hover {
   color: rgb(29, 180, 214);
   background-color: #0d0c0c;
