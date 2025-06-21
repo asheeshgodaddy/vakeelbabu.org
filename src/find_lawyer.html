@@ -152,110 +152,108 @@
               </div>
          </nav>
      </header>
-    <div class="container">
       <div class="text-container">
-      <h1>Find a Lawyer</h1>
-      <div class="controls">
-        <input type="text" id="search" placeholder="Search by name or city">
-        <select id="sort">
-          <option value="">Sort by</option>
-          <option value="name">Name</option>
-          <option value="city">City</option>
-        </select>
-      </div>
-      <div class="lawyer-grid" id="lawyerGrid"></div>
-      <div class="pagination" id="pagination"></div>
-      <div id="toast" class="toast"></div>
-    
-      <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec';
-        let lawyers = [];
-        let filtered = [];
-        let currentPage = 1;
-        const pageSize = 10;
-    
-        async function fetchData() {
-          const res = await fetch(scriptURL);
-          lawyers = await res.json();
-          filtered = [...lawyers];
-          render();
-        }
-    
-        function render() {
-          const grid = document.getElementById("lawyerGrid");
-          grid.innerHTML = "";
-          const start = (currentPage - 1) * pageSize;
-          const pageItems = filtered.slice(start, start + pageSize);
-          pageItems.forEach(l => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-              <img src="${l.photo}" alt="photo">
-              <h3>${l.name}</h3>
-              <p>${l.city}</p>
-              <p>${l.phone}</p>
-              <button onclick="deleteLawyer('${l.phone}')">Delete</button>
-            `;
-            grid.appendChild(card);
-          });
-          renderPagination();
-        }
-    
-        function renderPagination() {
-          const totalPages = Math.ceil(filtered.length / pageSize);
-          const pagination = document.getElementById("pagination");
-          pagination.innerHTML = "";
-          for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            if (i === currentPage) btn.style.fontWeight = "bold";
-            btn.onclick = () => { currentPage = i; render(); };
-            pagination.appendChild(btn);
+        <h1>Find a Lawyer</h1>
+        <div class="controls">
+          <input type="text" id="search" placeholder="Search by name or city">
+          <select id="sort">
+            <option value="">Sort by</option>
+            <option value="name">Name</option>
+            <option value="city">City</option>
+          </select>
+        </div>
+        <div class="lawyer-grid" id="lawyerGrid"></div>
+        <div class="pagination" id="pagination"></div>
+        <div id="toast" class="toast"></div>
+      
+        <script>
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec';
+          let lawyers = [];
+          let filtered = [];
+          let currentPage = 1;
+          const pageSize = 10;
+      
+          async function fetchData() {
+            const res = await fetch(scriptURL);
+            lawyers = await res.json();
+            filtered = [...lawyers];
+            render();
           }
-        }
-    
-        function deleteLawyer(phone) {
-          const code = prompt("Enter Admin Code to delete:");
-          if (!code) return;
-          fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
-            method: 'DELETE'
-          }).then(r => r.text()).then(msg => {
-            if (msg === "DELETED") {
-              showToast("Deleted successfully");
-              lawyers = lawyers.filter(l => l.phone !== phone);
-              filtered = filtered.filter(l => l.phone !== phone);
-              render();
-            } else {
-              showToast("Delete failed: " + msg);
+      
+          function render() {
+            const grid = document.getElementById("lawyerGrid");
+            grid.innerHTML = "";
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filtered.slice(start, start + pageSize);
+            pageItems.forEach(l => {
+              const card = document.createElement("div");
+              card.className = "card";
+              card.innerHTML = `
+                <img src="${l.photo}" alt="photo">
+                <h3>${l.name}</h3>
+                <p>${l.city}</p>
+                <p>${l.phone}</p>
+                <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+              `;
+              grid.appendChild(card);
+            });
+            renderPagination();
+          }
+      
+          function renderPagination() {
+            const totalPages = Math.ceil(filtered.length / pageSize);
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+            for (let i = 1; i <= totalPages; i++) {
+              const btn = document.createElement("button");
+              btn.textContent = i;
+              if (i === currentPage) btn.style.fontWeight = "bold";
+              btn.onclick = () => { currentPage = i; render(); };
+              pagination.appendChild(btn);
             }
+          }
+      
+          function deleteLawyer(phone) {
+            const code = prompt("Enter Admin Code to delete:");
+            if (!code) return;
+            fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
+              method: 'DELETE'
+            }).then(r => r.text()).then(msg => {
+              if (msg === "DELETED") {
+                showToast("Deleted successfully");
+                lawyers = lawyers.filter(l => l.phone !== phone);
+                filtered = filtered.filter(l => l.phone !== phone);
+                render();
+              } else {
+                showToast("Delete failed: " + msg);
+              }
+            });
+          }
+      
+          function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = "toast show";
+            setTimeout(() => toast.className = "toast", 3000);
+          }
+      
+          document.getElementById("search").addEventListener("input", e => {
+            const q = e.target.value.toLowerCase();
+            filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
+            currentPage = 1;
+            render();
           });
-        }
-    
-        function showToast(message) {
-          const toast = document.getElementById("toast");
-          toast.textContent = message;
-          toast.className = "toast show";
-          setTimeout(() => toast.className = "toast", 3000);
-        }
-    
-        document.getElementById("search").addEventListener("input", e => {
-          const q = e.target.value.toLowerCase();
-          filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
-          currentPage = 1;
-          render();
-        });
-    
-        document.getElementById("sort").addEventListener("change", e => {
-          const val = e.target.value;
-          if (val === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
-          if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
-          render();
-        });
-    
-        fetchData();
-      </script>
+      
+          document.getElementById("sort").addEventListener("change", e => {
+            const val = e.target.value;
+            if (val === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
+            if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
+            render();
+          });
+      
+          fetchData();
+        </script>
       </div>
-    </div> 
     <script type="text/javascript">
         function googleTranslateElementInit() {
           new google.translate.TranslateElement({
