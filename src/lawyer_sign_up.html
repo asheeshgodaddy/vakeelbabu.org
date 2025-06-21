@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <title>Lawyer Sign Up on Vakeel Babu | Sign Up Advocates | Trusted Legal Advice Platform in India</title>
+    <meta name="description" content="Find Lawyer on Vakeel Babu">
+    <meta name="keywords" content="Find Lawyer on Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
+    <link rel="stylesheet" href="../css/top_menu.css">
+    <link rel="stylesheet" href="../css/menu-2.css">
+    <link rel="stylesheet" href="../css/txt_style.css">
+    <link rel="stylesheet" href="../css/page_pane.css">
+  </head>
+
+  <body> 
+    <div class="navbar">
+        <div class="menu">
+          <a href="../index.html">Indian Kanoon</a>
+          <a href="../index.html">Indian Penal Code</a>
+          <a href="../index.html">Ask a Free Question</a>
+          <a href="../index.html">Talk To A Lawyer</a>
+          <a href="../index.html">Free legal advice</a>
+          <a href="../index.html">Lawyer Signup</a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a href=""></a>
+          <a>Dial us: +91-95550 07911</a>
+        </div>
+        <div class="language-selector"; id="google_translate_element">
+        </div>
+      </div>
+     
+    <header>
+        <img src="../images/full_banner.png">
+         <nav>
+        </div>
+            <div class="scrollmenu" id="scrollmenu">
+                <a href="../index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="find_lawyer.html">Find a Lawyer</a>
+                <a href="legal_advice.html">Legal Advice</a>
+                <a href="ipc.html">IPC Section</a>
+                <a href="bns.html">BNS Section</a>
+                <a href="blog.html">Blogs</a>
+                <a href="myaccount.html">My Account</a>  
+                <a href="contact.html">Contact Us</a>
+              </div>
+         </nav>
+     </header>
+    <div class="container">
+      <div class="text-container">
+        <br>
+        <h2>Advocate Sign-Up</h2>
+  <form id="signupForm">
+    <label>Name: <input type="text" id="name" required></label>
+    <label>Phone: <input type="text" id="phone" required></label>
+    <label>City: <input type="text" id="city" required></label>
+    <label>Photo: <input type="file" id="photo" accept="image/*" required></label>
+    <button type="submit">Submit</button>
+    <div id="message"></div>
+  </form>
+
+  <script>
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec';
+
+    document.getElementById("signupForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const file = document.getElementById("photo").files[0];
+
+      const messageDiv = document.getElementById("message");
+      messageDiv.className = '';
+      messageDiv.textContent = "Uploading...";
+
+      if (!file) return messageDiv.textContent = "Please select a photo.";
+
+      const reader = new FileReader();
+      reader.onload = async function() {
+        const base64Photo = reader.result.split(",")[1];
+
+        try {
+          const res = await fetch(SHEET_URL, {
+            method: "POST",
+            body: JSON.stringify({ name, phone, city, photo: base64Photo }),
+            headers: { "Content-Type": "application/json" }
+          });
+
+          const text = await res.text();
+          if (text === "SUCCESS") {
+            messageDiv.textContent = "Lawyer registered successfully!";
+            e.target.reset();
+          } else if (text === "DUPLICATE") {
+            messageDiv.textContent = "This phone number is already registered.";
+            messageDiv.classList.add("error");
+          } else {
+            messageDiv.textContent = "Error: " + text;
+            messageDiv.classList.add("error");
+          }
+        } catch (err) {
+          messageDiv.textContent = "Network error: " + err.message;
+          messageDiv.classList.add("error");
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+
+        <div class="image-section">
+          <img src="../images/sc.png" alt="Lawyer at work">
+        </div>
+      </div>  
+      <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'en',
+              includedLanguages: 'en,hi,es,fr,de', // customize the languages
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+          }
+      </script>
+      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+      <!-- JavaScript to fix the menu on top while scrolling-->
+      <script>
+        const scrollmenu = document.getElementById("scrollmenu");
+        const offsetTop = scrollmenu.offsetTop;
+
+        window.addEventListener("scroll", function () {
+          if (window.pageYOffset >= offsetTop) {
+            scrollmenu.classList.add("fixed");
+          } else {
+            scrollmenu.classList.remove("fixed");
+          }
+        });
+      </script>
+    </div>  
+  </body>
+</html>
