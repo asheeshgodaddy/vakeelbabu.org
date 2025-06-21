@@ -54,63 +54,65 @@
       <div class="text-container">
         <br>
         <h2>Advocate Sign-Up</h2>
-  <form id="signupForm">
-    <label>Name: <input type="text" id="name" required></label>
-    <label>Phone: <input type="text" id="phone" required></label>
-    <label>City: <input type="text" id="city" required></label>
-    <label>Photo: <input type="file" id="photo" accept="image/*" required></label>
-    <button type="submit">Submit</button>
-    <div id="message"></div>
-  </form>
-
-  <script>
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWgZjXW7OltueWYRapjHpxaDAuTHIGhgTu3L_K-7rp8y0EeezEIWBpSjHMl28ziwIPyw/exec';
-
-    document.getElementById("signupForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const city = document.getElementById("city").value.trim();
-      const file = document.getElementById("photo").files[0];
-
-      const messageDiv = document.getElementById("message");
-      messageDiv.className = '';
-      messageDiv.textContent = "Uploading...";
-
-      if (!file) return messageDiv.textContent = "Please select a photo.";
-
-      const reader = new FileReader();
-      reader.onload = async function() {
-        const base64Photo = reader.result.split(",")[1];
-
-        try {
-          const res = await fetch(SHEET_URL, {
-            method: "POST",
-            body: JSON.stringify({ name, phone, city, photo: base64Photo }),
-            headers: { "Content-Type": "application/json" }
+        <form id="lawyerForm">
+          <input type="text" name="name" placeholder="Full Name" required>
+          <input type="text" name="phone" placeholder="Phone Number" required>
+          <input type="text" name="city" placeholder="City" required>
+          <input type="file" id="photo" accept="image/*" required>
+          <button type="submit">Submit</button>
+          <p id="message"></p>
+        </form>
+      
+        <script>
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec';
+      
+          document.getElementById('lawyerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('message');
+            msg.textContent = 'Submitting...';
+            msg.className = '';
+      
+            const fileInput = document.getElementById('photo');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+      
+            reader.onloadend = async function() {
+              const base64 = reader.result.split(',')[1];
+              const formData = {
+                name: e.target.name.value,
+                phone: e.target.phone.value,
+                city: e.target.city.value,
+                photo: base64
+              };
+      
+              try {
+                const res = await fetch(scriptURL, {
+                  method: 'POST',
+                  body: JSON.stringify(formData),
+                  headers: { 'Content-Type': 'application/json' }
+                });
+      
+                const text = await res.text();
+                if (text === 'SUCCESS') {
+                  msg.textContent = 'Successfully submitted!';
+                  msg.className = 'success';
+                  e.target.reset();
+                } else if (text === 'DUPLICATE') {
+                  msg.textContent = 'This phone number is already registered.';
+                  msg.className = 'error';
+                } else {
+                  msg.textContent = 'Error: ' + text;
+                  msg.className = 'error';
+                }
+              } catch (error) {
+                msg.textContent = 'Network error: ' + error.message;
+                msg.className = 'error';
+              }
+            };
+      
+            reader.readAsDataURL(file);
           });
-
-          const text = await res.text();
-          if (text === "SUCCESS") {
-            messageDiv.textContent = "Lawyer registered successfully!";
-            e.target.reset();
-          } else if (text === "DUPLICATE") {
-            messageDiv.textContent = "This phone number is already registered.";
-            messageDiv.classList.add("error");
-          } else {
-            messageDiv.textContent = "Error: " + text;
-            messageDiv.classList.add("error");
-          }
-        } catch (err) {
-          messageDiv.textContent = "Network error: " + err.message;
-          messageDiv.classList.add("error");
-        }
-      };
-
-      reader.readAsDataURL(file);
-    });
-  </script>
+        </script>
 
         <div class="image-section">
           <img src="../images/sc.png" alt="Lawyer at work">
