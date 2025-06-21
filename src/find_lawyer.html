@@ -10,52 +10,89 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 20px;
+        margin: 20px;
+        background-color: #f9f9f9;
       }
-      .filter-box {
+      h1 {
+        text-align: center;
+      }
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
         margin-bottom: 20px;
       }
-      input {
-        margin: 5px;
+      .controls input, .controls select {
         padding: 8px;
-        width: 200px;
+        font-size: 16px;
       }
-      .lawyer-card {
-        display: inline-block;
-        border: 1px solid #ccc;
-        padding: 12px;
+      .lawyer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background-color: white;
         border-radius: 12px;
-        margin: 10px;
-        width: 220px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 16px;
         text-align: center;
-        box-shadow: 0 0 5px rgba(0,0,0,0.1);
         position: relative;
       }
-      .lawyer-card img {
+      .card img {
         width: 100px;
         height: 100px;
-        object-fit: cover;
         border-radius: 50%;
+        transition: transform 0.3s;
       }
-      .lawyer-info {
-        margin-top: 10px;
+      .card img:hover {
+        transform: scale(2.2);
+        z-index: 99;
+        position: relative;
       }
-      .delete-btn {
-        background-color: red;
-        color: white;
+      .card button {
+        margin-top: 8px;
+        background: #d9534f;
         border: none;
-        padding: 5px;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
         cursor: pointer;
-        position: absolute;
-        top: 5px;
-        right: 5px;
       }
       .pagination {
+        text-align: center;
         margin-top: 20px;
       }
       .pagination button {
         margin: 0 5px;
         padding: 5px 10px;
+      }
+      .toast {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 8px;
+        padding: 12px;
+        position: fixed;
+        z-index: 999;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+      }
+      .toast.show {
+        visibility: visible;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      }
+      @keyframes fadein {
+        from {bottom: 0; opacity: 0;}
+        to {bottom: 30px; opacity: 1;}
+      }
+      @keyframes fadeout {
+        from {bottom: 30px; opacity: 1;}
+        to {bottom: 0; opacity: 0;}
       }
     </style>
   </head>
@@ -108,128 +145,105 @@
      </header>
     <div class="container">
       <div class="text-container">
-      <h2>Find a Lawyer</h2>
-
-      <div class="filter-box">
-        <input type="text" id="filterName" placeholder="Search by name">
-        <input type="text" id="filterCity" placeholder="Search by city">
-        <input type="password" id="adminCode" placeholder="Admin Code (for delete)">
+      <h1>Find a Lawyer</h1>
+      <div class="controls">
+        <input type="text" id="search" placeholder="Search by name or city">
+        <select id="sort">
+          <option value="">Sort by</option>
+          <option value="name">Name</option>
+          <option value="city">City</option>
+        </select>
       </div>
-    
-      <div id="lawyerList">Loading...</div>
+      <div class="lawyer-grid" id="lawyerGrid"></div>
       <div class="pagination" id="pagination"></div>
+      <div id="toast" class="toast"></div>
     
       <script>
-        const SHEET_URL = "https://script.google.com/macros/s/AKfycbyvzJ2Rvzsqy3CLYXTH4vVIvv2M8bzWcEeBBAL94dSjCbw3mcDUbipxQiYMFzIhCcdwew/exec";
-        const DELETE_URL = SHEET_URL; // Same endpoint handles GET/DELETE
-        let allLawyers = [];
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec';
+        let lawyers = [];
+        let filtered = [];
         let currentPage = 1;
-        const itemsPerPage = 6;
+        const pageSize = 6;
     
-        async function fetchLawyers() {
-          try {
-            const res = await fetch(SHEET_URL);
-            const data = await res.json();
-            allLawyers = data;
-            renderPage();
-          } catch (err) {
-            document.getElementById("lawyerList").textContent = "Failed to load data.";
-            console.error("Error fetching lawyers:", err);
-          }
+        async function fetchData() {
+          const res = await fetch(scriptURL);
+          lawyers = await res.json();
+          filtered = [...lawyers];
+          render();
         }
     
-        function renderPage() {
-          const nameVal = document.getElementById("filterName").value.toLowerCase();
-          const cityVal = document.getElementById("filterCity").value.toLowerCase();
-          const filtered = allLawyers.filter(lawyer =>
-            lawyer.name.toLowerCase().includes(nameVal) &&
-            lawyer.city.toLowerCase().includes(cityVal)
-          );
-    
-          const totalPages = Math.ceil(filtered.length / itemsPerPage);
-          currentPage = Math.min(currentPage, totalPages);
-          const start = (currentPage - 1) * itemsPerPage;
-          const end = start + itemsPerPage;
-          const paginated = filtered.slice(start, end);
-    
-          displayLawyers(paginated);
-          displayPagination(totalPages);
-        }
-    
-        function displayLawyers(lawyers) {
-          const container = document.getElementById("lawyerList");
-          container.innerHTML = "";
-    
-          if (lawyers.length === 0) {
-            container.textContent = "No matching lawyers found.";
-            return;
-          }
-    
-          lawyers.forEach(lawyer => {
+        function render() {
+          const grid = document.getElementById("lawyerGrid");
+          grid.innerHTML = "";
+          const start = (currentPage - 1) * pageSize;
+          const pageItems = filtered.slice(start, start + pageSize);
+          pageItems.forEach(l => {
             const card = document.createElement("div");
-            card.className = "lawyer-card";
-    
-            const img = document.createElement("img");
-            img.src = lawyer.photo || "";
-            img.alt = lawyer.name;
-    
-            const info = document.createElement("div");
-            info.className = "lawyer-info";
-            info.innerHTML = `<strong>${lawyer.name}</strong><br>${lawyer.city}<br>${lawyer.phone}`;
-    
-            const btn = document.createElement("button");
-            btn.className = "delete-btn";
-            btn.textContent = "X";
-            btn.onclick = () => deleteLawyer(lawyer.phone);
-    
-            card.appendChild(img);
-            card.appendChild(info);
-            card.appendChild(btn);
-            container.appendChild(card);
+            card.className = "card";
+            card.innerHTML = `
+              <img src="${l.photo}" alt="photo">
+              <h3>${l.name}</h3>
+              <p>${l.city}</p>
+              <p>${l.phone}</p>
+              <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+            `;
+            grid.appendChild(card);
           });
+          renderPagination();
         }
     
-        function displayPagination(totalPages) {
+        function renderPagination() {
+          const totalPages = Math.ceil(filtered.length / pageSize);
           const pagination = document.getElementById("pagination");
           pagination.innerHTML = "";
-    
           for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement("button");
             btn.textContent = i;
-            btn.disabled = i === currentPage;
-            btn.onclick = () => {
-              currentPage = i;
-              renderPage();
-            };
+            if (i === currentPage) btn.style.fontWeight = "bold";
+            btn.onclick = () => { currentPage = i; render(); };
             pagination.appendChild(btn);
           }
         }
     
-        async function deleteLawyer(phone) {
-          const code = document.getElementById("adminCode").value;
-          if (!code) return alert("Enter admin code to delete.");
-    
-          if (!confirm("Are you sure to delete this entry?")) return;
-    
-          try {
-            const res = await fetch(`${DELETE_URL}?code=${code}&phone=${phone}`);
-            const text = await res.text();
-            if (text === "DELETED") {
-              alert("Entry deleted successfully.");
-              fetchLawyers();
+        function deleteLawyer(phone) {
+          const code = prompt("Enter Admin Code to delete:");
+          if (!code) return;
+          fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
+            method: 'DELETE'
+          }).then(r => r.text()).then(msg => {
+            if (msg === "DELETED") {
+              showToast("Deleted successfully");
+              lawyers = lawyers.filter(l => l.phone !== phone);
+              filtered = filtered.filter(l => l.phone !== phone);
+              render();
             } else {
-              alert("Failed to delete: " + text);
+              showToast("Delete failed: " + msg);
             }
-          } catch (err) {
-            alert("Error deleting entry.");
-            console.error(err);
-          }
+          });
         }
     
-        document.getElementById("filterName").addEventListener("input", renderPage);
-        document.getElementById("filterCity").addEventListener("input", renderPage);
+        function showToast(message) {
+          const toast = document.getElementById("toast");
+          toast.textContent = message;
+          toast.className = "toast show";
+          setTimeout(() => toast.className = "toast", 3000);
+        }
     
-        fetchLawyers();
+        document.getElementById("search").addEventListener("input", e => {
+          const q = e.target.value.toLowerCase();
+          filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
+          currentPage = 1;
+          render();
+        });
+    
+        document.getElementById("sort").addEventListener("change", e => {
+          const val = e.target.value;
+          if (val === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
+          if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
+          render();
+        });
+    
+        fetchData();
       </script>
       </div>
       <div class="image-section">
