@@ -53,63 +53,32 @@
     <div class="container">
       <div class="text-container">
         <br>
-        <h2>Advocate Sign-Up</h2>
-        <form id="lawyerForm">
-          <input type="text" name="name" placeholder="Full Name" required>
-          <input type="text" name="phone" placeholder="Phone Number" required>
-          <input type="text" name="city" placeholder="City" required>
-          <input type="file" id="photo" accept="image/*" required>
+        <h2>Sign Up as Advocate</h2>
+        <form id="signupForm" action="https://script.google.com/macros/s/AKfycbzfr74XAMDkA6XU2XiQCzZ13ye6F9EfenbmLFmkBsxsyg9w7--p0qQYCj85wzwq4-htVw/exec" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+          <input name="name" placeholder="Full Name" required>
+          <input name="phone" placeholder="Phone Number" required>
+          <input name="city" placeholder="City" required>
+          <input type="file" id="photoInput" accept="image/*" required>
+          <input type="hidden" name="photo" id="photoField">
           <button type="submit">Submit</button>
           <p id="message"></p>
         </form>
+        <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully!'; }"></iframe>
       
         <script>
-          const scriptURL = 'https://script.google.com/macros/s/AKfycby9bjlrAbhe-u4UF7HBfLu_0nY0M-48lAto7uPkpqpBJf-RJ7Lvbvt3SLgLo3_zQqKUgw/exec';
-      
-          document.getElementById('lawyerForm').addEventListener('submit', async function(e) {
+          let submitted = false;
+          document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const msg = document.getElementById('message');
-            msg.textContent = 'Submitting...';
-            msg.className = '';
+            const file = document.getElementById('photoInput').files[0];
+            if (!file) return;
       
-            const fileInput = document.getElementById('photo');
-            const file = fileInput.files[0];
             const reader = new FileReader();
-      
-            reader.onloadend = async function() {
-              const base64 = reader.result.split(',')[1];
-              const formData = {
-                name: e.target.name.value,
-                phone: e.target.phone.value,
-                city: e.target.city.value,
-                photo: base64
-              };
-      
-              try {
-                const res = await fetch(scriptURL, {
-                  method: 'POST',
-                  body: JSON.stringify(formData),
-                  headers: { 'Content-Type': 'application/json' }
-                });
-      
-                const text = await res.text();
-                if (text === 'SUCCESS') {
-                  msg.textContent = 'Successfully submitted!';
-                  msg.className = 'success';
-                  e.target.reset();
-                } else if (text === 'DUPLICATE') {
-                  msg.textContent = 'This phone number is already registered.';
-                  msg.className = 'error';
-                } else {
-                  msg.textContent = 'Error: ' + text;
-                  msg.className = 'error';
-                }
-              } catch (error) {
-                msg.textContent = 'Network error: ' + error.message;
-                msg.className = 'error';
-              }
+            reader.onload = function(evt) {
+              const base64 = evt.target.result.split(',')[1];
+              document.getElementById('photoField').value = base64;
+              submitted = true;
+              e.target.submit();
             };
-      
             reader.readAsDataURL(file);
           });
         </script>
