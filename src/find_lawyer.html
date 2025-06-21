@@ -7,6 +7,57 @@
     <link rel="stylesheet" href="../css/menu-2.css">
     <link rel="stylesheet" href="../css/txt_style.css">
     <link rel="stylesheet" href="../css/page_pane.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .filter-box {
+        margin-bottom: 20px;
+      }
+      input {
+        margin: 5px;
+        padding: 8px;
+        width: 200px;
+      }
+      .lawyer-card {
+        display: inline-block;
+        border: 1px solid #ccc;
+        padding: 12px;
+        border-radius: 12px;
+        margin: 10px;
+        width: 220px;
+        text-align: center;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        position: relative;
+      }
+      .lawyer-card img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .lawyer-info {
+        margin-top: 10px;
+      }
+      .delete-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+      .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin: 0 5px;
+        padding: 5px 10px;
+      }
+    </style>
   </head>
 
   <body> 
@@ -57,17 +108,129 @@
      </header>
     <div class="container">
       <div class="text-container">
-        <p class="text-section">
-            <br>Need legal assistance? <b><i>Vakeel Babu </b></i> is home to a team of qualified and compassionate lawyers ready to support you.
-            <br>
-            <br>
-            While we don't offer a direct search tool, we are committed to connecting you with the best lawyers for your specific legal matter.
-            <br>
-            <br>
-            Please get in touch with us today. <b>Call [+91-95550 07911] </b> or e-mail us at <b>vakeelbabuassociates@gmail.com</b> and we'll ensure you're directed to the appropriate legal expert. 
-            <br>
-            <br>
-        </p>
+      <h2>Find a Lawyer</h2>
+
+      <div class="filter-box">
+        <input type="text" id="filterName" placeholder="Search by name">
+        <input type="text" id="filterCity" placeholder="Search by city">
+        <input type="password" id="adminCode" placeholder="Admin Code (for delete)">
+      </div>
+    
+      <div id="lawyerList">Loading...</div>
+      <div class="pagination" id="pagination"></div>
+    
+      <script>
+        const SHEET_URL = "https://script.google.com/macros/s/AKfycbyvzJ2Rvzsqy3CLYXTH4vVIvv2M8bzWcEeBBAL94dSjCbw3mcDUbipxQiYMFzIhCcdwew/exec";
+        const DELETE_URL = SHEET_URL; // Same endpoint handles GET/DELETE
+        let allLawyers = [];
+        let currentPage = 1;
+        const itemsPerPage = 6;
+    
+        async function fetchLawyers() {
+          try {
+            const res = await fetch(SHEET_URL);
+            const data = await res.json();
+            allLawyers = data;
+            renderPage();
+          } catch (err) {
+            document.getElementById("lawyerList").textContent = "Failed to load data.";
+            console.error("Error fetching lawyers:", err);
+          }
+        }
+    
+        function renderPage() {
+          const nameVal = document.getElementById("filterName").value.toLowerCase();
+          const cityVal = document.getElementById("filterCity").value.toLowerCase();
+          const filtered = allLawyers.filter(lawyer =>
+            lawyer.name.toLowerCase().includes(nameVal) &&
+            lawyer.city.toLowerCase().includes(cityVal)
+          );
+    
+          const totalPages = Math.ceil(filtered.length / itemsPerPage);
+          currentPage = Math.min(currentPage, totalPages);
+          const start = (currentPage - 1) * itemsPerPage;
+          const end = start + itemsPerPage;
+          const paginated = filtered.slice(start, end);
+    
+          displayLawyers(paginated);
+          displayPagination(totalPages);
+        }
+    
+        function displayLawyers(lawyers) {
+          const container = document.getElementById("lawyerList");
+          container.innerHTML = "";
+    
+          if (lawyers.length === 0) {
+            container.textContent = "No matching lawyers found.";
+            return;
+          }
+    
+          lawyers.forEach(lawyer => {
+            const card = document.createElement("div");
+            card.className = "lawyer-card";
+    
+            const img = document.createElement("img");
+            img.src = lawyer.photo || "";
+            img.alt = lawyer.name;
+    
+            const info = document.createElement("div");
+            info.className = "lawyer-info";
+            info.innerHTML = `<strong>${lawyer.name}</strong><br>${lawyer.city}<br>${lawyer.phone}`;
+    
+            const btn = document.createElement("button");
+            btn.className = "delete-btn";
+            btn.textContent = "X";
+            btn.onclick = () => deleteLawyer(lawyer.phone);
+    
+            card.appendChild(img);
+            card.appendChild(info);
+            card.appendChild(btn);
+            container.appendChild(card);
+          });
+        }
+    
+        function displayPagination(totalPages) {
+          const pagination = document.getElementById("pagination");
+          pagination.innerHTML = "";
+    
+          for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.disabled = i === currentPage;
+            btn.onclick = () => {
+              currentPage = i;
+              renderPage();
+            };
+            pagination.appendChild(btn);
+          }
+        }
+    
+        async function deleteLawyer(phone) {
+          const code = document.getElementById("adminCode").value;
+          if (!code) return alert("Enter admin code to delete.");
+    
+          if (!confirm("Are you sure to delete this entry?")) return;
+    
+          try {
+            const res = await fetch(`${DELETE_URL}?code=${code}&phone=${phone}`);
+            const text = await res.text();
+            if (text === "DELETED") {
+              alert("Entry deleted successfully.");
+              fetchLawyers();
+            } else {
+              alert("Failed to delete: " + text);
+            }
+          } catch (err) {
+            alert("Error deleting entry.");
+            console.error(err);
+          }
+        }
+    
+        document.getElementById("filterName").addEventListener("input", renderPage);
+        document.getElementById("filterCity").addEventListener("input", renderPage);
+    
+        fetchLawyers();
+      </script>
       </div>
       <div class="image-section">
         <img src="../images/sc.png" alt="Lawyer at work">
