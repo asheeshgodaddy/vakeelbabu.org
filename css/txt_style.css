@@ -34,3 +34,13 @@ body {
     color: rgba(255, 0, 0, 0.948); /* Using a color keyword */
     font-size: 18px;
 }
+
+/* To make the blinking tect in menu*/
+.blinking-red {
+  animation: colorBlink 1s infinite;
+  font-weight: bold;
+}
+@keyframes colorBlink {
+  0%, 100% { color: yellow; }
+  50% { color: orange; }
+}
