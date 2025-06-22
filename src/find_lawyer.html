@@ -28,7 +28,7 @@
       }
       .lawyer-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Exactly 4 columns */ 
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 20px;
       }
       @media (max-width: 768px) {
@@ -166,8 +166,9 @@
             </div>
          </nav>
      </header>
-      <div class="text-container">
+    <br>
         <h1>Find a Lawyer</h1>
+    <br>
         <div class="controls">
           <input type="text" id="search" placeholder="Search by name or city">
           <select id="sort">
@@ -267,7 +268,7 @@
       
           fetchData();
         </script>
-      </div>
+
     <script type="text/javascript">
         function googleTranslateElementInit() {
           new google.translate.TranslateElement({
