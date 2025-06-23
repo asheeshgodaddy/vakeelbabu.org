@@ -32,20 +32,27 @@ header img {
   overflow-x: auto;
 }
 
-/* === MENU SECTION === */
+/* === Evenly spaced horizontal menu === */
 .menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  justify-content: space-evenly; /* distribute items evenly */
   align-items: center;
-  max-width: 80%;
+  width: 100%;
+  gap: 0; /* remove spacing between items */
 }
 
+/* Ensure all menu items take equal flexible space */
 .menu a {
+  flex: 1 1 auto; /* grow and shrink as needed */
+  text-align: center;
+  padding: 10px 8px;
   color: white;
   text-decoration: none;
   font-weight: bold;
   white-space: nowrap;
+  min-width: 80px;  /* prevent over-shrinking */
+  box-sizing: border-box;
 }
 
 .menu a:hover {
