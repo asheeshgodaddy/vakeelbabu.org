@@ -9,7 +9,6 @@ body {
   font-family: Arial, sans-serif;
   background-color: rgb(230, 235, 241);
   cursor: default;
-  padding: 0;
 }
 
 /* === HEADER IMAGE === */
@@ -19,7 +18,7 @@ header img {
   display: block;
 }
 
-/* === MAIN NAVBAR (TOP SCROLLMENU WITH LANGUAGE SELECTOR) === */
+/* === TOP SCROLL MENU (NAVBAR + TRANSLATE) === */
 .scrollmenu {
   display: flex;
   justify-content: space-between;
@@ -33,7 +32,7 @@ header img {
   overflow-x: auto;
 }
 
-/* === MENU LINKS === */
+/* === MENU SECTION === */
 .menu {
   display: flex;
   flex-wrap: wrap;
@@ -54,22 +53,45 @@ header img {
   color: rgb(29, 180, 214);
 }
 
-/* === GOOGLE TRANSLATE FIX === */
+/* === GOOGLE TRANSLATE FIXES === */
 .language-selector {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  max-width: 20%;
   min-width: 150px;
+  max-height: 40px;
+  overflow: hidden;
 }
 
-#google_translate_element select {
-  padding: 4px 6px;
-  font-size: 14px;
-  border-radius: 4px;
+/* Force Google Translate iframe to behave */
+#google_translate_element {
+  line-height: normal !important;
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
-/* === SECONDARY NAVIGATION MENU FIX (STICKY ON SCROLL) === */
+.goog-te-gadget {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  height: auto !important;
+}
+
+.goog-te-combo {
+  padding: 4px 6px !important;
+  font-size: 14px !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+#google_translate_element img {
+  display: none !important;
+}
+
+/* === STICKY SCROLL MENU BELOW BANNER === */
 .scrollmenu.fixed {
   position: fixed;
   top: 0;
@@ -77,7 +99,7 @@ header img {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* === TEXT CONTAINER === */
+/* === TEXT CONTENT SECTION === */
 .text-container {
   margin: 0 auto;
   padding: 30px 20px;
@@ -91,7 +113,7 @@ header img {
   text-align: justify;
 }
 
-/* === JUSTIFIED LIST === */
+/* === LIST STYLING === */
 ul.justified-list {
   list-style-type: disc;
   margin-left: 40px;
@@ -105,7 +127,7 @@ ul.justified-list li {
   margin-bottom: 10px;
 }
 
-/* === RICH TEXT BLOCKS === */
+/* === SPECIAL TEXT BLOCKS === */
 .rich-text {
   font-size: 12px;
   color: #444;
@@ -115,7 +137,6 @@ ul.justified-list li {
   margin: 0 25%;
 }
 
-/* === HIGHLIGHT STYLES === */
 .red-text {
   color: rgba(255, 0, 0, 0.948);
   font-size: 18px;
@@ -131,7 +152,7 @@ ul.justified-list li {
   50% { color: orange; }
 }
 
-/* === RESPONSIVE FIXES === */
+/* === RESPONSIVE BEHAVIOR === */
 @media (max-width: 768px) {
   .scrollmenu {
     flex-direction: column;
