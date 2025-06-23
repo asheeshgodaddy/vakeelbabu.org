@@ -1,4 +1,4 @@
-/* ---------- RESET + BASE STYLES ---------- */
+/* === RESET === */
 * {
   margin: 0;
   padding: 0;
@@ -9,114 +9,44 @@ body {
   font-family: Arial, sans-serif;
   background-color: rgb(230, 235, 241);
   cursor: default;
-  padding: 40px;
+  padding: 0;
 }
 
-/* ---------- HEADER & LOGO ---------- */
+/* === HEADER IMAGE === */
 header img {
-  height: 40%;
+  height: auto;
   width: 100%;
+  display: block;
 }
 
-.header {
+/* === MAIN NAVBAR (TOP SCROLLMENU WITH LANGUAGE SELECTOR) === */
+.scrollmenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 4px;
-  background-color: #f4f4f4;
-}
-
-/* ---------- TOP NAVIGATION BAR ---------- */
-.topnav {
-  background-color: #333;
-  overflow: hidden;
-}
-
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.topnav a.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
-/* ---------- SCROLL MENU ---------- */
-div.scrollmenu {
-  display: flex;
-  flex-wrap: wrap;  /* Wrap if needed */
-  background-color: #487ac0;
-  color: rgb(29, 180, 214);
-  overflow: auto;
-  overflow-x: auto;
-  white-space: nowrap;
-  justify-content: center;
-  gap: 12px;
-  padding: 8px 12px
-}
-
-div.scrollmenu a {
-  display: inline-block;
-  color: white;
-  text-align: center;
-  padding: 14px;
-  text-decoration: none;
-  font-weight: bold;
-  white-space: nowrap;
-}
-/* Avoid large width for empty anchors */
-.menu a:empty,
-.scrollmenu a:empty {
-  display: none;
-}
-
-div.scrollmenu.fixed {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 999;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-div.scrollmenu a:hover {
-  color: rgb(29, 180, 214);
-  background-color: #0d0c0c;
-}
-
-/* ---------- NAVBAR MENU ---------- */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
   background-color: #487ac0;
   padding: 10px 20px;
   color: white;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
-/* Allow menu items to wrap on small screens */
+/* === MENU LINKS === */
 .menu {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping */
-  gap: auto ;
-  max-width: 100%;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  max-width: 80%;
 }
 
 .menu a {
   color: white;
-  margin-right: 12px; /* space between menu links */
   text-decoration: none;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .menu a:hover {
@@ -124,21 +54,58 @@ div.scrollmenu a:hover {
   color: rgb(29, 180, 214);
 }
 
-/* ---------- LANGUAGE DROPDOWN ---------- */
-.language-selector select {
-  padding: 5px;
-  border-radius: 4px;
-  border: none;
+/* === GOOGLE TRANSLATE FIX === */
+.language-selector {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 20%;
+  min-width: 150px;
 }
 
-/* ---------- TEXT CONTAINERS ---------- */
+#google_translate_element select {
+  padding: 4px 6px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+/* === SECONDARY NAVIGATION MENU FIX (STICKY ON SCROLL) === */
+.scrollmenu.fixed {
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* === TEXT CONTAINER === */
 .text-container {
-  margin: 0 10%;
-  max-width: 800px;
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  max-width: 1000px;
   text-align: justify;
 }
 
+.text-section {
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* === JUSTIFIED LIST === */
+ul.justified-list {
+  list-style-type: disc;
+  margin-left: 40px;
+  padding-left: 10px;
+  font-size: 14px;
+  text-align: justify;
+}
+
+ul.justified-list li {
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+/* === RICH TEXT BLOCKS === */
 .rich-text {
   font-size: 12px;
   color: #444;
@@ -148,13 +115,7 @@ div.scrollmenu a:hover {
   margin: 0 25%;
 }
 
-.section {
-  padding: 3rem 0;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-/* ---------- RED AND BLINKING TEXT ---------- */
+/* === HIGHLIGHT STYLES === */
 .red-text {
   color: rgba(255, 0, 0, 0.948);
   font-size: 18px;
@@ -170,69 +131,25 @@ div.scrollmenu a:hover {
   50% { color: orange; }
 }
 
-/* ---------- RESPONSIVE CONTENT SECTIONS ---------- */
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.text-section {
-  flex: 1;
-  font-size: 14px;
-  line-height: 1.6;
-  text-align: justify;
-}
-
-.image-section {
-  flex: 1;
-}
-
-.image-section img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 8px;
-  margin-bottom: 30px;
-}
-
+/* === RESPONSIVE FIXES === */
 @media (max-width: 768px) {
-  .menu,
   .scrollmenu {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
   }
-}
 
-/* ---------- TABLE STYLES ---------- */
-.table {
-  border-collapse: collapse;
-  width: 70%;
-  margin: 20px auto;
-  font-size: 18px;
-}
+  .menu {
+    max-width: 100%;
+    justify-content: center;
+  }
 
-.th, td {
-  border: 1px solid #999;
-  padding: 10px;
-  text-align: center;
-}
+  .language-selector {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
 
-.th {
-  background-color: #ddd;
-}
-
-/* ---------- CUSTOM LIST STYLES ---------- */
-ul.justified-list {
-  list-style-type: disc;
-  margin-left: 40px;
-  padding-left: 10px;
-  font-size: 14px;
-  text-align: justify;
-}
-
-ul.justified-list li {
-  text-align: justify;
-  margin-bottom: 10px;
+  .text-container {
+    padding: 20px;
+  }
 }
