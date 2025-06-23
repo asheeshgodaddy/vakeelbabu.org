@@ -18,40 +18,41 @@ header img {
   display: block;
 }
 
-/* === TOP SCROLL MENU (NAVBAR + TRANSLATE) === */
+/* === MAIN NAVIGATION BAR (MENU + TRANSLATOR) === */
 .scrollmenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   background-color: #487ac0;
   padding: 10px 20px;
   color: white;
   width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
+  gap: 10px;
 }
 
-/* === Evenly spaced horizontal menu === */
+/* === MENU LINKS === */
 .menu {
   display: flex;
+  flex: 1 1 auto;
   flex-wrap: wrap;
-  justify-content: space-evenly; /* distribute items evenly */
+  justify-content: space-evenly;
   align-items: center;
-  width: 100%;
-  gap: 0; /* remove spacing between items */
+  min-width: 0;
+  gap: 0;
 }
 
-/* Ensure all menu items take equal flexible space */
 .menu a {
-  flex: 1 1 auto; /* grow and shrink as needed */
+  flex: 1 1 auto;
   text-align: center;
   padding: 10px 8px;
   color: white;
   text-decoration: none;
   font-weight: bold;
   white-space: nowrap;
-  min-width: 80px;  /* prevent over-shrinking */
+  min-width: 80px;
   box-sizing: border-box;
 }
 
@@ -60,17 +61,18 @@ header img {
   color: rgb(29, 180, 214);
 }
 
-/* === GOOGLE TRANSLATE FIXES === */
+/* === TRANSLATOR SECTION FIX === */
 .language-selector {
+  flex-shrink: 0;
+  white-space: nowrap;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
   min-width: 150px;
-  max-height: 40px;
-  overflow: hidden;
+  max-width: 200px;
+  padding-left: 10px;
 }
 
-/* Force Google Translate iframe to behave */
 #google_translate_element {
   line-height: normal !important;
   font-size: 0;
@@ -98,7 +100,7 @@ header img {
   display: none !important;
 }
 
-/* === STICKY SCROLL MENU BELOW BANNER === */
+/* === FIXED MENU ON SCROLL (SECOND BAR) === */
 .scrollmenu.fixed {
   position: fixed;
   top: 0;
@@ -106,7 +108,7 @@ header img {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* === TEXT CONTENT SECTION === */
+/* === TEXT CONTAINER === */
 .text-container {
   margin: 0 auto;
   padding: 30px 20px;
@@ -120,7 +122,7 @@ header img {
   text-align: justify;
 }
 
-/* === LIST STYLING === */
+/* === JUSTIFIED BULLET LIST === */
 ul.justified-list {
   list-style-type: disc;
   margin-left: 40px;
@@ -134,7 +136,7 @@ ul.justified-list li {
   margin-bottom: 10px;
 }
 
-/* === SPECIAL TEXT BLOCKS === */
+/* === RICH TEXT BLOCKS === */
 .rich-text {
   font-size: 12px;
   color: #444;
@@ -144,6 +146,7 @@ ul.justified-list li {
   margin: 0 25%;
 }
 
+/* === SPECIAL TEXT STYLES === */
 .red-text {
   color: rgba(255, 0, 0, 0.948);
   font-size: 18px;
@@ -159,25 +162,29 @@ ul.justified-list li {
   50% { color: orange; }
 }
 
-/* === RESPONSIVE BEHAVIOR === */
+/* === RESPONSIVE ADJUSTMENTS === */
 @media (max-width: 768px) {
   .scrollmenu {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
   }
 
   .menu {
-    max-width: 100%;
+    width: 100%;
     justify-content: center;
   }
 
   .language-selector {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
     margin-top: 10px;
   }
 
   .text-container {
     padding: 20px;
+  }
+
+  .menu a {
+    flex: 1 1 100%;
+    min-width: auto;
   }
 }
