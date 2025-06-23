@@ -3,50 +3,86 @@
 
   <url>
     <loc>https://www.vakeelbabu.org/index.html</loc>
+    <lastmod>2025-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/about.html</loc>
+    <lastmod>2025-06-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/find_lawyer.html</loc>
+    <lastmod>2025-06-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/lawyer_sign_up.html</loc>
+    <lastmod>2025-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blog.html</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blogs/cybercrime.html</loc>
+    <lastmod>2025-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blogs/public_nuisance.html</loc>
+    <lastmod>2025-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blogs/early_stage_edu.html</loc>
+    <lastmod>2025-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blogs/divorce_in_india.html</loc>
+    <lastmod>2025-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/blogs/understanding_fir.html</loc>
+    <lastmod>2025-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/myaccount.html</loc>
+    <lastmod>2025-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://www.vakeelbabu.org/src/contact.html</loc>
+    <lastmod>2025-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>
