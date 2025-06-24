@@ -64,7 +64,7 @@
       <input name="landlord_name" placeholder="Landlord Name" required>
       <input name="tenant_name" placeholder="Tenant Name" required>
       <textarea name="property_address" placeholder="Property Address" required></textarea>
-      <input name="rent_amount" placeholder="Rent Amount" required>
+      <input name="rent_amount" placeholder="Rent (INR)" required>
       <input name="duration" placeholder="Duration (months)" required>
       <input type="date" name="start_date" required>
       <button type="submit">Generate Agreement</button>
@@ -72,41 +72,42 @@
     <div id="msg"></div>
     
     <script>
-      document.getElementById("rentalForm").addEventListener("submit", async function (e) {
+      document.getElementById("rentalForm").addEventListener("submit", function (e) {
         e.preventDefault();
         const form = e.target;
         const data = new FormData(form);
         const msg = document.getElementById("msg");
         msg.textContent = "Generating PDF...";
     
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzq9BSije-FdUV2qt37IzR247Yp_Eqn-243rFGpwHRnLHay4kqU8jcnxQZ0OukVL_-e/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbxxv1iQ2RRMXGIitoCrgQkqTQcdaCC1B_u3ifl0IHsQEQD9-I0sqO7ljL-vAnw6HJE/exec", {
           method: "POST",
           body: data
+        })
+        .then(r => r.text())
+        .then(base64 => {
+          if (!base64 || base64.startsWith("ERROR")) {
+            msg.textContent = base64 || "Unknown error.";
+            return;
+          }
+    
+          const byteCharacters = atob(base64);
+          const byteArray = new Uint8Array([...byteCharacters].map(c => c.charCodeAt(0)));
+          const blob = new Blob([byteArray], { type: "application/pdf" });
+    
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "Rental_Agreement.pdf";
+          link.click();
+    
+          msg.textContent = "Download started!";
+        })
+        .catch(err => {
+          msg.textContent = "Error: " + err.message;
+          console.error(err);
         });
-    
-        const base64 = await response.text();
-    
-        // If error
-        if (base64.startsWith("ERROR")) {
-          msg.textContent = base64;
-          return;
-        }
-    
-        // Convert base64 to Blob
-        const byteCharacters = atob(base64);
-        const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "application/pdf" });
-    
-        // Trigger download
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "Rental_Agreement.pdf";
-        link.click();
-    
-        msg.textContent = "Download started!";
       });
     </script>
+
 
     <script type="text/javascript">
         function googleTranslateElementInit() {
