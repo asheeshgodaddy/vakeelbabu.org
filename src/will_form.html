@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Will Form | Vakeel Babu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+      form {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      }
+      input, textarea, button {
+        width: 100%;
+        margin-bottom: 15px;
+        padding: 12px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      button {
+        background: #487ac0;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .success {
+        text-align: center;
+        color: green;
+        font-weight: bold;
+      }
+      .error {
+        text-align: center;
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+    
+  </head>
+
+  <body> 
+    <header>
+      <nav>
+        <div class="scrollmenu">
+          <div class="menu">
+            <a href="https://indiankanoon.org/" target="_blank">Indian Kanoon</a>
+            <a href="../index.html">Indian Penal Code</a>
+            <a href="contact.html">Ask a Free Question</a>
+            <a href="find_lawyer.html">Talk To A Lawyer</a>
+            <a class="blinking-red" href="legal_advice.html"><b>Free legal advice</b></a>
+            <a class="blinking-red" href="lawyer_sign_up.html">Lawyer Sign-Up</a>
+            <a>E-mail us: vakeelbabuassociates@gmail.com</a>
+          </div>
+          <div class="language-selector"; id="google_translate_element">
+          </div>
+        </div>
+
+      <img src="../images/full_banner.png"  alt="Trusted Legal Advice in India - Vakeel Babu Lawyers">
+
+        <div class="scrollmenu" id="scrollmenu">
+          <div class="menu">
+            <a href="../index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="find_lawyer.html">Find a Lawyer</a>
+            <a class="blinking-red" href="lawyer_sign_up.html">Lawyer Sign-Up</a>
+            <a href="documents.html">Free Documents</a>
+            <a href="bns.html">BNS Section</a>
+            <a href="blog.html">Blogs</a>
+            <a href="myaccount.html">My Account</a>  
+            <a href="contact.html">Contact Us</a>
+            <a class="blinking-red"><b>Dial us: +91-95550 07911</b></a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <br>
+    <h1 style="text-align:center;">Will Request Form</h1>
+    <br>
+
+    <form id="willForm">
+      <input type="hidden" name="form_type" value="will">
+      
+      <input name="testator_name" placeholder="Your Name" required>
+      <textarea name="beneficiaries" placeholder="Beneficiaries" required></textarea>
+      <textarea name="assets" placeholder="Assets to be distributed" required></textarea>
+      <input name="phone" placeholder="Phone Number" required>
+      
+      <button type="submit">Submit</button>
+      <div id="msg"></div>
+    </form>
+    
+    <script src="script.js"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,hi,es,fr,de', // customize the languages
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                
+    <!-- JavaScript to fix the menu on top while scrolling-->
+    <script>
+      const scrollmenu = document.getElementById("scrollmenu");
+      const offsetTop = scrollmenu.offsetTop;
+
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset >= offsetTop) {
+          scrollmenu.classList.add("fixed");
+        } else {
+          scrollmenu.classList.remove("fixed");
+        }
+      });
+    </script>
+  </body>
+</html>
