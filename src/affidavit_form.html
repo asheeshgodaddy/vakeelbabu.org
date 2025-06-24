@@ -57,21 +57,116 @@
       </header>
 
     <br>
-    <h1 style="text-align:center;">Affidavit Request Form</h1>
+    <h1 style="text-align:center;">AFFIDAVIT FOR CHANGE OF NAME AFTER MARRIAGE</h1>
     <br>
-
     <form id="affidavitForm">
-      <input type="hidden" name="form_type" value="affidavit">
-      <input name="full_name" placeholder="Full Name" required>
-      <input name="dob" placeholder="Date of Birth (DD-MM-YYYY)" required>
-      <textarea name="purpose" placeholder="Purpose of Affidavit" required></textarea>
-      <input name="phone" placeholder="Phone Number" required>
-      
-      <button type="submit">Submit</button>
-      <div id="msg"></div>
+      <input type="hidden" name="type" value="affidavit">
+    
+      <label>Age</label>
+      <input type="text" name="age" required>
+    
+      <label>Applicant Father Name</label>
+      <input type="text" name="father_name" required>
+    
+      <label>Husband Name</label>
+      <input type="text" name="husband_name">
+    
+      <label>Pincode</label>
+      <input type="text" name="pincode" required>
+    
+      <label>Applicant Complete Residential Address</label>
+      <textarea name="residential_address" required></textarea>
+    
+      <label>Maiden Name</label>
+      <input type="text" name="maiden_name">
+    
+      <label>Marriage Certificate Number</label>
+      <input type="text" name="marriage_cert_number">
+    
+      <label>Place Of Marriage</label>
+      <input type="text" name="place_of_marriage">
+    
+      <label>Date Of Marriage</label>
+      <input type="date" name="date_of_marriage">
+    
+      <label>Issuing Authority</label>
+      <input type="text" name="issuing_authority">
+    
+      <label>Date Of Issue</label>
+      <input type="date" name="date_of_issue">
+    
+      <label>Aadhaar Number</label>
+      <input type="text" name="aadhaar">
+    
+      <label>PAN Number</label>
+      <input type="text" name="pan">
+    
+      <label>Present Name After Marriage</label>
+      <input type="text" name="present_name_after_marriage">
+    
+      <label>Full Name</label>
+      <input type="text" name="full_name">
+    
+      <label>Last Name</label>
+      <input type="text" name="last_name">
+    
+      <label>First Name</label>
+      <input type="text" name="first_name">
+    
+      <label>Middle Name</label>
+      <input type="text" name="middle_name">
+    
+      <label>Present Name</label>
+      <input type="text" name="present_name">
+    
+      <label>Date (Today)</label>
+      <input type="date" name="date">
+    
+      <label>Place Of Issue</label>
+      <input type="text" name="place_of_issue">
+    
+      <label>Full Name Of Deponent</label>
+      <input type="text" name="deponent_name">
+    
+      <button type="submit">Generate Affidavit PDF</button>
     </form>
     
-    <script src="script.js"></script>
+    <div id="msg"></div>
+    
+    <script>
+      const form = document.getElementById("affidavitForm");
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const msg = document.getElementById("msg");
+        msg.textContent = "Generating PDF...";
+        const formData = new FormData(form);
+    
+        try {
+          const res = await fetch("YOUR_GOOGLE_SCRIPT_URL", {
+            method: "POST",
+            body: formData
+          });
+          const base64 = await res.text();
+    
+          if (!base64 || base64.startsWith("ERROR")) {
+            msg.textContent = base64;
+            return;
+          }
+    
+          const byteArray = new Uint8Array([...atob(base64)].map(c => c.charCodeAt(0)));
+          const blob = new Blob([byteArray], { type: "application/pdf" });
+    
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "Affidavit.pdf";
+          a.click();
+    
+          msg.textContent = "Download started!";
+        } catch (err) {
+          msg.textContent = "Error: " + err.message;
+        }
+      });
+    </script>
 
     <script type="text/javascript">
         function googleTranslateElementInit() {
