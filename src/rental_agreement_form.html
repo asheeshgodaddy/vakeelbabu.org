@@ -61,19 +61,33 @@
     <br>
 
     <form id="rentalForm">
-      <input type="hidden" name="form_type" value="rental">
-      <input name="full_name" placeholder="Full Name" required>
-      <input name="email" placeholder="Email" type="email" required>
-      <input name="phone" placeholder="Phone Number" required>
-      <textarea name="address" placeholder="Property Address" required></textarea>
-      <input name="rent" placeholder="Rent (INR)" type="number" required>
-      <input name="duration" placeholder="Duration in months" type="number" required>
-      
-      <button type="submit">Submit</button>
-      <div id="msg"></div>
+      <input name="landlord_name" placeholder="Landlord Name" required>
+      <input name="tenant_name" placeholder="Tenant Name" required>
+      <textarea name="property_address" placeholder="Property Address" required></textarea>
+      <input name="rent_amount" placeholder="Rent (INR)" required>
+      <input name="duration" placeholder="Duration (months)" required>
+      <input type="date" name="start_date" required>
+      <button type="submit">Generate Agreement</button>
     </form>
+    <div id="link"></div>
     
-    <script src="script.js"></script>
+    <script>
+      document.getElementById("rentalForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+    
+        fetch("https://script.google.com/macros/s/AKfycbwmakUNjlJRFAdGfov8LaG-xOlo1q5_fk4XtWl89ZFFV7ewzibMU4g1M5f4Anw2WCNR/exec", {
+          method: "POST",
+          body: data
+        })
+        .then(r => r.text())
+        .then(link => {
+          document.getElementById("link").innerHTML =
+            link.startsWith("http") ? `<a href="${link}" target="_blank">Download Agreement</a>` : `Error: ${link}`;
+        });
+      });
+    </script>
 
     <script type="text/javascript">
         function googleTranslateElementInit() {
