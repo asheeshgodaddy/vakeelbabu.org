@@ -64,28 +64,47 @@
       <input name="landlord_name" placeholder="Landlord Name" required>
       <input name="tenant_name" placeholder="Tenant Name" required>
       <textarea name="property_address" placeholder="Property Address" required></textarea>
-      <input name="rent_amount" placeholder="Rent (INR)" required>
+      <input name="rent_amount" placeholder="Rent Amount" required>
       <input name="duration" placeholder="Duration (months)" required>
       <input type="date" name="start_date" required>
       <button type="submit">Generate Agreement</button>
     </form>
-    <div id="link"></div>
+    <div id="msg"></div>
     
     <script>
-      document.getElementById("rentalForm").addEventListener("submit", function(e) {
+      document.getElementById("rentalForm").addEventListener("submit", async function (e) {
         e.preventDefault();
         const form = e.target;
         const data = new FormData(form);
+        const msg = document.getElementById("msg");
+        msg.textContent = "Generating PDF...";
     
-        fetch("https://script.google.com/macros/s/AKfycbzq9BSije-FdUV2qt37IzR247Yp_Eqn-243rFGpwHRnLHay4kqU8jcnxQZ0OukVL_-e/exec", {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbzq9BSije-FdUV2qt37IzR247Yp_Eqn-243rFGpwHRnLHay4kqU8jcnxQZ0OukVL_-e/exec", {
           method: "POST",
           body: data
-        })
-        .then(r => r.text())
-        .then(link => {
-          document.getElementById("link").innerHTML =
-            link.startsWith("http") ? `<a href="${link}" target="_blank">Download Agreement</a>` : `Error: ${link}`;
         });
+    
+        const base64 = await response.text();
+    
+        // If error
+        if (base64.startsWith("ERROR")) {
+          msg.textContent = base64;
+          return;
+        }
+    
+        // Convert base64 to Blob
+        const byteCharacters = atob(base64);
+        const byteNumbers = Array.from(byteCharacters).map(c => c.charCodeAt(0));
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "application/pdf" });
+    
+        // Trigger download
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "Rental_Agreement.pdf";
+        link.click();
+    
+        msg.textContent = "Download started!";
       });
     </script>
 
