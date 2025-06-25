@@ -1,10 +1,10 @@
 <html> 
   <head>
     <title>Lawyer Sign Up on Vakeel Babu | Sign Up Advocates | Trusted Legal Advice Platform in India</title>
-    <link rel="icon" href="../images/fevicon.png" type="image/png">
+    <link rel="icon" href="images/fevicon.png" type="image/png">
     <meta name="description" content="Find Lawyer on Vakeel Babu">
     <meta name="keywords" content="Find Lawyer on Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
   </head>
 
   <body> 
@@ -12,7 +12,7 @@
       <div id="nav-placeholder"></div>
 
       <script>
-        fetch("menu.html")
+        fetch("src/menu.html")
           .then(response => response.text())
           .then(data => {
             document.getElementById("nav-placeholder").innerHTML = data;
@@ -29,7 +29,7 @@
           <input name="city" placeholder="City" required>
           <input type="file" id="photoInput" accept="image/*" required>
           <input type="hidden" name="photo" id="photoField">
-          <button type="submit">Submit</button>
+          <button type="submit"><b>Submit</b></button>
           <p id="message"></p>
         </form>
         <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully!'; }"></iframe>
@@ -51,6 +51,9 @@
             reader.readAsDataURL(file);
           });
         </script>
+
+        <br>
+        <br>
 
         <div class="image-section">
           <img src="../images/sc.png" alt="Lawyer at work">
