@@ -30,39 +30,16 @@
   </head>
 
   <body> 
-    <header>
-      <nav>
-        <div class="scrollmenu">
-          <div class="menu">
-            <a href="https://indiankanoon.org/" target="_blank">Indian Kanoon</a>
-            <a href="../../index.html">Indian Penal Code</a>
-            <a href="../contact.html">Ask a Free Question</a>
-            <a href="../find_lawyer.html">Talk To A Lawyer</a>
-            <a class="blinking-red" href="../legal_advice.html"><b>Free legal advice</b></a>
-            <a class="blinking-red" href="../lawyer_sign_up.html">Lawyer Sign-Up</a>
-            <a>E-mail us: vakeelbabuassociates@gmail.com</a>
-          </div>
-          <div class="language-selector"; id="google_translate_element">
-          </div>
-        </div>
+   <header>
+      <div id="nav-placeholder"></div>
 
-      <img src="../../images/full_banner.png"  alt="Trusted Legal Advice in India - Vakeel Babu Lawyers">
-
-        <div class="scrollmenu" id="scrollmenu">
-          <div class="menu">
-            <a href="../../index.html">Home</a>
-            <a href="../about.html">About</a>
-            <a href="../find_lawyer.html">Find a Lawyer</a>
-            <a class="blinking-red" href="../lawyer_sign_up.html">Lawyer Sign-Up</a>
-            <a href="../ipc.html">IPC Section</a>
-            <a href="../bns.html">BNS Section</a>
-            <a href="../blog.html">Blogs</a>
-            <a href="../myaccount.html">My Account</a>  
-            <a href="../contact.html">Contact Us</a>
-            <a class="blinking-red"><b>Dial us: +91-95550 07911</b></a>
-          </div>
-        </div>
-      </nav>
+      <script>
+        fetch("../blog_menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
     </header>
         <div class="container">
       <div class="text-container">
@@ -73,7 +50,7 @@
           <p class="text-section">Legal education is not just about understanding laws and rules—it is about empowering individuals to know their rights, respect the rights of others, and live with responsibility and dignity in society. Introducing legal education during the early years of schooling, especially around Class 8 or 9, carries immense significance for a country like India, which is rich in diversity, youth potential, and deep-rooted cultural values.
             <br>
             <br>
-            <i>Read our post on <a href="public_nuisance.html">Public Nuisance and Civic Complaints</a>.</i> and <a href="cybercrime.html">cybercrime awareness</a>.</i> <br><br>
+            <i>Read our post on <a href="public_nuisance.html" style="color: #00ffe0>Public Nuisance and Civic Complaints</a>.</i> and <a href="cybercrime.html" style="color: #00ffe0>cybercrime awareness</a>.</i> <br><br>
           </p>
         </p>
         <br>
