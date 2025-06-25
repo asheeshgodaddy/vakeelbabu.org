@@ -43,39 +43,16 @@
   </head>
 
   <body> 
-    <header>
-      <nav>
-        <div class="scrollmenu">
-          <div class="menu">
-            <a href="https://indiankanoon.org/" target="_blank">Indian Kanoon</a>
-            <a href="../../index.html">Indian Penal Code</a>
-            <a href="../contact.html">Ask a Free Question</a>
-            <a href="../find_lawyer.html">Talk To A Lawyer</a>
-            <a class="blinking-red" href="../legal_advice.html"><b>Free legal advice</b></a>
-            <a class="blinking-red" href="../lawyer_sign_up.html">Lawyer Sign-Up</a>
-            <a>E-mail us: vakeelbabuassociates@gmail.com</a>
-          </div>
-          <div class="language-selector"; id="google_translate_element">
-          </div>
-        </div>
+   <header>
+      <div id="nav-placeholder"></div>
 
-      <img src="../../images/full_banner.png"  alt="Trusted Legal Advice in India - Vakeel Babu Lawyers">
-
-        <div class="scrollmenu" id="scrollmenu">
-          <div class="menu">
-            <a href="../../index.html">Home</a>
-            <a href="../about.html">About</a>
-            <a href="../find_lawyer.html">Find a Lawyer</a>
-            <a class="blinking-red" href="../lawyer_sign_up.html">Lawyer Sign-Up</a>
-            <a href="../ipc.html">IPC Section</a>
-            <a href="../bns.html">BNS Section</a>
-            <a href="../blog.html">Blogs</a>
-            <a href="../myaccount.html">My Account</a>  
-            <a href="../contact.html">Contact Us</a>
-            <a class="blinking-red"><b>Dial us: +91-95550 07911</b></a>
-          </div>
-        </div>
-      </nav>
+      <script>
+        fetch("../blog_menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
     </header>
       <div class="container">
         <div class="text-container">
@@ -89,8 +66,8 @@
             <i>Also read our post on:</i><br>
           </p>
           <ul class="justified-list">
-              <li><i><a href="public_nuisance.html">Public Nuisance and Civic Complaints</a></i></li>
-              <li><i><a href="early_stage_edu.html">Importance of Legal Education at an Early Stage</a></i></li>
+              <li><i><a href="public_nuisance.html" style="color: #00ffe0">Public Nuisance and Civic Complaints</a></i></li>
+              <li><i><a href="early_stage_edu.html" style="color: #00ffe0">Importance of Legal Education at an Early Stage</a></i></li>
           </ul>
           <br>
           <h2>Types of Divorce in India</h2><br>
@@ -201,13 +178,6 @@
             <li>Avoid legal pitfalls</li>
           </ul>
           <br>
-        </div>
-        <div class="image-section">
-          <img src="../../images/divorce-1.jpg" alt="Divorce In India">
-          <!--img src="../../images/sc.png" alt="Lawyer at work"-->
-          <img src="../../images/divorce-2.jpg" alt="Divorce Advocate- Legal Help">
-          <img src="../../images/divorce-3.jpg" alt="Divorce - Step by Step">
-          <img src="../../images/divorce-4.jpg" alt="Divorce - Lawyer for you">
         </div>
       </div> 
       <script type="text/javascript">
