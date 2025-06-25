@@ -279,3 +279,79 @@ ul.justified-list li {
   border-radius: 6px;
   font-size: 14px;
 }
+
+
+/* Table wrapper (optional, for padding) */
+.table-container {
+  padding: 20px;
+  background-color: #ffffff; /* White background */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+/* General table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff; /* Ensure white background */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+}
+
+/* Table header */
+thead tr {
+  background-color: #2d6cdf;
+  color: white;
+}
+
+/* Table cells */
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  background-color: #ffffff; /* White cell bg */
+}
+
+/* Zebra stripe rows */
+tbody tr:nth-child(even) {
+  background-color: #f3f7ff; /* Light blue-gray */
+}
+
+/* Hover effect */
+tbody tr:hover {
+  background-color: #e6f0ff;
+}
+
+/* Responsive (optional) */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #ffffff;
+  }
+
+  td {
+    padding-left: 50%;
+    position: relative;
+    text-align: left;
+    background-color: #ffffff;
+  }
+
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    font-weight: bold;
+    color: #333;
+  }
+}
