@@ -1,0 +1,97 @@
+<html> 
+  <head>
+    <title>Free Legal Advice in India | Talk to Lawyers Online</title>
+    <link rel="icon" href="images/fevicon.png" type="/image/png">
+    <meta name="description" content="Get free legal advice from experienced lawyers in India. Discuss your legal issue online and receive instant guidance.">
+    <meta name="keywords" content="free legal advice, legal advice India, talk to a lawyer, online legal consultation, Indian lawyers online">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+
+  <body> 
+   <header>
+      <div id="nav-placeholder"></div>
+
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
+    </header>
+    <div class="container">
+      <div class="text-container">
+        <p class="text-section">
+            <br>
+            <h2>Confused about what to do next?</h3><br>
+            <ul class="justified-list">
+              <p><b>“Talk to a Vakeel”</b> using the given number <a class="blinking-red"><b>(+91-95550 07911)</b></a> and get the clarity you need—without stepping into a courtroom.</p><br>
+              <p>Legal support made simple, safe, and supportive — <b>that’s the <i>Vakeel Babu</i> promise.</b></p>
+            </ul>  
+            <br><br>
+            <br>At <b>Vakeel Babu</b>, we believe that the right legal guidance can change lives. Our Legal Advice section is designed to provide clear, practical, and trustworthy solutions to your legal concerns—no jargon, no confusion.
+            <br>
+            <br>
+            <br>
+            <h4>What We Offer:</h4><br>
+            <ul class="justified-list">
+              <li> <b>One-on-One Legal Consultation </b></li>
+              <p>Get expert legal opinion from experienced professionals—whether you're dealing with personal matters, family issues, property disputes, or business challenges.<br><br></p>
+            </ul>  
+            <ul class="justified-list">
+              <li> <b>Ask a Question – Get a Response </b></li>
+              <p> Submit your legal query online and receive personalized responses, typically within 24–48 hours.<br><br></p>
+            </ul>  
+            <ul class="justified-list">
+              <li> <b>Preliminary Case Assessment </b></li>
+              <p> We help you understand the strength of your case before you invest time or money.<br><br></p>
+            </ul>  
+            <ul class="justified-list">
+              <li> <b>Legal Awareness Resources </b></li>
+              <p> Access simplified legal guides, articles, and FAQs to help you stay informed about your rights.<br><br></p>
+            </ul>
+            <br>
+            <br>
+            <h4>Areas We Cover:</h4><br>
+            <ul class="justified-list">
+              <li> Family & Divorce Law</li>
+              <li> Property & Real Estate</li>
+              <li> Criminal Law</li>
+              <li> Consumer Rights</li>
+              <li> Employment & Labour</li>
+              <li> Startup & Business Law</li>
+              <li> Cybercrime & Online Fraud</li>
+            </ul>
+            <br>
+            <br>
+      </div>
+      <div class="image-section">
+        <img src="/images/sc.png" alt="Lawyer at work">
+      </div>
+    </div> 
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,hi,es,fr,de', // customize the languages
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                
+    <!-- JavaScript to fix the menu on top while scrolling-->
+    <script>
+      const scrollmenu = document.getElementById("scrollmenu");
+      const offsetTop = scrollmenu.offsetTop;
+
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset >= offsetTop) {
+          scrollmenu.classList.add("fixed");
+        } else {
+          scrollmenu.classList.remove("fixed");
+        }
+      });
+    </script>
+  </body>
+</html>
