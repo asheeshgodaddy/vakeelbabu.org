@@ -45,6 +45,10 @@ header img {
   box-sizing: border-box;
   overflow-x: auto;
   gap: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
 /* === MENU LINKS === */
@@ -59,7 +63,7 @@ header img {
 }
 
 .menu a {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   text-align: center;
   padding: 10px 8px;
   color: white;
