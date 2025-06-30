@@ -55,8 +55,11 @@
       link.href = URL.createObjectURL(blob);
       link.download = "Rental_Agreement.pdf";
       link.click();
-
       msg.textContent = "🎉 Download started successfully!";
+
+      setTimeout(() => {
+        window.location.href = "https://www.vakeelbabu.org/documents/";
+      }, 2000); // Wait 2 second before redirect
     })
     .catch(err => {
       msg.textContent = "Error: " + err.message;
