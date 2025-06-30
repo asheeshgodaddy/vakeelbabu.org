@@ -456,9 +456,13 @@ tbody tr:hover {
 
 /* === FEATURED LAWYER STYLES === */
 .card.featured {
-  border: 2px solid gold;
+  border: 3px solid gold;
   background: linear-gradient(to bottom, #fffbe0, #fdf6c3);
-  position: relative;
+  /*position: relative;*/
+}
+
+.card.verified:not(.featured) {
+  border: 2px solid #28a745;
 }
 
 .card.featured::before {
