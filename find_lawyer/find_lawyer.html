@@ -190,6 +190,8 @@
             ? `<div class="testimonial">“${l.testimonials.split(';')[0].trim()}”</div>`
             : '';
 
+          console.log(l.name, "Verified:", l.verified);
+
           card.innerHTML = `
             <img src="${l.photo}" alt="photo">
             <h3>${l.name} ${verifiedBadge}</h3>
