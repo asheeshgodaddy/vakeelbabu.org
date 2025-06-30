@@ -27,17 +27,22 @@
       }
       .lawyer-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(4, 1fr); /* Fixed 4 columns */
         gap: 20px;
+      }
+      @media (max-width: 1200px) {
+        .lawyer-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
       }
       @media (max-width: 768px) {
         .lawyer-grid {
-          grid-template-columns: repeat(1, 1fr); /* Single column on small devices */
+          grid-template-columns: repeat(2, 1fr);
         }
       }
-      @media (max-width: 1024px) {
+      @media (max-width: 480px) {
         .lawyer-grid {
-          grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+          grid-template-columns: 1fr;
         }
       }
       .card {
@@ -47,12 +52,11 @@
         padding: 16px;
         text-align: center;
         position: relative;
-        height: 320px; /* Fixed height */
+        height: 320px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
       }
-      
       .card img {
         width: 100px;
         height: 100px;
@@ -61,12 +65,10 @@
         margin: 0 auto 10px;
         transition: transform 0.3s ease;
       }
-      
       .card img:hover {
         transform: scale(2.2);
         z-index: 10;
       }
-      
       .card button {
         margin-top: 10px;
         background: #d9534f;
@@ -85,40 +87,11 @@
         margin: 0 5px;
         padding: 5px 10px;
       }
-      .toast {
-        visibility: hidden;
-        min-width: 250px;
-        margin-left: -125px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 8px;
-        padding: 12px;
-        position: fixed;
-        z-index: 999;
-        left: 50%;
-        bottom: 30px;
-        font-size: 17px;
-      }
-      .toast.show {
-        visibility: visible;
-        animation: fadein 0.5s, fadeout 0.5s 2.5s;
-      }
-      @keyframes fadein {
-        from {bottom: 0; opacity: 0;}
-        to {bottom: 30px; opacity: 1;}
-      }
-      @keyframes fadeout {
-        from {bottom: 30px; opacity: 1;}
-        to {bottom: 0; opacity: 0;}
-      }
     </style>
   </head>
-
   <body> 
-   <header>
+    <header>
       <div id="nav-placeholder"></div>
-
       <script>
         fetch("../src/menu.html")
           .then(response => response.text())
@@ -130,129 +103,113 @@
     <br>
     <div class="text-container-frontface">
       <span class="blinking-red">
-        <a href="https://www.vakeelbabu.org" style="text-decoration: none; color: inherit;font-size: 50px;"></a>
         <h1>Find a Lawyer</h1>
       </span>
     </div>
     <br>
-        <div class="controls">
-          <input type="text" id="search" placeholder="Search by name or city">
-          <select id="sort">
-            <option value="">Sort by</option>
-            <option value="name">Name</option>
-            <option value="city">City</option>
-          </select>
-        </div>
-    
-        <!--div id="loader" class="spinner-container">
-          <div class="spinner"></div>
-          <p>Loading lawyers, please wait...</p>
-        </div-->
-    
-        <div class="lawyer-grid" id="lawyerGrid"></div>
-        <div class="pagination" id="pagination"></div>
-        <div id="toast" class="toast"></div>
-      
-        <script>
-          const scriptURL = 'https://script.google.com/macros/s/AKfycbw7o66zGCnK1cTgWVuGQ-0iQRXQrYqizCOD6fcN3fvkwIPKMoGU9cyM--62d6qFrdUfFw/exec';
-          let lawyers = [];
-          let filtered = [];
-          let currentPage = 1;
-          const pageSize = 8;
-      
-          async function fetchData() {
-            const res = await fetch(scriptURL);
-            lawyers = await res.json();
-            filtered = [...lawyers];
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search by name or city">
+      <select id="sort">
+        <option value="">Sort by</option>
+        <option value="name">Name</option>
+        <option value="city">City</option>
+      </select>
+    </div>
+    <div class="lawyer-grid" id="lawyerGrid"></div>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbw7o66zGCnK1cTgWVuGQ-0iQRXQrYqizCOD6fcN3fvkwIPKMoGU9cyM--62d6qFrdUfFw/exec';
+      let lawyers = [];
+      let filtered = [];
+      let currentPage = 1;
+      const pageSize = 8;
+
+      async function fetchData() {
+        const res = await fetch(scriptURL);
+        lawyers = await res.json();
+        filtered = [...lawyers];
+        render();
+      }
+
+      function render() {
+        const grid = document.getElementById("lawyerGrid");
+        grid.innerHTML = "";
+        const start = (currentPage - 1) * pageSize;
+        const pageItems = filtered.slice(start, start + pageSize);
+        pageItems.forEach(l => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${l.photo}" alt="photo">
+            <h3>${l.name}</h3>
+            <p>${l.city}</p>
+            <p>${l.phone}</p>
+            <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+          `;
+          grid.appendChild(card);
+        });
+        renderPagination();
+      }
+
+      function renderPagination() {
+        const totalPages = Math.ceil(filtered.length / pageSize);
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          if (i === currentPage) btn.style.fontWeight = "bold";
+          btn.onclick = () => { currentPage = i; render(); };
+          pagination.appendChild(btn);
+        }
+      }
+
+      function deleteLawyer(phone) {
+        const code = prompt("Enter Admin Code to delete:");
+        if (!code) return;
+        fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
+          method: 'DELETE'
+        }).then(r => r.text()).then(msg => {
+          if (msg === "DELETED") {
+            alert("Deleted successfully");
+            lawyers = lawyers.filter(l => l.phone !== phone);
+            filtered = filtered.filter(l => l.phone !== phone);
             render();
+          } else {
+            alert("Delete failed: " + msg);
           }
-      
-          function render() {
-            const grid = document.getElementById("lawyerGrid");
-            grid.innerHTML = "";
-            const start = (currentPage - 1) * pageSize;
-            const pageItems = filtered.slice(start, start + pageSize);
-            pageItems.forEach(l => {
-              const card = document.createElement("div");
-              card.className = "card";
-              card.innerHTML = `
-                <img src="${l.photo}" alt="photo">
-                <h3>${l.name}</h3>
-                <p>${l.city}</p>
-                <p>${l.phone}</p>
-                <button onclick="deleteLawyer('${l.phone}')">Delete</button>
-              `;
-              grid.appendChild(card);
-            });
-            renderPagination();
-          }
-      
-          function renderPagination() {
-            const totalPages = Math.ceil(filtered.length / pageSize);
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = "";
-            for (let i = 1; i <= totalPages; i++) {
-              const btn = document.createElement("button");
-              btn.textContent = i;
-              if (i === currentPage) btn.style.fontWeight = "bold";
-              btn.onclick = () => { currentPage = i; render(); };
-              pagination.appendChild(btn);
-            }
-          }
-      
-          function deleteLawyer(phone) {
-            const code = prompt("Enter Admin Code to delete:");
-            if (!code) return;
-            fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
-              method: 'DELETE'
-            }).then(r => r.text()).then(msg => {
-              if (msg === "DELETED") {
-                showToast("Deleted successfully");
-                lawyers = lawyers.filter(l => l.phone !== phone);
-                filtered = filtered.filter(l => l.phone !== phone);
-                render();
-              } else {
-                showToast("Delete failed: " + msg);
-              }
-            });
-          }
-      
-          function showToast(message) {
-            const toast = document.getElementById("toast");
-            toast.textContent = message;
-            toast.className = "toast show";
-            setTimeout(() => toast.className = "toast", 3000);
-          }
-      
-          document.getElementById("search").addEventListener("input", e => {
-            const q = e.target.value.toLowerCase();
-            filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
-            currentPage = 1;
-            render();
-          });
-      
-          document.getElementById("sort").addEventListener("change", e => {
-            const val = e.target.value;
-            if (val === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
-            if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
-            render();
-          });
-      
-          fetchData();
-        </script>
+        });
+      }
+
+      document.getElementById("search").addEventListener("input", e => {
+        const q = e.target.value.toLowerCase();
+        filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
+        currentPage = 1;
+        render();
+      });
+
+      document.getElementById("sort").addEventListener("change", e => {
+        const val = e.target.value;
+        if (val === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
+        if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
+        render();
+      });
+
+      fetchData();
+    </script>
 
     <script type="text/javascript">
-        function googleTranslateElementInit() {
-          new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,hi,es,fr,de', // customize the languages
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, 'google_translate_element');
-        }
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,es,fr,de',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-                
-    <!-- JavaScript to fix the menu on top while scrolling-->
+
     <script>
       const scrollmenu = document.getElementById("scrollmenu");
       const offsetTop = scrollmenu.offsetTop;
