@@ -1,141 +1,143 @@
-<html> 
-  <head>
-    <meta charset="UTF-8">
-    <title>Document Services | Vakeel Babu</title>
-    <link rel="icon" href="/images/favicon.png" type="image/png">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/style.css">
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document Services | Vakeel Babu</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
 
-  <body> 
-    <header>
-      <div id="nav-placeholder"></div>
-      <script>
-        fetch("/src/menu.html")
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-          });
-      </script>
-    </header>
+<body>
+  <header>
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
 
-    <section class="document-services">
-      <br>
-      <h1 style="text-align:center;">Legal Document Services</h1>
-      <br>
-      <p style="text-align:center;">
-        (Kindly note that <b>no personal information</b> provided during the generation of legal documents in this section is 
-        <b>stored or retained</b> by us. <br>All data entered remains <b>strictly private and confidential</b> with the user.)
-      </p>
+  <section class="document-services">
+    <br>
+    <h1 style="text-align:center;">Legal Document Services</h1>
+    <br>
+    <p style="text-align:center;">
+      (Kindly note that <b>no personal information</b> provided during the generation of legal documents in this section is <b>stored or retained</b> by us. <br>All data entered remains <b>strictly private and confidential</b> with the user.)
+    </p>
 
-      <div class="doc-grid">
-        <div class="doc-card">
-          <h2>Rental Agreement</h2>
-          <p>Fill details & download instantly a legally valid rental agreement online in minutes.</p>
-          <a href="/rental_agreement_form/">Start Now</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Name Change Affidavit</h2>
-          <p>Submit details & download your affidavit online – name change, declaration and more.</p>
-          <a href="/affidavit_form/">Submit</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Legal Notice 🔒</h2>
-          <p>Send a legal notice - a formal intimation of grievance, offering the recipient a chance to respond before legal proceedings.</p>
-          <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft a Legal Notice.">Draft a Notice Now 🔒</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Power of Attorney 🔒</h2>
-          <p>Authorize someone with a legally drafted power of attorney. Fill details & download.</p>
-          <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to generate the Power of Attorney.">Create 🔒</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Will & Testament 🔒</h2>
-          <p>Secure your family’s future by drafting a will online. Fill details & download.</p>
-          <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft Will & Testament.">Draft Now 🔒</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Affidavits - Other 🔒</h2>
-          <p>Apply for any affidavit online. Fill details & download.</p>
-          <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft any affidavit.">Proceed 🔒</a>
-        </div>
-
-        <div class="doc-card">
-          <h2>Partnership Deed 🔒</h2>
-          <p>Fill details & legally create a downloadable partnership deed to start your business.</p>
-          <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft Partnership Deed.">Get Started 🔒</a>
-        </div>
+    <div class="doc-grid">
+      <div class="doc-card">
+        <h2>Rental Agreement</h2>
+        <p>Fill details & download instantly a legally valid rental agreement online in minutes.</p>
+        <a href="/rental_agreement_form/">Start Now</a>
       </div>
-    </section> 
+      <div class="doc-card">
+        <h2>Name Change Affidavit</h2>
+        <p>Submit details & download your affidavit online – name change, declaration and more.</p>
+        <a href="/affidavit_form/">Submit</a>
+      </div>
 
-    <!-- Custom Popup Modal -->
-    <div id="customModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3>🔒 Document Locked</h3>
-        <p id="modal-message">This document is restricted. Please contact us to proceed.</p>
-        <a href="/contact/" class="modal-contact-btn">Contact Us</a>
+      <div class="doc-card">
+        <h2>Legal Notice 🔒</h2>
+        <p>Send a legal notice - the first step for legal action. Fill details & get started.</p>
+        <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft a Legal Notice.">Draft a Notice Now 🔒</a>
+      </div>
+      <div class="doc-card">
+        <h2>Power of Attorney 🔒</h2>
+        <p>Authorize someone with a legally drafted power of attorney. Fill details & download.</p>
+        <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to generate the Power of Attorney.">Create 🔒</a>
+      </div>
+      <div class="doc-card">
+        <h2>Will & Testament 🔒</h2>
+        <p>Secure your family’s future by drafting a will online. Fill details & download.</p>
+        <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft Will & Testament.">Draft Now 🔒</a>
+      </div>
+      <div class="doc-card">
+        <h2>Affidavits - Other 🔒</h2>
+        <p>Apply for any affidavit online. Fill details & download.</p>
+        <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft any affidavit.">Proceed 🔒</a>
+      </div>
+      <div class="doc-card">
+        <h2>Partnership Deed 🔒</h2>
+        <p>Fill details & legally create a downloadable partnership deed to start your business.</p>
+        <a href="#" class="locked-link" data-message="This document is restricted.<br>Please contact us to draft Partnership Deed.">Get Started 🔒</a>
       </div>
     </div>
+  </section>
 
-    <!-- Google Translate -->
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,hi,es,fr,de',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- Modal -->
+  <div id="customModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h3>🔒 Document Locked</h3>
+      <p id="modal-message">This document is restricted.</p>
+      <a href="/contact/" class="modal-contact-btn">Contact Us</a>
+    </div>
+  </div>
 
-    <!-- Scroll-fixed menu -->
-    <script>
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,es,fr,de',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Scroll menu fix -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
       const scrollmenu = document.getElementById("scrollmenu");
-      const offsetTop = scrollmenu?.offsetTop || 0;
-      window.addEventListener("scroll", function () {
-        if (window.pageYOffset >= offsetTop) {
-          scrollmenu?.classList.add("fixed");
-        } else {
-          scrollmenu?.classList.remove("fixed");
-        }
-      });
-    </script>
-
-    <!-- Modal logic -->
-    <script>
-      function showModal(message) {
-        document.getElementById("modal-message").innerHTML = message;
-        document.getElementById("customModal").style.display = "block";
+      if (scrollmenu) {
+        const offsetTop = scrollmenu.offsetTop;
+        window.addEventListener("scroll", () => {
+          if (window.pageYOffset >= offsetTop) {
+            scrollmenu.classList.add("fixed");
+          } else {
+            scrollmenu.classList.remove("fixed");
+          }
+        });
       }
+    });
+  </script>
 
-      function closeModal() {
-        document.getElementById("customModal").style.display = "none";
+  <!-- Modal Logic -->
+  <script>
+    function showModal(message) {
+      document.getElementById("modal-message").innerHTML = message;
+      document.getElementById("customModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("customModal").style.display = "none";
+    }
+
+    window.addEventListener("click", function (event) {
+      const modal = document.getElementById("customModal");
+      if (event.target === modal) {
+        closeModal();
       }
+    });
 
-      window.onclick = function(event) {
-        const modal = document.getElementById("customModal");
-        if (event.target === modal) {
-          modal.style.display = "none";
-        }
-      };
-
-      // Safely bind modal triggers
-      document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".locked-link").forEach(link => {
-          link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const message = this.getAttribute("data-message");
-            showModal(message);
-          });
+    document.addEventListener("DOMContentLoaded", function () {
+      const links = document.querySelectorAll('.locked-link');
+      links.forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const msg = this.getAttribute('data-message') || 'This document is restricted.';
+          showModal(msg);
         });
       });
-    </script>
-  </body>
+
+      // Force hide modal on page load (in case of preload bugs)
+      document.getElementById("customModal").style.display = "none";
+    });
+  </script>
+</body>
 </html>
