@@ -151,7 +151,7 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbxT7wXhyP-INsNGincrxeT1MfcGqCDj1y75NONe4AOPa8dAqfLin3K1dL92q45PB9Q53Q/exec';
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbx8BCy2A6uUlAy7KRssKH3_uHJRHsQVn6jLd0URGNFIdRi16tILQwdOC9Xx0sX1cv2HJQ/exec';
       let lawyers = [];
       let filtered = [];
       let currentPage = 1;
@@ -186,9 +186,9 @@
             ? '<span class="verified-badge">✔ Verified</span>'
             : '';
 
-          const extraPhotos = l.extra_photos
-            ? `<div class="extra-photos">${l.extra_photos.split(';').map(url => `<img src="${url.trim()}" alt="extra">`).join('')}</div>`
-            : '';
+          //const extraPhotos = l.extra_photos
+          //  ? `<div class="extra-photos">${l.extra_photos.split(';').map(url => `<img src="${url.trim()}" alt="extra">`).join('')}</div>`
+          //  : '';
 
           const testimonial = l.testimonials
             ? `<div class="testimonial">“${l.testimonials.split(';')[0].trim()}”</div>`
@@ -199,7 +199,6 @@
             <h3>${l.name} ${verifiedBadge}</h3>
             <p>${l.city}</p>
             <p>${l.phone}</p>
-            ${extraPhotos}
             ${testimonial}
             <div class="button-group">
               <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
