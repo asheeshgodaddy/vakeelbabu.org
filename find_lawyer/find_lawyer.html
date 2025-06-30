@@ -26,25 +26,34 @@
         font-size: 16px;
       }
       .lawyer-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Fixed 4 columns */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 20px;
+        padding: 0 20px;
       }
+      
       @media (max-width: 1200px) {
-        .lawyer-grid {
-          grid-template-columns: repeat(3, 1fr);
+        .card {
+          flex: 1 1 calc(33.33% - 20px);
+          max-width: calc(33.33% - 20px);
         }
       }
+      
       @media (max-width: 768px) {
-        .lawyer-grid {
-          grid-template-columns: repeat(2, 1fr);
+        .card {
+          flex: 1 1 calc(50% - 20px);
+          max-width: calc(50% - 20px);
         }
       }
+      
       @media (max-width: 480px) {
-        .lawyer-grid {
-          grid-template-columns: 1fr;
+        .card {
+          flex: 1 1 100%;
+          max-width: 100%;
         }
       }
+      
       .card {
         background-color: rgba(117, 236, 247, 0.589);
         border-radius: 24px;
@@ -56,6 +65,9 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        flex: 1 1 calc(25% - 20px);
+        max-width: calc(25% - 20px);
+        box-sizing: border-box;
       }
       .card img {
         width: 100px;
