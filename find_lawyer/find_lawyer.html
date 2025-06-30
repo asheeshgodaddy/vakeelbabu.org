@@ -163,9 +163,12 @@
 
         // Move featured lawyers to top
         lawyers.sort((a, b) => {
+          // First: sort by featured
           if (a.featured === "TRUE" && b.featured !== "TRUE") return -1;
           if (a.featured !== "TRUE" && b.featured === "TRUE") return 1;
-          return 0;
+          
+          // Then: sort by name (case-insensitive)
+          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
         });
 
         filtered = [...lawyers];
