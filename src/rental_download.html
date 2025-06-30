@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download Rental Agreement</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    button {
+      background: #487ac0;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #msg { margin-top: 20px; color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>✅ Payment Successful</h1>
+  <p>Your rental agreement is being generated...</p>
+  <div id="msg"></div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('rental_form_data') || '{}');
+    const msg = document.getElementById('msg');
+
+    if (!data.tenant_name || !data.landlord_name) {
+      msg.innerText = "Missing form data. Please fill the form again.";
+      throw new Error("Missing form data");
+    }
+
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    fetch("https://script.google.com/macros/s/AKfycbxxv1iQ2RRMXGIitoCrgQkqTQcdaCC1B_u3ifl0IHsQEQD9-I0sqO7ljL-vAnw6HJE/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(r => r.text())
+    .then(base64 => {
+      if (!base64 || base64.startsWith("ERROR")) {
+        msg.textContent = base64 || "Unknown error.";
+        return;
+      }
+
+      const byteCharacters = atob(base64);
+      const byteArray = new Uint8Array([...byteCharacters].map(c => c.charCodeAt(0)));
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Rental_Agreement.pdf";
+      link.click();
+
+      msg.textContent = "🎉 Download started successfully!";
+    })
+    .catch(err => {
+      msg.textContent = "Error: " + err.message;
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
