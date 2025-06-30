@@ -148,9 +148,9 @@
 
         pageItems.forEach(l => {
           const card = document.createElement("div");
-          card.className = "card" + (l.featured === "TRUE" ? " featured" : "");
+          card.className = "card" + (l.featured ? " featured" : "");
 
-          const verifiedBadge = l.verified === "TRUE"
+          const verifiedBadge = l.verified
             ? '<span class="verified-badge">✔ Verified</span>'
             : '';
 
