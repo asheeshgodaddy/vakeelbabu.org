@@ -55,7 +55,7 @@
         <div class="doc-card">
           <h2>Affidavits - Other 🔒</h2>
           <p>Apply for any affidavit online. Fill details & download.</p>
-          <a href="#" onclick="event.preventDefault(); alert('This document is restricted.\nPlease contact us to draft any affidavit.')">Proceed 🔒</a>
+          <a href="#" onclick="event.preventDefault(); showModal('This document is restricted. Please contact us to draft any affidavit.')">Proceed 🔒</a>
         </div>
         <div class="doc-card">
           <h2>Partnership Deed 🔒</h2>
@@ -64,7 +64,15 @@
         </div>
       </div>
     </section> 
-    
+    <!-- Custom Popup Modal -->
+    <div id="customModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3>🔒 Document Locked</h3>
+        <p id="modal-message">This document is restricted. Please contact us to proceed.</p>
+        <a href="/contact/" class="modal-contact-btn">Contact Us</a>
+      </div>
+    </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
           new google.translate.TranslateElement({
@@ -88,6 +96,23 @@
           scrollmenu.classList.remove("fixed");
         }
       });
+    </script>
+    <script>
+      function showModal(message) {
+        document.getElementById("modal-message").textContent = message;
+        document.getElementById("customModal").style.display = "block";
+      }
+    
+      function closeModal() {
+        document.getElementById("customModal").style.display = "none";
+      }
+    
+      window.onclick = function(event) {
+        const modal = document.getElementById("customModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      }
     </script>
   </body>
 </html>
