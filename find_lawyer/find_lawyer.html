@@ -61,14 +61,34 @@
         padding: 16px;
         text-align: center;
         position: relative;
-        height: 320px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        flex: 1 1 calc(25% - 20px);
-        max-width: calc(25% - 20px);
-        box-sizing: border-box;
+        min-height: 350px;
       }
+
+      .button-group {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      
+      .button-group button {
+        background: #d9534f;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      
+      .card .contact-now {
+        background: #28a745;
+      }
+
       .card img {
         width: 100px;
         height: 100px;
@@ -93,7 +113,7 @@
       }
       .pagination {
         text-align: center;
-        margin-top: 20px;
+        margin: 40px 0; /* add bottom spacing */
       }
       .pagination button {
         margin: 0 5px;
@@ -181,8 +201,10 @@
             <p>${l.phone}</p>
             ${extraPhotos}
             ${testimonial}
-            <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
-            <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+            <div class="button-group">
+              <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
+              <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+            </div>
           `;
 
           grid.appendChild(card);
