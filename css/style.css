@@ -483,6 +483,17 @@ tbody tr:hover {
   border-radius: 4px;
   margin-left: 5px;
 }
+.card .verified-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #28a745;
+  color: white;
+  font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
 
 /* === EXTRA PHOTOS BELOW PROFILE PIC === */
 .extra-photos {
