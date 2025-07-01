@@ -1,88 +1,240 @@
-<html> 
-  <head>
-    <title>Lawyer Sign Up on Vakeel Babu | Sign Up Advocates | Trusted Legal Advice Platform in India</title>
-    <link rel="icon" href="/images/favicon.png" type="image/png">
-    <meta name="description" content="Find Lawyer on Vakeel Babu">
-    <meta name="keywords" content="Find Lawyer on Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
-    <link rel="stylesheet" href="/css/style.css">
-  </head>
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <title>Lawyer Sign Up on Vakeel Babu | Trusted Legal Advice Platform</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <meta name="description" content="Sign up as a lawyer on Vakeel Babu to reach clients across India.">
+  <meta name="keywords" content="lawyer signup, advocate registration, legal platform India">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
 
-  <body> 
-   <header>
-      <div id="nav-placeholder"></div>
+  <style>
+    body {
+      font-family: aptos, sans-serif;
+      background-color: #e6ebf1;
+      margin: 0;
+      padding: 0;
+    }
 
-      <script>
-        fetch("/src/menu.html")
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-          });
-      </script>
-    </header>
-    <div class="container">
-      <div class="text-container">
-        <br>
-        <h2>Sign Up as Advocate</h2>
-        <form id="signupForm" action="https://script.google.com/macros/s/AKfycbw7o66zGCnK1cTgWVuGQ-0iQRXQrYqizCOD6fcN3fvkwIPKMoGU9cyM--62d6qFrdUfFw/exec" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
-          <input name="name" placeholder="Full Name" required>
-          <input name="phone" placeholder="Phone Number" required>
-          <input name="city" placeholder="City" required>
-          <input type="file" id="photoInput" accept="image/*" required>
-          <input type="hidden" name="photo" id="photoField">
-          <button type="submit"><b>Submit</b></button>
-          <p id="message"></p>
-        </form>
-        <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully!'; }"></iframe>
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2a2a2a;
+    }
+
+    form input[type="text"],
+    form input[type="tel"],
+    form input[type="file"],
+    form button {
+      width: 100%;
+      padding: 10px;
+      margin: 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+
+    #message {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .image-section {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .image-section img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
+
+  <div class="container">
+    <h2>Sign Up as Advocate</h2>
+    <br><br>
+
+    <form id="signupForm">
+      <input name="name" placeholder="Full Name" required>
+      <input name="city" placeholder="City" required>
+      <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
       
-        <script>
-          let submitted = false;
-          document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const file = document.getElementById('photoInput').files[0];
-            if (!file) return;
-      
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-              const base64 = evt.target.result.split(',')[1];
-              document.getElementById('photoField').value = base64;
-              submitted = true;
-              e.target.submit();
-            };
-            reader.readAsDataURL(file);
-          });
-        </script>
+      <button type="button" onclick="sendOTP()">Send OTP</button>
+    
+      <div id="otpSection" style="display:none;">
+        <input type="text" id="otpInput" placeholder="Enter OTP" required>
+        <button type="button" onclick="verifyOTP()">Verify OTP</button>
+        <p id="otpMessage"></p>
+      </div>
+    
+      <input type="file" id="photoInput" accept="image/*" required>
+      <input type="hidden" name="photo" id="photoField">
+      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
+      <button type="submit" id="finalSubmit" disabled><b>Submit</b></button>
+      <p id="message"></p>
+    </form>
 
-        <br>
-        <br>
+    <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully! ✅'; }"></iframe>
 
-        <div class="image-section">
-          <img src="/images/sc.png" alt="Lawyer at work">
-        </div>
-      </div>  
-      <script type="text/javascript">
-          function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-              pageLanguage: 'en',
-              includedLanguages: 'en,hi,es,fr,de', // customize the languages
-              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-          }
-      </script>
-      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div class="image-section">
+      <img src="/images/sc.png" alt="Lawyer illustration">
+    </div>
+  </div>
 
-      <!-- JavaScript to fix the menu on top while scrolling-->
-      <script>
-        const scrollmenu = document.getElementById("scrollmenu");
-        const offsetTop = scrollmenu.offsetTop;
-
-        window.addEventListener("scroll", function () {
-          if (window.pageYOffset >= offsetTop) {
-            scrollmenu.classList.add("fixed");
+  <script>
+    let submitted = false;
+    
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+    
+      if (document.getElementById("verifiedOTP").value !== "true") {
+        alert("Please verify your phone via OTP before submitting.");
+        return;
+      }
+    
+      const file = document.getElementById('photoInput').files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64 = evt.target.result.split(',')[1];
+        document.getElementById('photoField').value = base64;
+    
+        // Submit via hidden iframe or AJAX
+        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
+          method: "POST",
+          body: new FormData(document.getElementById('signupForm'))
+        }).then(response => {
+          document.getElementById('message').textContent = 'Submitted successfully!';
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    function sendOTP() {
+      const phone = document.getElementById("phoneInput").value;
+      if (!phone.match(/^[0-9]{10}$/)) {
+        alert("Enter valid 10-digit phone number.");
+        return;
+      }
+    
+      fetch(`https://api.authkey.io/request?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("otpSection").style.display = "block";
+            document.getElementById("otpMessage").innerText = "OTP sent successfully.";
           } else {
-            scrollmenu.classList.remove("fixed");
+            document.getElementById("otpMessage").innerText = "Failed to send OTP.";
           }
         });
-      </script>
-    </div>  
-  </body>
+    }
+    
+    function verifyOTP() {
+      const phone = document.getElementById("phoneInput").value;
+      const otp = document.getElementById("otpInput").value;
+    
+      fetch(`https://api.authkey.io/verify?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91&otp=${otp}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("otpMessage").innerText = "OTP verified successfully.";
+            document.getElementById("verifiedOTP").value = "true";
+            document.getElementById("finalSubmit").disabled = false;
+          } else {
+            document.getElementById("otpMessage").innerText = "Incorrect OTP. Try again.";
+          }
+        });
+    }
+    </script>
+
+  <!-- Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,es,fr,de',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Sticky menu JS -->
+  <script>
+    const scrollmenu = document.getElementById("scrollmenu");
+    const offsetTop = scrollmenu?.offsetTop || 0;
+
+    window.addEventListener("scroll", function () {
+      if (window.pageYOffset >= offsetTop) {
+        scrollmenu?.classList.add("fixed");
+      } else {
+        scrollmenu?.classList.remove("fixed");
+      }
+    });
+  </script>
+
+  <!-- Base64 Image Encode Logic -->
+  <script>
+    let submitted = false;
+
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const file = document.getElementById('photoInput').files[0];
+      if (!file) return alert("Please upload a photo.");
+
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const base64 = evt.target.result.split(',')[1];
+        document.getElementById('photoField').value = base64;
+        submitted = true;
+        e.target.submit();
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
 </html>
