@@ -22,6 +22,18 @@
       measurementId: "G-3CVWS84Y4X"
     };
     firebase.initializeApp(firebaseConfig);
+    <script>
+      let recaptchaVerifier;
+      window.onload = function () {
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible',
+          callback: function (response) {
+            console.log("reCAPTCHA solved");
+          }
+        });
+        recaptchaVerifier.render(); // 👈 VERY IMPORTANT
+      };
+    </script>
   </script>
 
   <style>
