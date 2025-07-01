@@ -20,6 +20,9 @@
         justify-content: center;
         gap: 10px;
         margin-bottom: 20px;
+        <label>
+          <input type="checkbox" id="onlyVerified"> Show only Verified
+        </label>
       }
       .controls input, .controls select {
         padding: 8px;
@@ -183,7 +186,10 @@
 
         pageItems.forEach(l => {
           const card = document.createElement("div");
-          card.className = "card" + (l.featured ? " featured" : "");
+          card.className = "card" 
+            + (l.featured ? " featured" : "")
+            + (l.plan === "PREMIUM" ? " premium" : "");
+
 
           const verifiedBadge = l.verified
             ? '<span class="verified-badge">✔ Verified</span>'
@@ -251,7 +257,12 @@
 
       document.getElementById("search").addEventListener("input", e => {
         const q = e.target.value.toLowerCase();
-        filtered = lawyers.filter(l => l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q));
+        const showVerifiedOnly = document.getElementById("onlyVerified").checked;
+        filtered = lawyers.filter(l => {
+          const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
+          const isVerified = !showVerifiedOnly || l.verified;
+          return matchesSearch && isVerified;
+        });
         currentPage = 1;
         render();
       });
@@ -262,6 +273,18 @@
         if (val === "city") filtered.sort((a, b) => a.city.localeCompare(b.city));
         render();
       });
+
+      document.getElementById("onlyVerified").addEventListener("change", () => {
+        const q = document.getElementById("search").value.toLowerCase();
+        currentPage = 1;
+        filtered = lawyers.filter(l => {
+          const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
+          const isVerified = !document.getElementById("onlyVerified").checked || l.verified;
+          return matchesSearch && isVerified;
+        });
+        render();
+      });
+
 
       fetchData();
     </script>
