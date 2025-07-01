@@ -156,7 +156,10 @@
         <option value="city">City</option>
       </select>
         <label>
-          <input type="checkbox" id="onlyVerified"> Show only Verified
+          <input type="checkbox" id="onlyVerified"> <b>Show only Verified</b>
+        </label>
+        <label>
+          <input type="checkbox" id="onlyPremium"> <b>Show only Premium</b>
         </label>
     </div>
     <div class="lawyer-grid" id="lawyerGrid"></div>
@@ -270,17 +273,26 @@
         // Optional: redirect to a contact page or trigger modal
       }
 
-      document.getElementById("search").addEventListener("input", e => {
-        const q = e.target.value.toLowerCase();
+      function applyFilters() {
+        const q = document.getElementById("search").value.toLowerCase();
         const showVerifiedOnly = document.getElementById("onlyVerified").checked;
+        const showPremiumOnly = document.getElementById("onlyPremium").checked;
+      
         filtered = lawyers.filter(l => {
           const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
-          const isVerified = !showVerifiedOnly || l.verified;
-          return matchesSearch && isVerified;
+          const isVerifiedOk = !showVerifiedOnly || l.verified;
+          const isPremiumOk = !showPremiumOnly || l.plan === "PREMIUM";
+          return matchesSearch && isVerifiedOk && isPremiumOk;
         });
+      
         currentPage = 1;
         render();
-      });
+      }
+      
+      document.getElementById("search").addEventListener("input", applyFilters);
+      document.getElementById("onlyVerified").addEventListener("change", applyFilters);
+      document.getElementById("onlyPremium").addEventListener("change", applyFilters);
+
 
       document.getElementById("sort").addEventListener("change", e => {
         const val = e.target.value;
