@@ -173,15 +173,21 @@
         const res = await fetch(scriptURL);
         lawyers = await res.json();
 
-        // Move featured lawyers to top
+        // Sorting Premium > Featured (but not Premium)> Verified (but not Premium or Featured) > Others (unverified and not featured or premium)
+        function rank(lawyer) {
+          if (lawyer.plan === "PREMIUM") return 0;
+          if (lawyer.featured && lawyer.plan !== "PREMIUM") return 1;
+          if (lawyer.verified && !lawyer.featured && lawyer.plan !== "PREMIUM") return 2;
+          return 3;
+        }
+        
         lawyers.sort((a, b) => {
-          // Sort by featured (true before false)
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          
-          // Then: sort by name (case-insensitive)
+          const r1 = rank(a);
+          const r2 = rank(b);
+          if (r1 !== r2) return r1 - r2;
           return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
         });
+
 
         filtered = [...lawyers];
         render();
