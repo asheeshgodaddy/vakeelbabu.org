@@ -120,6 +120,7 @@
       <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
       
       <button type="button" onclick="sendOTP()">Send OTP</button>
+      <div id="recaptcha-container"></div>
     
       <div id="otpSection" style="display:none;">
         <input type="text" id="otpInput" placeholder="Enter OTP" required>
@@ -171,8 +172,7 @@
       reader.readAsDataURL(file);
     });
     
-    <!-- Add below your Send OTP button -->
-    <div id="recaptcha-container"></div>
+
     
     <script>
       let confirmationResult;
