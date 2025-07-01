@@ -144,7 +144,7 @@
         document.getElementById('photoField').value = base64;
     
         // Submit via hidden iframe or AJAX
-        fetch("https://script.google.com/macros/s/AKfycbw7o66zGCnK1cTgWVuGQ-0iQRXQrYqizCOD6fcN3fvkwIPKMoGU9cyM--62d6qFrdUfFw/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
           method: "POST",
           body: new FormData(document.getElementById('signupForm'))
         }).then(response => {
