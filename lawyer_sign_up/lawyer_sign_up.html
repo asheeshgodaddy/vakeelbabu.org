@@ -1,0 +1,88 @@
+<html> 
+  <head>
+    <title>Lawyer Sign Up on Vakeel Babu | Sign Up Advocates | Trusted Legal Advice Platform in India</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <meta name="description" content="Find Lawyer on Vakeel Babu">
+    <meta name="keywords" content="Find Lawyer on Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+
+  <body> 
+   <header>
+      <div id="nav-placeholder"></div>
+
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
+    </header>
+    <div class="container">
+      <div class="text-container">
+        <br>
+        <h2>Sign Up as Advocate</h2>
+        <form id="signupForm" action="https://script.google.com/macros/s/AKfycbw7o66zGCnK1cTgWVuGQ-0iQRXQrYqizCOD6fcN3fvkwIPKMoGU9cyM--62d6qFrdUfFw/exec" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+          <input name="name" placeholder="Full Name" required>
+          <input name="phone" placeholder="Phone Number" required>
+          <input name="city" placeholder="City" required>
+          <input type="file" id="photoInput" accept="image/*" required>
+          <input type="hidden" name="photo" id="photoField">
+          <button type="submit"><b>Submit</b></button>
+          <p id="message"></p>
+        </form>
+        <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully!'; }"></iframe>
+      
+        <script>
+          let submitted = false;
+          document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('photoInput').files[0];
+            if (!file) return;
+      
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+              const base64 = evt.target.result.split(',')[1];
+              document.getElementById('photoField').value = base64;
+              submitted = true;
+              e.target.submit();
+            };
+            reader.readAsDataURL(file);
+          });
+        </script>
+
+        <br>
+        <br>
+
+        <div class="image-section">
+          <img src="/images/sc.png" alt="Lawyer at work">
+        </div>
+      </div>  
+      <script type="text/javascript">
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'en',
+              includedLanguages: 'en,hi,es,fr,de', // customize the languages
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+          }
+      </script>
+      <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+      <!-- JavaScript to fix the menu on top while scrolling-->
+      <script>
+        const scrollmenu = document.getElementById("scrollmenu");
+        const offsetTop = scrollmenu.offsetTop;
+
+        window.addEventListener("scroll", function () {
+          if (window.pageYOffset >= offsetTop) {
+            scrollmenu.classList.add("fixed");
+          } else {
+            scrollmenu.classList.remove("fixed");
+          }
+        });
+      </script>
+    </div>  
+  </body>
+</html>
