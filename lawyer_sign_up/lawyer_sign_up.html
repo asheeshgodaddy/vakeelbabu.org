@@ -9,6 +9,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
+      authDomain: "vakeelbabu-org.firebaseapp.com",
+      projectId: "vakeelbabu-org",
+      storageBucket: "vakeelbabu-org.firebasestorage.app",
+      messagingSenderId: "972570830530",
+      appId: "1:972570830530:web:609292922896728b16fd5b",
+      measurementId: "G-3CVWS84Y4X"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+
   <style>
     body {
       font-family: aptos, sans-serif;
@@ -154,43 +171,55 @@
       reader.readAsDataURL(file);
     });
     
-    function sendOTP() {
-      const phone = document.getElementById("phoneInput").value;
-      if (!phone.match(/^[0-9]{10}$/)) {
-        alert("Enter valid 10-digit phone number.");
-        return;
+    <!-- Add below your Send OTP button -->
+    <div id="recaptcha-container"></div>
+    
+    <script>
+      let confirmationResult;
+    
+      function sendOTP() {
+        const phone = document.getElementById("phoneInput").value;
+        if (!phone.match(/^[0-9]{10}$/)) {
+          alert("Enter valid 10-digit phone number.");
+          return;
+        }
+    
+        const fullPhone = "+91" + phone;
+    
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible',
+          callback: function (response) {
+            // reCAPTCHA solved - will proceed with signInWithPhoneNumber
+          }
+        });
+    
+        firebase.auth().signInWithPhoneNumber(fullPhone, window.recaptchaVerifier)
+          .then(result => {
+            confirmationResult = result;
+            document.getElementById("otpSection").style.display = "block";
+            document.getElementById("otpMessage").innerText = "OTP sent!";
+          })
+          .catch(error => {
+            console.error(error);
+            document.getElementById("otpMessage").innerText = "Failed to send OTP.";
+          });
       }
     
-      fetch(`https://api.authkey.io/request?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById("otpSection").style.display = "block";
-            document.getElementById("otpMessage").innerText = "OTP sent successfully.";
-          } else {
-            document.getElementById("otpMessage").innerText = "Failed to send OTP.";
-          }
-        });
-    }
+      function verifyOTP() {
+        const code = document.getElementById("otpInput").value;
     
-    function verifyOTP() {
-      const phone = document.getElementById("phoneInput").value;
-      const otp = document.getElementById("otpInput").value;
-    
-      fetch(`https://api.authkey.io/verify?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91&otp=${otp}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById("otpMessage").innerText = "OTP verified successfully.";
+        confirmationResult.confirm(code)
+          .then(result => {
             document.getElementById("verifiedOTP").value = "true";
+            document.getElementById("otpMessage").innerText = "OTP verified ✅";
             document.getElementById("finalSubmit").disabled = false;
-          } else {
-            document.getElementById("otpMessage").innerText = "Incorrect OTP. Try again.";
-          }
-        });
-    }
+          })
+          .catch(error => {
+            document.getElementById("otpMessage").innerText = "Invalid OTP ❌";
+          });
+      }
     </script>
-
+  
   <!-- Translate -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
