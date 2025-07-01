@@ -535,3 +535,22 @@ tbody tr:hover {
   cursor: pointer;
   font-size: 14px;
 }
+
+.card.premium {
+  border: 3px solid #00c3ff;
+  background: linear-gradient(to bottom right, #e0f7ff, #ccf1ff);
+  position: relative;
+}
+
+.card.premium::before {
+  content: '💎 Premium';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #00c3ff;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+}
