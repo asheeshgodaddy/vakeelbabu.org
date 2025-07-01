@@ -1,99 +1,68 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Lawyer Sign Up on Vakeel Babu | Trusted Legal Advice Platform</title>
-  <link rel="icon" href="/images/favicon.png" type="image/png">
-  <meta name="description" content="Sign up as a lawyer on Vakeel Babu to reach clients across India.">
-  <meta name="keywords" content="lawyer signup, advocate registration, legal platform India">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
 
+  <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
       authDomain: "vakeelbabu-org.firebaseapp.com",
       projectId: "vakeelbabu-org",
-      storageBucket: "vakeelbabu-org.firebasestorage.app",
+      storageBucket: "vakeelbabu-org.appspot.com",
       messagingSenderId: "972570830530",
       appId: "1:972570830530:web:609292922896728b16fd5b",
       measurementId: "G-3CVWS84Y4X"
     };
-
     firebase.initializeApp(firebaseConfig);
   </script>
-
 
   <style>
     body {
       font-family: aptos, sans-serif;
       background-color: #e6ebf1;
       margin: 0;
-      padding: 0;
     }
-
     .container {
       max-width: 600px;
-      margin: 50px auto;
+      margin: 40px auto;
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-
-    h2 {
-      text-align: center;
-      color: #2a2a2a;
-    }
-
-    form input[type="text"],
-    form input[type="tel"],
-    form input[type="file"],
-    form button {
+    form input, form button {
       width: 100%;
       padding: 10px;
-      margin: 12px 0;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 16px;
     }
-
     form button {
       background-color: #007bff;
       color: white;
-      border: none;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
-
     form button:hover {
       background-color: #0056b3;
     }
-
-    #message {
+    #message, #otpMessage {
+      text-align: center;
       color: green;
-      text-align: center;
-      margin-top: 10px;
     }
-
-    .image-section {
-      margin-top: 30px;
-      text-align: center;
-    }
-
     .image-section img {
       width: 100%;
       max-width: 400px;
       border-radius: 12px;
-    }
-
-    @media screen and (max-width: 600px) {
-      .container {
-        margin: 20px;
-        padding: 20px;
-      }
     }
   </style>
 </head>
@@ -112,155 +81,103 @@
 
   <div class="container">
     <h2>Sign Up as Advocate</h2>
-    <br><br>
-
     <form id="signupForm">
       <input name="name" placeholder="Full Name" required>
       <input name="city" placeholder="City" required>
       <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
-      
       <button type="button" onclick="sendOTP()">Send OTP</button>
+
+      <!-- reCAPTCHA placeholder -->
       <div id="recaptcha-container"></div>
-    
+
+      <!-- OTP Section -->
       <div id="otpSection" style="display:none;">
         <input type="text" id="otpInput" placeholder="Enter OTP" required>
         <button type="button" onclick="verifyOTP()">Verify OTP</button>
         <p id="otpMessage"></p>
       </div>
-    
+
       <input type="file" id="photoInput" accept="image/*" required>
       <input type="hidden" name="photo" id="photoField">
       <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
-      <button type="submit" id="finalSubmit" disabled><b>Submit</b></button>
+      <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
 
-    <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully! ✅'; }"></iframe>
-
     <div class="image-section">
-      <img src="/images/sc.png" alt="Lawyer illustration">
+      <img src="/images/sc.png" alt="Lawyer Illustration">
     </div>
   </div>
 
   <script>
-    let submitted = false;
-    
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-    
-      if (document.getElementById("verifiedOTP").value !== "true") {
-        alert("Please verify your phone via OTP before submitting.");
+    let confirmationResult;
+
+    // Initialize reCAPTCHA verifier
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      size: 'invisible',
+      callback: () => { /* Recaptcha solved */ }
+    });
+
+    function sendOTP() {
+      const phone = document.getElementById("phoneInput").value;
+      if (!phone.match(/^[0-9]{10}$/)) {
+        alert("Enter valid 10-digit phone number.");
         return;
       }
-    
-      const file = document.getElementById('photoInput').files[0];
-      if (!file) return;
-    
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const base64 = evt.target.result.split(',')[1];
-        document.getElementById('photoField').value = base64;
-    
-        // Submit via hidden iframe or AJAX
-        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
-          method: "POST",
-          body: new FormData(document.getElementById('signupForm'))
-        }).then(response => {
-          document.getElementById('message').textContent = 'Submitted successfully!';
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-    
 
-    
-    <script>
-      let confirmationResult;
-    
-      function sendOTP() {
-        const phone = document.getElementById("phoneInput").value;
-        if (!phone.match(/^[0-9]{10}$/)) {
-          alert("Enter valid 10-digit phone number.");
-          return;
-        }
-    
-        const fullPhone = "+91" + phone;
-    
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible',
-          callback: function (response) {
-            // reCAPTCHA solved - will proceed with signInWithPhoneNumber
-          }
+      const fullPhone = "+91" + phone;
+
+      firebase.auth().signInWithPhoneNumber(fullPhone, window.recaptchaVerifier)
+        .then(result => {
+          confirmationResult = result;
+          document.getElementById("otpSection").style.display = "block";
+          document.getElementById("otpMessage").textContent = "OTP sent!";
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById("otpMessage").textContent = "Failed to send OTP.";
         });
-    
-        firebase.auth().signInWithPhoneNumber(fullPhone, window.recaptchaVerifier)
-          .then(result => {
-            confirmationResult = result;
-            document.getElementById("otpSection").style.display = "block";
-            document.getElementById("otpMessage").innerText = "OTP sent!";
-          })
-          .catch(error => {
-            console.error(error);
-            document.getElementById("otpMessage").innerText = "Failed to send OTP.";
-          });
-      }
-    
-      function verifyOTP() {
-        const code = document.getElementById("otpInput").value;
-    
-        confirmationResult.confirm(code)
-          .then(result => {
-            document.getElementById("verifiedOTP").value = "true";
-            document.getElementById("otpMessage").innerText = "OTP verified ✅";
-            document.getElementById("finalSubmit").disabled = false;
-          })
-          .catch(error => {
-            document.getElementById("otpMessage").innerText = "Invalid OTP ❌";
-          });
-      }
-    </script>
-  
-  <!-- Translate -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,hi,es,fr,de',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
     }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- Sticky menu JS -->
-  <script>
-    const scrollmenu = document.getElementById("scrollmenu");
-    const offsetTop = scrollmenu?.offsetTop || 0;
+    function verifyOTP() {
+      const code = document.getElementById("otpInput").value;
+      confirmationResult.confirm(code)
+        .then(result => {
+          document.getElementById("verifiedOTP").value = "true";
+          document.getElementById("otpMessage").textContent = "OTP verified ✅";
+          document.getElementById("finalSubmit").disabled = false;
+        })
+        .catch(error => {
+          document.getElementById("otpMessage").textContent = "Invalid OTP ❌";
+        });
+    }
 
-    window.addEventListener("scroll", function () {
-      if (window.pageYOffset >= offsetTop) {
-        scrollmenu?.classList.add("fixed");
-      } else {
-        scrollmenu?.classList.remove("fixed");
-      }
-    });
-  </script>
-
-  <!-- Base64 Image Encode Logic -->
-  <script>
-    let submitted = false;
-
+    // Handle form submit
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
+      if (document.getElementById("verifiedOTP").value !== "true") {
+        alert("Please verify OTP before submitting.");
+        return;
+      }
+
       const file = document.getElementById('photoInput').files[0];
-      if (!file) return alert("Please upload a photo.");
+      if (!file) {
+        alert("Please upload a photo.");
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = function (evt) {
         const base64 = evt.target.result.split(',')[1];
         document.getElementById('photoField').value = base64;
-        submitted = true;
-        e.target.submit();
+
+        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
+          method: "POST",
+          body: new FormData(document.getElementById('signupForm'))
+        }).then(() => {
+          document.getElementById('message').textContent = "Submitted successfully!";
+        });
       };
       reader.readAsDataURL(file);
     });
