@@ -11,6 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
+  <!-- Firebase Config & Recaptcha Init -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
@@ -22,18 +23,17 @@
       measurementId: "G-3CVWS84Y4X"
     };
     firebase.initializeApp(firebaseConfig);
-    <script>
-      let recaptchaVerifier;
-      window.onload = function () {
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible',
-          callback: function (response) {
-            console.log("reCAPTCHA solved");
-          }
-        });
-        recaptchaVerifier.render(); // 👈 VERY IMPORTANT
-      };
-    </script>
+
+    let recaptchaVerifier;
+    window.onload = function () {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: function (response) {
+          console.log("reCAPTCHA solved");
+        }
+      });
+      recaptchaVerifier.render(); // Important!
+    };
   </script>
 
   <style>
@@ -124,12 +124,6 @@
   <script>
     let confirmationResult;
 
-    // Initialize reCAPTCHA verifier
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      size: 'invisible',
-      callback: () => { /* Recaptcha solved */ }
-    });
-
     function sendOTP() {
       const phone = document.getElementById("phoneInput").value;
       if (!phone.match(/^[0-9]{10}$/)) {
@@ -139,7 +133,7 @@
 
       const fullPhone = "+91" + phone;
 
-      firebase.auth().signInWithPhoneNumber(fullPhone, window.recaptchaVerifier)
+      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
           document.getElementById("otpSection").style.display = "block";
@@ -164,7 +158,7 @@
         });
     }
 
-    // Handle form submit
+    // Handle form submission
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
