@@ -20,14 +20,20 @@
         justify-content: center;
         gap: 10px;
         margin-bottom: 20px;
-        <label>
-          <input type="checkbox" id="onlyVerified"> Show only Verified
-        </label>
       }
       .controls input, .controls select {
         padding: 8px;
         font-size: 16px;
       }
+      .controls label {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+      }
+      .controls input[type="checkbox"] {
+        margin-right: 5px;
+      }
+      
       .lawyer-grid {
         display: flex;
         flex-wrap: wrap;
@@ -149,6 +155,9 @@
         <option value="name">Name</option>
         <option value="city">City</option>
       </select>
+        <label>
+          <input type="checkbox" id="onlyVerified"> Show only Verified
+        </label>
     </div>
     <div class="lawyer-grid" id="lawyerGrid"></div>
     <div class="pagination" id="pagination"></div>
