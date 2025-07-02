@@ -138,11 +138,11 @@
         <p id="otpMessage"></p>
       </div>
 
-      <!-- ✅ Featured Listing -->
+      <!-- ✅ Featured Listing & ✅ Verified Badge -->
       <div class="checkbox-group">
         <label>
-          <input type="checkbox" name="featured" value="TRUE">
-          Request Featured Listing
+          <input type="checkbox" name="featured" value="TRUE"> Request Featured Listing
+          <input type="checkbox" name="verified" value="TRUE"> Request Verified Badge
         </label>
       </div>
       
@@ -151,20 +151,38 @@
         <input type="text" name="testimonials" placeholder="Short testimonial (optional)">
       </div>
       
-      <!-- ✅ Verified Badge -->
-      <div class="checkbox-group">
-        <label>
-          <input type="checkbox" name="verified" value="TRUE">
-          Request Verified Badge
-        </label>
-      </div>
-
       <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
   </div>
 
   <script>
+
+      document.getElementById('plan').addEventListener('change', function () {
+        const plan = this.value;
+        const featured = document.getElementById('featured');
+        const testimonials = document.getElementById('testimonials');
+        const verified = document.getElementById('verified');
+  
+        if (plan === "FREE") {
+          featured.disabled = true;
+          testimonials.disabled = true;
+          verified.disabled = true;
+        } else if (plan === "BASIC") {
+          featured.disabled = true;
+          testimonials.disabled = true;
+          verified.disabled = false;
+        } else if (plan === "PREMIUM") {
+          featured.disabled = false;
+          testimonials.disabled = false;
+          verified.disabled = false;
+        } else {
+          featured.disabled = true;
+          testimonials.disabled = true;
+          verified.disabled = true;
+        }
+    });
+    
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpj2E1TeUUWtG2YDKqGjAv92JTV86B6kbYuA64aJoeO5Xr5DtwITZiKotOMQlvSQregw/exec";
     const RAZORPAY_KEY = "rzp_test_tIKdX9hYFI2dVg"; // Change in production
 
