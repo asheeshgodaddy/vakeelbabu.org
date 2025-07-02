@@ -178,7 +178,7 @@
     phoneInput.addEventListener("input", () => {
       const phone = phoneInput.value.trim();
       if (phone.length === 10) {
-        phoneStatus.textContent = "Checking...";
+        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
         fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
           .then(res => res.text())
           .then(result => {
