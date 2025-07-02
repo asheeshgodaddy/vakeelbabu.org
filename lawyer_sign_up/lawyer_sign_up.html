@@ -232,31 +232,30 @@
     });
 
     function submitForm() {
-      const formData = new FormData(document.getElementById('signupForm'));
-    
+      const form = document.getElementById('signupForm');
       fetch("https://script.google.com/macros/s/AKfycbxdzmbWLSaAQZUzX_V8GrcJe3JhiUzFJv6J6114g1kgvjNr6HAYFx213sSdJG_pXCVYLA/exec", {
         method: "POST",
-        body: formData
-      })
-      .then(response => response.text())
-      .then(text => {
-        console.log("Server response:", text);
-        if (text.includes("SUCCESS")) {
-          document.getElementById('message').textContent = "Submitted successfully!";
-          document.getElementById('signupForm').reset();
-          document.getElementById('finalSubmit').disabled = true;
-          document.getElementById('otpSection').style.display = "none";
-        } else if (text.includes("DUPLICATE")) {
-          document.getElementById('message').textContent = "Duplicate phone number.";
-        } else {
-          document.getElementById('message').textContent = "Error: " + text;
-        }
-      })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        document.getElementById('message').textContent = "Submission failed. Please try again.";
+        body: new FormData(form)
+      }).then(() => {
+        // ✅ Reset form immediately
+        form.reset();
+    
+        // ✅ Hide OTP section and disable Submit again
+        document.getElementById("otpSection").style.display = "none";
+        document.getElementById("finalSubmit").disabled = true;
+        document.getElementById("verifiedOTP").value = "false";
+    
+        // ✅ Show success message
+        const msg = document.getElementById('message');
+        msg.textContent = "Submitted successfully!";
+    
+        // ✅ Clear message after 2 seconds
+        setTimeout(() => {
+          msg.textContent = "";
+        }, 2000);
       });
     }
+
 
 
     document.getElementById('plan').addEventListener('change', function () {
