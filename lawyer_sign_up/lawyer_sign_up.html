@@ -63,6 +63,19 @@
       font-size: 0.9em;
       margin-top: 4px;
     }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      height: 16px;
+    }
   </style>
 
   <script>
@@ -125,15 +138,26 @@
         <p id="otpMessage"></p>
       </div>
 
-      <div id="featuredSection" style="display:none;">
-        <label><input type="checkbox" name="featured" value="TRUE"> Request Featured Listing</label>
+      <!-- ✅ Featured Listing -->
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="featured" value="TRUE">
+          Request Featured Listing
+        </label>
       </div>
-
-      <div id="testimonialSection" style="display:none;">
+      
+      <!-- ✅ Testimonial (Optional Textbox) -->
+      <div>
         <input type="text" name="testimonials" placeholder="Short testimonial (optional)">
       </div>
-
-      <label><input type="checkbox" name="verified" value="TRUE"> Request Verified Badge</label>
+      
+      <!-- ✅ Verified Badge -->
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" name="verified" value="TRUE">
+          Request Verified Badge
+        </label>
+      </div>
 
       <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
