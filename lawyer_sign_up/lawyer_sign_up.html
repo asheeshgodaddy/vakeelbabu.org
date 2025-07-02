@@ -215,6 +215,7 @@
             description: `${plan} Plan Registration`,
             handler: function (response) {
               document.getElementById('payment_id').value = response.razorpay_payment_id;
+              document.getElementById('finalSubmit').disabled = true; // prevent multiple clicks
               submitForm();
             },
             prefill: {
@@ -231,13 +232,32 @@
     });
 
     function submitForm() {
-      fetch("https://script.google.com/macros/s/AKfycbxltfcjPLGTWwHqkg8mZ9VthDzUTC7_r4C7TUNVs61l9ubQ6iLhfbcH-1G_9MZjpAH5mw/exec", {
+      const formData = new FormData(document.getElementById('signupForm'));
+    
+      fetch("https://script.google.com/macros/s/AKfycbzTOnM5Qo85EFd-S-SS8IkA2RAZFqIKO2PtPALM9IyZxJ0Jr0Lz5N3TEu02NRVCEIgF1w/exec", {
         method: "POST",
-        body: new FormData(document.getElementById('signupForm'))
-      }).then(() => {
-        document.getElementById('message').textContent = "Submitted successfully!";
+        body: formData
+      })
+      .then(response => response.text())
+      .then(text => {
+        console.log("Server response:", text);
+        if (text.includes("SUCCESS")) {
+          document.getElementById('message').textContent = "Submitted successfully!";
+          document.getElementById('signupForm').reset();
+          document.getElementById('finalSubmit').disabled = true;
+          document.getElementById('otpSection').style.display = "none";
+        } else if (text.includes("DUPLICATE")) {
+          document.getElementById('message').textContent = "Duplicate phone number.";
+        } else {
+          document.getElementById('message').textContent = "Error: " + text;
+        }
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        document.getElementById('message').textContent = "Submission failed. Please try again.";
       });
     }
+
 
     document.getElementById('plan').addEventListener('change', function () {
       const value = this.value;
