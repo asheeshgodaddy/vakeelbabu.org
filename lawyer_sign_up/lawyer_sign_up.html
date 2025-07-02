@@ -99,9 +99,10 @@
       <input name="name" placeholder="Full Name" required>
       <input name="city" placeholder="City" required>
       <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
-      <label for="photoInput">Upload your photo:</label>
-      <br>
-      <input type="file" id="photoInput" accept="image/*" required>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="photoInput" style="white-space: nowrap;">Upload your photo:</label>
+        <input type="file" id="photoInput" accept="image/*" required>
+      </div>
       <input type="hidden" name="photo" id="photoField">
       <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
       <input type="hidden" name="payment_id" id="payment_id">
