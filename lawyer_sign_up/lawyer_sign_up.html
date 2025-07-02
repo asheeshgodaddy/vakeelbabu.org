@@ -236,32 +236,33 @@
 
 function submitForm() {
   const form = document.getElementById('signupForm');
+  const msg = document.getElementById('message');
+
   fetch("https://script.google.com/macros/s/AKfycbykkz9VjNy-u5O4pF_S8Mh_3ZSbixyH73KvhmkbLS7DJhnjJ5u5VBukqBOU6_FZ-6qPCQ/exec", {
     method: "POST",
     body: new FormData(form)
   })
-  .then(response => response.json())
-  .then(data => {
-    const msg = document.getElementById('message');
-    if (data.success) {
-      msg.textContent = "Submitted successfully!";
-      msg.style.color = "green";
+  .then(response => response.text())
+  .then(text => {
+    if (text === "DUPLICATE") {
+      msg.innerHTML = "<span style='color:red; font-weight:bold;'>Phone number already registered.</span>";
+    } else if (text === "SUCCESS") {
+      msg.innerHTML = "<span style='color:green; font-weight:bold;'>Submitted successfully!</span>";
       form.reset();
       document.getElementById("otpSection").style.display = "none";
       document.getElementById("finalSubmit").disabled = true;
       document.getElementById("verifiedOTP").value = "false";
-      setTimeout(() => msg.textContent = "", 2000);
     } else {
-      msg.textContent = data.message;
-      msg.style.color = "red";
+      msg.innerHTML = "<span style='color:red; font-weight:bold;'>Something went wrong. Please try again.</span>";
     }
-  })
-  .catch(err => {
-    const msg = document.getElementById('message');
-    msg.textContent = "Server error. Please try again.";
-    msg.style.color = "red";
+
+    // Clear message after 2 seconds
+    setTimeout(() => {
+      msg.innerHTML = "";
+    }, 2000);
   });
 }
+
 
 
 
