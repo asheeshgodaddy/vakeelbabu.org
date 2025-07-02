@@ -291,12 +291,12 @@
         .then(res => res.json())
         .then(data => {
           const msg = document.getElementById('message');
-          //if (data.success) {
+          if (data.success) {
           //  msg.textContent = "🎉 Submitted successfully!";
           //  form.reset();
           //  document.getElementById("finalSubmit").disabled = true;
           //  setTimeout(() => location.reload(), 3000);
-          if (data.success) {
+          
             form.reset();
             document.getElementById("finalSubmit").disabled = true;
             showSuccessModal(); // ✅ Show modal instead of auto-reload
