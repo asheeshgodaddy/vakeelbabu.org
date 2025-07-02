@@ -99,16 +99,6 @@
       <input name="name" placeholder="Full Name" required>
       <input name="city" placeholder="City" required>
       <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
-      <button type="button" onclick="sendOTP()">Send OTP</button>
-
-      <div id="recaptcha-container"></div>
-
-      <div id="otpSection" style="display:none;">
-        <input type="text" id="otpInput" placeholder="Enter OTP" required>
-        <button type="button" onclick="verifyOTP()">Verify OTP</button>
-        <p id="otpMessage"></p>
-      </div>
-      
       <label for="photoInput">Upload your photo:</label>
       <input type="file" id="photoInput" accept="image/*" required>
       <input type="hidden" name="photo" id="photoField">
@@ -122,6 +112,14 @@
         <option value="BASIC">Basic (₹199/month)</option>
         <option value="PREMIUM">Premium (₹499/month)</option>
       </select>
+
+      <button type="button" onclick="sendOTP()">Send OTP</button>
+      <div id="recaptcha-container"></div>
+      <div id="otpSection" style="display:none;">
+        <input type="text" id="otpInput" placeholder="Enter OTP" required>
+        <button type="button" onclick="verifyOTP()">Verify OTP</button>
+        <p id="otpMessage"></p>
+      </div>
 
       <div id="featuredSection" style="display:none;">
         <label>
