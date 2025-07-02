@@ -244,9 +244,10 @@ function submitForm() {
   })
   .then(response => response.text())
   .then(text => {
-    if (text === "DUPLICATE") {
+    console.log("Server response:", text);  // Add this for debugging
+    if (text.trim() === "DUPLICATE") {
       msg.innerHTML = "<span style='color:red; font-weight:bold;'>Phone number already registered.</span>";
-    } else if (text === "SUCCESS") {
+    } else if (text.trim() === "SUCCESS") {
       msg.innerHTML = "<span style='color:green; font-weight:bold;'>Submitted successfully!</span>";
       form.reset();
       document.getElementById("otpSection").style.display = "none";
