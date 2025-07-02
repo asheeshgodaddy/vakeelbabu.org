@@ -296,10 +296,10 @@
           //  form.reset();
           //  document.getElementById("finalSubmit").disabled = true;
           //  setTimeout(() => location.reload(), 3000);
-          
+            const name = document.querySelector("input[name='name']").value;
             form.reset();
             document.getElementById("finalSubmit").disabled = true;
-            showSuccessModal(); // ✅ Show modal instead of auto-reload
+            showSuccessModal(name); // ✅ Show modal instead of auto-reload
           } else {
             msg.style.color = "red";
             msg.textContent = data.message || "Something went wrong.";
@@ -310,7 +310,8 @@
         });
     }
     
-    function showSuccessModal() {
+    function showSuccessModal(name) {
+      document.getElementById("userNameDisplay").textContent = name;
       document.getElementById("successModal").style.display = "flex";
     }
     
@@ -323,7 +324,7 @@
        background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
       <h2 style="color: green;">✅ Success!</h2>
-      <p>Thank you {{name}}!!! <br>The registration process was successfully cpmpleted.</p>
+      <p>Thank you <b id="userNameDisplay"> !!</b>!<br>Registred successfully !!!</p>
       <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff;
               color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
