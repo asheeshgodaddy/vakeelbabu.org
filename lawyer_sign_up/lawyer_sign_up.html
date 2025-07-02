@@ -125,6 +125,7 @@
     let confirmationResult;
 
     function sendOTP() {
+      console.log("Sending OTP to", fullPhone);
       const phone = document.getElementById("phoneInput").value;
       if (!phone.match(/^[0-9]{10}$/)) {
         alert("Enter valid 10-digit phone number.");
