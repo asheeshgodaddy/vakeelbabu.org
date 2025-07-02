@@ -251,7 +251,7 @@ function submitForm() {
       document.getElementById("otpSection").style.display = "none";
       document.getElementById("finalSubmit").disabled = true;
       document.getElementById("verifiedOTP").value = "false";
-      setTimeout(() => msg.textContent = "", 2000);
+      setTimeout(() => msg.textContent = "", 3000);
     } else {
       msg.textContent = data.message;
       msg.style.color = "red";
