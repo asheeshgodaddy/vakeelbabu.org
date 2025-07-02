@@ -52,6 +52,17 @@
     #otpMessage, #message {
       color: green;
     }
+    #phoneInput.valid {
+      border: 2px solid green;
+    }
+    #phoneInput.invalid {
+      border: 2px solid red;
+    }
+    #phoneStatus {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
   </style>
 
   <script>
@@ -84,7 +95,7 @@
 
     <!-- ✅ Step 1: Phone Number Check -->
     <form id="phoneCheckForm">
-      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="[0-9]{10}">
+      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
       <p id="phoneStatus"></p>
     </form>
 
@@ -135,6 +146,24 @@
 
     let confirmationResult, recaptchaVerifier;
 
+    const phoneInput = document.getElementById("phoneInput");
+    const statusMsg = document.getElementById("phoneStatus");
+  
+    phoneInput.addEventListener("input", function () {
+      // Remove non-digit characters as user types
+      this.value = this.value.replace(/\D/g, '');
+  
+      if (this.value.length === 10) {
+        this.classList.add("valid");
+        this.classList.remove("invalid");
+        statusMsg.textContent = "";
+      } else {
+        this.classList.remove("valid");
+        this.classList.add("invalid");
+        statusMsg.textContent = "Please enter exactly 10 digits.";
+      }
+    });
+
     window.onload = () => {
       recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         size: 'invisible'
@@ -143,7 +172,6 @@
     };
 
     // ✅ Check phone before anything
-    const phoneInput = document.getElementById("phoneInput");
     const phoneStatus = document.getElementById("phoneStatus");
     const signupForm = document.getElementById("signupForm");
 
@@ -263,11 +291,15 @@
         .then(res => res.json())
         .then(data => {
           const msg = document.getElementById('message');
+          //if (data.success) {
+          //  msg.textContent = "🎉 Submitted successfully!";
+          //  form.reset();
+          //  document.getElementById("finalSubmit").disabled = true;
+          //  setTimeout(() => location.reload(), 3000);
           if (data.success) {
-            msg.textContent = "🎉 Submitted successfully!";
             form.reset();
             document.getElementById("finalSubmit").disabled = true;
-            setTimeout(() => location.reload(), 3000);
+            showSuccessModal(); // ✅ Show modal instead of auto-reload
           } else {
             msg.style.color = "red";
             msg.textContent = data.message || "Something went wrong.";
@@ -277,6 +309,24 @@
           document.getElementById('message').textContent = "Server error. Try again.";
         });
     }
+    
+    function showSuccessModal() {
+      document.getElementById("successModal").style.display = "flex";
+    }
+    
+    function closeModal() {
+      document.getElementById("successModal").style.display = "none";
+      location.reload();
+    }
   </script>
+  <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+       background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
+      <h2 style="color: green;">✅ Success!</h2>
+      <p>Your information has been submitted successfully.</p>
+      <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff;
+              color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
+    </div>
+  </div>
 </body>
 </html>
