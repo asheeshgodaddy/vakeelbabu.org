@@ -179,7 +179,7 @@
         const base64 = evt.target.result.split(',')[1];
         document.getElementById('photoField').value = base64;
 
-        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbz1QXRf2h8exciMhzEevs_Rgs0xPnA2eG8O1Saf7JVZ7qViObMuRQbvKlCHM_hVmeiS7w/exec", {
           method: "POST",
           body: new FormData(document.getElementById('signupForm'))
         }).then(() => {
