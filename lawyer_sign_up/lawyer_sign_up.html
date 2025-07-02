@@ -251,7 +251,11 @@ function submitForm() {
       document.getElementById("otpSection").style.display = "none";
       document.getElementById("finalSubmit").disabled = true;
       document.getElementById("verifiedOTP").value = "false";
-      setTimeout(() => msg.textContent = "", 3000);
+      // Clear message and reload after 3 seconds
+      setTimeout(() => {
+        msg.textContent = "";
+        location.reload();
+      }, 3000);
     } else {
       msg.textContent = data.message;
       msg.style.color = "red";
