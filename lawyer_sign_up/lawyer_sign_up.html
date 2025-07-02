@@ -112,6 +112,11 @@
       <input type="file" id="photoInput" accept="image/*" required>
       <input type="hidden" name="photo" id="photoField">
       <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
+
+      <!-- Paid Plan Checkboxes -->
+      <label> <input type="checkbox" name="featured" value="TRUE"> Request Featured Listing</label>
+      <label> <input type="checkbox" name="verified" value="TRUE"> Request Verified Badge</label>
+      
       <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
@@ -179,7 +184,7 @@
         const base64 = evt.target.result.split(',')[1];
         document.getElementById('photoField').value = base64;
 
-        fetch("https://script.google.com/macros/s/AKfycbz1QXRf2h8exciMhzEevs_Rgs0xPnA2eG8O1Saf7JVZ7qViObMuRQbvKlCHM_hVmeiS7w/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbzbzUmF_xrc7IE9zMgtqXLWmxbJGhMPOVd_pdfwVY_UOBmUKIS8lMNFB1rIGc5BG2Dv3Q/exec", {
           method: "POST",
           body: new FormData(document.getElementById('signupForm'))
         }).then(() => {
