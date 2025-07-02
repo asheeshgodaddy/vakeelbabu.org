@@ -142,7 +142,7 @@
       <div class="checkbox-group">
         <label title="Available in BASIC and PREMIUM plans">
           <input type="checkbox" name="verified" value="TRUE" id="verified">
-          Request Verified Badge (in BASIC & PREMIUM plans)
+          Request Verified Badge (<i>in BASIC & PREMIUM plans</i>)
         </label>
       </div>
       
@@ -150,7 +150,7 @@
       <div class="checkbox-group">
         <label title="Only for PREMIUM plan">
           <input type="checkbox" name="featured" value="TRUE" id="featured" disabled>
-          Request Featured Listing (Only in PREMIUM plan)
+          Request Featured Listing (<i>Only in PREMIUM plan</i>)
         </label>
       </div>
       
@@ -168,6 +168,8 @@
 
     document.getElementById('plan').addEventListener('change', function () {
       const plan = this.value;
+      verified.disabled = true;
+      featured.disabled = true;
     
       // Request Verified Badge
       const verified = document.getElementById("verified");
