@@ -1,242 +1,391 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lawyer Sign Up on Vakeel Babu | Trusted Legal Advice Platform</title>
-  <link rel="icon" href="/images/favicon.png" type="image/png">
-  <meta name="description" content="Sign up as a lawyer on Vakeel Babu to reach clients across India.">
-  <meta name="keywords" content="lawyer signup, advocate registration, legal platform India">
+  <title>Lawyer Sign Up | Vakeel Babu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+
+  <!-- Razorpay JS -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
   <style>
     body {
       font-family: aptos, sans-serif;
       background-color: #e6ebf1;
       margin: 0;
-      padding: 0;
     }
-
     .container {
       max-width: 600px;
-      margin: 50px auto;
+      margin: 40px auto;
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-
-    h2 {
-      text-align: center;
-      color: #2a2a2a;
-    }
-
-    form input[type="text"],
-    form input[type="tel"],
-    form input[type="file"],
-    form button {
+    input, button, select {
       width: 100%;
       padding: 10px;
-      margin: 12px 0;
+      margin: 10px 0;
+      font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 16px;
     }
-
-    form button {
+    button {
       background-color: #007bff;
       color: white;
-      border: none;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
-
-    form button:hover {
+    button:hover {
       background-color: #0056b3;
     }
-
-    #message {
+    #phoneStatus, #otpMessage, #message {
+      text-align: center;
+      font-weight: bold;
+    }
+    #otpMessage, #message {
       color: green;
-      text-align: center;
-      margin-top: 10px;
+    }
+    #phoneInput.valid {
+      border: 2px solid green;
+    }
+    #phoneInput.invalid {
+      border: 2px solid red;
+    }
+    #phoneStatus {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 4px;
     }
 
-    .image-section {
-      margin-top: 30px;
-      text-align: center;
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 16px;
     }
-
-    .image-section img {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 12px;
-    }
-
-    @media screen and (max-width: 600px) {
-      .container {
-        margin: 20px;
-        padding: 20px;
-      }
+    
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      height: 16px;
     }
   </style>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
+      authDomain: "vakeelbabu-org.firebaseapp.com",
+      projectId: "vakeelbabu-org",
+      storageBucket: "vakeelbabu-org.appspot.com",
+      messagingSenderId: "972570830530",
+      appId: "1:972570830530:web:609292922896728b16fd5b",
+      measurementId: "G-3CVWS84Y4X"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 
 <body>
   <header>
     <div id="nav-placeholder"></div>
-    <script>
-      fetch("/src/menu.html")
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById("nav-placeholder").innerHTML = data;
-        });
-    </script>
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
   </header>
-
   <div class="container">
     <h2>Sign Up as Advocate</h2>
-    <br><br>
 
-    <form id="signupForm">
+    <!-- ✅ Step 1: Phone Number Check -->
+    <form id="phoneCheckForm">
+      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
+      <p id="phoneStatus"></p>
+    </form>
+
+    <!-- ✅ Step 2: Actual Form (Hidden initially) -->
+    <form id="signupForm" style="display:none;">
       <input name="name" placeholder="Full Name" required>
       <input name="city" placeholder="City" required>
-      <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
-      
+      <input type="hidden" name="phone" id="signupPhone">
+      <input type="file" id="photoInput" accept="image/*" required>
+      <input type="hidden" name="photo" id="photoField">
+      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
+      <input type="hidden" name="payment_id" id="payment_id">
+
+      <select name="plan" id="plan" required>
+        <option value="">-- Choose a plan --</option>
+        <option value="FREE">Free (₹0)</option>
+        <option value="BASIC">Basic (₹199/month)</option>
+        <option value="PREMIUM">Premium (₹499/month)</option>
+      </select>
+
       <button type="button" onclick="sendOTP()">Send OTP</button>
-    
+      <div id="recaptcha-container"></div>
+
       <div id="otpSection" style="display:none;">
         <input type="text" id="otpInput" placeholder="Enter OTP" required>
         <button type="button" onclick="verifyOTP()">Verify OTP</button>
         <p id="otpMessage"></p>
       </div>
-    
-      <input type="file" id="photoInput" accept="image/*" required>
-      <input type="hidden" name="photo" id="photoField">
-      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
-      <button type="submit" id="finalSubmit" disabled><b>Submit</b></button>
+
+      <!-- ✅ Verified Badge -->
+      <div class="checkbox-group">
+        <label title="Available in BASIC and PREMIUM plans">
+          <input type="checkbox" name="verified" value="TRUE" id="verified">
+          Request Verified Badge (<i>in BASIC & PREMIUM plans</i>)
+        </label>
+      </div>
+      
+      <!-- ✅ Featured Listing -->
+      <div class="checkbox-group">
+        <label title="Only for PREMIUM plan">
+          <input type="checkbox" name="featured" value="TRUE" id="featured" disabled>
+          Request Featured Listing (<i>Only in PREMIUM plan</i>)
+        </label>
+      </div>
+      
+      <!-- ✅ Testimonial (Optional Textbox) -->
+      <div>
+        <input type="text" name="testimonials" placeholder="Short testimonial (optional) - Only in PREMIUM plan" id="testimonialInput" disabled title="Only for PREMIUM plan">
+      </div>
+      
+      <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
-
-    <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('message').textContent = 'Submitted successfully! ✅'; }"></iframe>
-
-    <div class="image-section">
-      <img src="/images/sc.png" alt="Lawyer illustration">
-    </div>
   </div>
-  <br>
-  <br>
 
   <script>
-    let submitted = false;
-    
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-    
-      if (document.getElementById("verifiedOTP").value !== "true") {
-        alert("Please verify your phone via OTP before submitting.");
-        return;
-      }
-    
-      const file = document.getElementById('photoInput').files[0];
-      if (!file) return;
-    
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const base64 = evt.target.result.split(',')[1];
-        document.getElementById('photoField').value = base64;
-    
-        // Submit via hidden iframe or AJAX
-        fetch("https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec", {
-          method: "POST",
-          body: new FormData(document.getElementById('signupForm'))
-        }).then(response => {
-          document.getElementById('message').textContent = 'Submitted successfully!';
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-    
-    function sendOTP() {
-      const phone = document.getElementById("phoneInput").value;
-      if (!phone.match(/^[0-9]{10}$/)) {
-        alert("Enter valid 10-digit phone number.");
-        return;
-      }
-    
-      fetch(`https://api.authkey.io/request?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById("otpSection").style.display = "block";
-            document.getElementById("otpMessage").innerText = "OTP sent successfully.";
-          } else {
-            document.getElementById("otpMessage").innerText = "Failed to send OTP.";
-          }
-        });
-    }
-    
-    function verifyOTP() {
-      const phone = document.getElementById("phoneInput").value;
-      const otp = document.getElementById("otpInput").value;
-    
-      fetch(`https://api.authkey.io/verify?authkey=YOUR_AUTHKEY&mobile=${phone}&country_code=91&otp=${otp}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById("otpMessage").innerText = "OTP verified successfully.";
-            document.getElementById("verifiedOTP").value = "true";
-            document.getElementById("finalSubmit").disabled = false;
-          } else {
-            document.getElementById("otpMessage").innerText = "Incorrect OTP. Try again.";
-          }
-        });
-    }
-    </script>
 
-  <!-- Translate -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,hi,es,fr,de',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
-    }
-  </script>
-  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-  <!-- Sticky menu JS -->
-  <script>
-    const scrollmenu = document.getElementById("scrollmenu");
-    const offsetTop = scrollmenu?.offsetTop || 0;
-
-    window.addEventListener("scroll", function () {
-      if (window.pageYOffset >= offsetTop) {
-        scrollmenu?.classList.add("fixed");
+    document.getElementById('plan').addEventListener('change', function () {
+      const plan = this.value;
+    
+      // Request Verified Badge
+      const verified = document.getElementById("verified");
+      if (plan === "BASIC" || plan === "PREMIUM") {
+        verified.disabled = false;
+        verified.checked = true;
       } else {
-        scrollmenu?.classList.remove("fixed");
+        verified.disabled = true;
+        verified.checked = false;
+      }
+    
+      // Request Featured Listing
+      const featured = document.getElementById("featured");
+      if (plan === "PREMIUM") {
+        featured.disabled = false;
+        featured.checked = true;
+      } else {
+        featured.disabled = true;
+        featured.checked = false;
+      }
+    
+      // Short Testimonial
+      const testimonial = document.getElementById("testimonialInput");
+      if (plan === "PREMIUM") {
+        testimonial.disabled = false;
+      } else {
+        testimonial.disabled = true;
+        testimonial.value = '';
       }
     });
-  </script>
 
-  <!-- Base64 Image Encode Logic -->
-  <script>
-    let submitted = false;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpj2E1TeUUWtG2YDKqGjAv92JTV86B6kbYuA64aJoeO5Xr5DtwITZiKotOMQlvSQregw/exec";
+    const RAZORPAY_KEY = "rzp_test_tIKdX9hYFI2dVg"; // Change in production
+
+    let confirmationResult, recaptchaVerifier;
+
+    const phoneInput = document.getElementById("phoneInput");
+    const statusMsg = document.getElementById("phoneStatus");
+  
+    phoneInput.addEventListener("input", function () {
+      // Remove non-digit characters as user types
+      this.value = this.value.replace(/\D/g, '');
+  
+      if (this.value.length === 10) {
+        this.classList.add("valid");
+        this.classList.remove("invalid");
+        statusMsg.textContent = "";
+      } else {
+        this.classList.remove("valid");
+        this.classList.add("invalid");
+        statusMsg.textContent = "Please enter exactly 10 digits.";
+      }
+    });
+
+    window.onload = () => {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible'
+      });
+      recaptchaVerifier.render();
+    };
+
+    // ✅ Check phone before anything
+    const phoneStatus = document.getElementById("phoneStatus");
+    const signupForm = document.getElementById("signupForm");
+
+    phoneInput.addEventListener("input", () => {
+      const phone = phoneInput.value.trim();
+      if (phone.length === 10) {
+        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
+        fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
+          .then(res => res.text())
+          .then(result => {
+            if (result === "DUPLICATE") {
+              phoneStatus.style.color = "red";
+              phoneStatus.textContent = "🚫 Phone number already registered.";
+              signupForm.style.display = "none";
+            } else {
+              phoneStatus.style.color = "green";
+              phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
+              signupForm.style.display = "block";
+              document.getElementById("signupPhone").value = phone;
+            }
+          })
+          .catch(() => {
+            phoneStatus.style.color = "red";
+            phoneStatus.textContent = "⚠️ Error checking phone.";
+            signupForm.style.display = "none";
+          });
+      } else {
+        phoneStatus.textContent = "";
+        signupForm.style.display = "none";
+      }
+    });
+
+    function sendOTP() {
+      const fullPhone = "+91" + document.getElementById("signupPhone").value;
+      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
+        .then(result => {
+          confirmationResult = result;
+          document.getElementById("otpSection").style.display = "block";
+          document.getElementById("otpMessage").textContent = "OTP sent!";
+        })
+        .catch(() => {
+          document.getElementById("otpMessage").textContent = "OTP send failed.";
+        });
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById("otpInput").value;
+      confirmationResult.confirm(code)
+        .then(() => {
+          document.getElementById("verifiedOTP").value = "true";
+          document.getElementById("otpMessage").textContent = "OTP verified ✅";
+          document.getElementById("finalSubmit").disabled = false;
+        })
+        .catch(() => {
+          document.getElementById("otpMessage").textContent = "Invalid OTP ❌";
+        });
+    }
+
+    document.getElementById('plan').addEventListener('change', function () {
+      const value = this.value;
+      document.getElementById('featuredSection').style.display = (value === "PREMIUM") ? "block" : "none";
+      document.getElementById('testimonialSection').style.display = (value === "PREMIUM") ? "block" : "none";
+    });
 
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
+
+      if (document.getElementById("verifiedOTP").value !== "true") {
+        alert("Please verify OTP first.");
+        return;
+      }
+
+      const plan = document.getElementById("plan").value;
       const file = document.getElementById('photoInput').files[0];
-      if (!file) return alert("Please upload a photo.");
+      if (!file) {
+        alert("Upload a photo.");
+        return;
+      }
 
       const reader = new FileReader();
       reader.onload = function (evt) {
         const base64 = evt.target.result.split(',')[1];
         document.getElementById('photoField').value = base64;
-        submitted = true;
-        e.target.submit();
+
+        if (plan === "FREE") {
+          submitForm();
+        } else {
+          const amount = plan === "BASIC" ? 19900 : 49900;
+          const options = {
+            key: RAZORPAY_KEY,
+            amount: amount,
+            currency: "INR",
+            name: "Vakeel Babu",
+            description: `${plan} Plan`,
+            handler: function (response) {
+              document.getElementById('payment_id').value = response.razorpay_payment_id;
+              submitForm();
+            },
+            prefill: {
+              contact: "+91" + document.getElementById("signupPhone").value
+            },
+            theme: { color: "#007bff" }
+          };
+          const rzp = new Razorpay(options);
+          rzp.open();
+        }
       };
       reader.readAsDataURL(file);
     });
+
+    function submitForm() {
+      const form = document.getElementById("signupForm");
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: new FormData(form)
+      })
+        .then(res => res.json())
+        .then(data => {
+          const msg = document.getElementById('message');
+          if (data.success) {
+          //  msg.textContent = "🎉 Submitted successfully!";
+          //  form.reset();
+          //  document.getElementById("finalSubmit").disabled = true;
+          //  setTimeout(() => location.reload(), 3000);
+            const name = document.querySelector("input[name='name']").value;
+            form.reset();
+            document.getElementById("finalSubmit").disabled = true;
+            showSuccessModal(name); // ✅ Show modal instead of auto-reload
+          } else {
+            msg.style.color = "red";
+            msg.textContent = data.message || "Something went wrong.";
+          }
+        })
+        .catch(() => {
+          document.getElementById('message').textContent = "Server error. Try again.";
+        });
+    }
+    
+    function showSuccessModal(name) {
+      document.getElementById("userNameDisplay").textContent = name;
+      document.getElementById("successModal").style.display = "flex";
+    }
+    
+    function closeModal() {
+      document.getElementById("successModal").style.display = "none";
+      location.reload();
+    }
   </script>
+  <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+       background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
+      <h2 style="color: green;">✅ Success!</h2>
+      <p>Thank you <b id="userNameDisplay"> </b>  !!!<br>You have been registered successfully.</p>
+      <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff;
+              color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
+    </div>
+  </div>
 </body>
 </html>
