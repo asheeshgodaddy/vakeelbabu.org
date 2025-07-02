@@ -14,7 +14,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-  <!-- Firebase Config & Recaptcha Init -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
@@ -35,7 +34,7 @@
           console.log("reCAPTCHA solved");
         }
       });
-      recaptchaVerifier.render(); // Important!
+      recaptchaVerifier.render();
     };
   </script>
 
@@ -53,7 +52,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    form input, form button {
+    form input, form button, form select {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -102,10 +101,8 @@
       <input name="phone" id="phoneInput" placeholder="Phone Number" required pattern="[0-9]{10}">
       <button type="button" onclick="sendOTP()">Send OTP</button>
 
-      <!-- reCAPTCHA placeholder -->
       <div id="recaptcha-container"></div>
 
-      <!-- OTP Section -->
       <div id="otpSection" style="display:none;">
         <input type="text" id="otpInput" placeholder="Enter OTP" required>
         <button type="button" onclick="verifyOTP()">Verify OTP</button>
@@ -115,14 +112,8 @@
       <input type="file" id="photoInput" accept="image/*" required>
       <input type="hidden" name="photo" id="photoField">
       <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
+      <input type="hidden" name="payment_id" id="payment_id">
 
-      <!-- Paid Plan Checkboxes -->
-      <label> 
-        <input type="checkbox" name="featured" value="TRUE"> Request Featured Listing
-      </label>
-      <label> 
-        <input type="checkbox" name="verified" value="TRUE"> Request Verified Badge
-      </label>
       <label for="plan">Select Plan:</label>
       <select name="plan" id="plan" required>
         <option value="">-- Choose a plan --</option>
@@ -130,7 +121,22 @@
         <option value="BASIC">Basic (₹199/month)</option>
         <option value="PREMIUM">Premium (₹499/month)</option>
       </select>
-      <input type="hidden" name="payment_id" id="payment_id">      
+
+      <div id="featuredSection" style="display:none;">
+        <label>
+          <input type="checkbox" name="featured" value="TRUE"> Request Featured Listing
+        </label>
+      </div>
+
+      <div id="testimonialSection" style="display:none;">
+        <label>Testimonial:</label>
+        <input type="text" name="testimonials" placeholder="Short testimonial (optional)">
+      </div>
+
+      <label> 
+        <input type="checkbox" name="verified" value="TRUE"> Request Verified Badge
+      </label>
+
       <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
@@ -149,10 +155,7 @@
         alert("Enter valid 10-digit phone number.");
         return;
       }
-
       const fullPhone = "+91" + phone;
-      console.log("Sending OTP to", fullPhone);
-
       firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
@@ -168,44 +171,42 @@
     function verifyOTP() {
       const code = document.getElementById("otpInput").value;
       confirmationResult.confirm(code)
-        .then(result => {
+        .then(() => {
           document.getElementById("verifiedOTP").value = "true";
           document.getElementById("otpMessage").textContent = "OTP verified ✅";
           document.getElementById("finalSubmit").disabled = false;
         })
-        .catch(error => {
+        .catch(() => {
           document.getElementById("otpMessage").textContent = "Invalid OTP ❌";
         });
     }
 
-    // Handle form submission
-    const RAZORPAY_KEY = "rzp_test_tIKdX9hYFI2dVg"; // Replace with your Razorpay live/test key
-  
+    const RAZORPAY_KEY = "rzp_test_tIKdX9hYFI2dVg"; // Replace with live key for production
+
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
-  
+
       if (document.getElementById("verifiedOTP").value !== "true") {
         alert("Please verify OTP before submitting.");
         return;
       }
-  
+
       const plan = document.getElementById("plan").value;
       const file = document.getElementById('photoInput').files[0];
       if (!file) {
         alert("Please upload a photo.");
         return;
       }
-  
+
       const reader = new FileReader();
       reader.onload = function (evt) {
         const base64 = evt.target.result.split(',')[1];
         document.getElementById('photoField').value = base64;
-  
+
         if (plan === "FREE") {
-          submitForm(); // No payment needed
+          submitForm();
         } else {
-          // Initiate Razorpay payment
-          const amount = plan === "BASIC" ? 19900 : 49900; // in paise
+          const amount = plan === "BASIC" ? 19900 : 49900; // paise
           const options = {
             key: RAZORPAY_KEY,
             amount: amount,
@@ -213,9 +214,8 @@
             name: "Vakeel Babu",
             description: `${plan} Plan Registration`,
             handler: function (response) {
-              console.log("Payment success", response);
               document.getElementById('payment_id').value = response.razorpay_payment_id;
-              submitForm(); // only submit form after success
+              submitForm();
             },
             prefill: {
               name: document.querySelector("input[name='name']").value,
@@ -223,14 +223,13 @@
             },
             theme: { color: "#007bff" }
           };
-  
           const rzp = new Razorpay(options);
           rzp.open();
         }
       };
       reader.readAsDataURL(file);
     });
-  
+
     function submitForm() {
       fetch("https://script.google.com/macros/s/AKfycbxltfcjPLGTWwHqkg8mZ9VthDzUTC7_r4C7TUNVs61l9ubQ6iLhfbcH-1G_9MZjpAH5mw/exec", {
         method: "POST",
@@ -240,25 +239,11 @@
       });
     }
 
-
-    
-      document.getElementById('plan').addEventListener('change', function () {
-        <div id="featuredSection">
-          <label> 
-            <input type="checkbox" name="featured" value="TRUE"> Request Featured Listing
-          </label>
-        </div>
-        <div id="testimonialSection" style="display:none;">
-          <label>Testimonial:</label>
-          <input type="text" name="testimonials">
-        </div>
-        const value = this.value;
-        const featuredCheckbox = document.getElementById('featuredSection');
-        const testimonialSection = document.getElementById('testimonialSection');
-    
-        featuredCheckbox.style.display = (value === "PREMIUM") ? "block" : "none";
-        testimonialSection.style.display = (value === "PREMIUM") ? "block" : "none";
-      });
+    document.getElementById('plan').addEventListener('change', function () {
+      const value = this.value;
+      document.getElementById('featuredSection').style.display = (value === "PREMIUM") ? "block" : "none";
+      document.getElementById('testimonialSection').style.display = (value === "PREMIUM") ? "block" : "none";
+    });
   </script>
 </body>
 </html>
