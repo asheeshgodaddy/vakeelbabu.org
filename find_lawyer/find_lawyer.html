@@ -230,15 +230,16 @@
                 : '';
         
               card.innerHTML = `
-                <img src="${l.photo || 'default-photo.jpg'}" alt="photo">
+                <img src="${l.photo}" alt="photo">
                 <h3>${l.name}</h3>
-                <p>${l.phone}</p>
+                <p>📞 ${l.phone}</p>
+                <p>📍 ${l.city}</p>
                 ${testimonial}
                 <div class="button-group">
                   <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
                   <button onclick="deleteLawyer('${l.phone}')">Delete</button>
                 </div>
-                ${l.verified ? '<span class="verified-badge">✔ Verified</span>' : ''}
+                ${(l.plan === "PREMIUM" || l.plan === "BASIC") ? '<span class="verified-badge">✔ Verified</span>' : ''}
               `;
         
               grid.appendChild(card);
