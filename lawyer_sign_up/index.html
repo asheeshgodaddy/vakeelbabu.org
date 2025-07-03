@@ -377,6 +377,19 @@
       document.getElementById("successModal").style.display = "none";
       location.reload();
     }
+
+      function showPlanInfo() {
+        document.getElementById("planInfoModal").style.display = "flex";
+      }
+    
+      function closePlanInfo() {
+        document.getElementById("planInfoModal").style.display = "none";
+      }
+    
+      // Auto-show the modal when the page loads
+      window.onload = function () {
+        showPlanInfo();
+      };
   </script>
   <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
        background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
@@ -387,5 +400,25 @@
               color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
   </div>
+
+  <!--popup/modal that explains the benefits of FREE, BASIC, and PREMIUM plans -->
+  <div id="planInfoModal" class="modal" style="display: none;">
+    <div class="modal-content" style="background-color: #e9f4ff;">
+      <span class="close-btn" onclick="closePlanInfo()">&times;</span>
+      <h3 style="color: #005a9e;">📣 Why Join VakeelBabu? – India's Most Trusted Legal Platform</h3>
+      <p>
+        Get discovered by several thousands of clients looking for legal help every day. <br><br>
+        Choose a plan that suits your needs:<br>
+      </p>
+      <ul class="justified-list" style="color: #005a9e;">
+        <li><b style="color:#007bff;">💎 PREMIUM (₹499/month):</b> Top visibility in search results, "Premium" & "Verified" badges, profile photo, testimonials, and 'Contact Now' button.</li>
+        <li><b style="color:#17a2b8;">✔ BASIC (₹199/month):</b> Displayed with "Verified" badge, searchable by city/name, photo and contact number shown.</li>
+        <li><b style="color:#6c757d;">🆓 FREE:</b> Your profile will still appear in public search results with your name, city, and contact – a great way to start!</li>
+      </ul>
+      <p style="color:#201f1f;"><i>📝 We recommend registering at least for FREE. You can upgrade anytime!</i></p>
+      <button onclick="closePlanInfo()" class="modal-contact-btn" style="background-color: #007bff;">Got it, Proceed to Sign Up</button>
+    </div>
+  </div>
+  
 </body>
 </html>
