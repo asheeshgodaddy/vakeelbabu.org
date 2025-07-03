@@ -180,20 +180,23 @@
       async function fetchData() {
         const res = await fetch(scriptURL);
         const raw = await res.json();
+        
         console.log("Raw response:", raw);
       
         // Normalize based on expected column names from your Google Sheet
         lawyers = raw.map(row => ({
-          name: row["Name"] || "",
-          phone: row["Phone"] || "",
+          name: row.Name || "",
+          city: row.City || "",
+          phone: row.Phone || "",
           photo: row["Photo URL"] || "",
-          city: row["City"] || "",
-          plan: (row["Plan"] || "FREE").toUpperCase(),
-          verified: (row["Verified"] || "").toLowerCase() === "yes" || row["Verified"] === true,
-          testimonials: row["Testimonials"] || ""
+          verified: (row.Verified || "").toString().toLowerCase() === "yes",
+          testimonials: row.Testimonials || "",
+          plan: (row.Plan || "").toUpperCase()
         }));
+
+        console.log("First parsed lawyer:", lawyers[0]);
       
-        function rank(lawyer) {
+        function rank(1) {
           if (lawyer.plan === "PREMIUM") return 0;
           if (lawyer.plan === "BASIC") return 1;
           return 2;
@@ -203,7 +206,7 @@
           const r1 = rank(a);
           const r2 = rank(b);
           if (r1 !== r2) return r1 - r2;
-          return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
+          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
         });
       
         filtered = [...lawyers];
@@ -336,17 +339,17 @@
 
     <script>
       
-    const scrollmenu = document.getElementById("scrollmenu");
-    if (scrollmenu) {
-      const offsetTop = scrollmenu.offsetTop;
-      window.addEventListener("scroll", function () {
-        if (window.pageYOffset >= offsetTop) {
-          scrollmenu.classList.add("fixed");
-        } else {
-          scrollmenu.classList.remove("fixed");
-        }
-      });
-    }
+//    const scrollmenu = document.getElementById("scrollmenu");
+//    if (scrollmenu) {
+//      const offsetTop = scrollmenu.offsetTop;
+//      window.addEventListener("scroll", function () {
+//        if (window.pageYOffset >= offsetTop) {
+//          scrollmenu.classList.add("fixed");
+//        } else {
+//          scrollmenu.classList.remove("fixed");
+//        }
+//      });
+//    }
 
       window.addEventListener("scroll", function () {
         if (window.pageYOffset >= offsetTop) {
