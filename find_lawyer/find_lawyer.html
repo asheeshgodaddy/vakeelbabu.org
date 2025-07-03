@@ -300,8 +300,21 @@
       }
       
       document.getElementById("search").addEventListener("input", applyFilters);
-      document.getElementById("onlyVerified").addEventListener("change", applyFilters);
-      document.getElementById("onlyPremium").addEventListener("change", applyFilters);
+      //document.getElementById("onlyVerified").addEventListener("change", applyFilters);
+      document.getElementById("onlyVerified").addEventListener("change", () => {
+        if (document.getElementById("onlyVerified").checked) {
+          document.getElementById("onlyPremium").checked = false;
+        }
+        applyFilters();
+      });
+      
+      //document.getElementById("onlyPremium").addEventListener("change", applyFilters);
+      document.getElementById("onlyPremium").addEventListener("change", () => {
+        if (document.getElementById("onlyPremium").checked) {
+          document.getElementById("onlyVerified").checked = false;
+        }
+        applyFilters();
+      });
 
 
       document.getElementById("sort").addEventListener("change", e => {
