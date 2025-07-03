@@ -289,7 +289,8 @@
     
         filtered = lawyers.filter(l => {
           const matchesSearch = (l.name || '').toLowerCase().includes(q) || (l.city || '').toLowerCase().includes(q);
-          const isVerifiedOk = !showVerifiedOnly || l.verified;
+          //const isVerifiedOk = !showVerifiedOnly || l.verified;
+          const isVerifiedOk = !showVerifiedOnly || l.plan === "BASIC";
           const isPremiumOk = !showPremiumOnly || l.plan === "PREMIUM";
           return matchesSearch && isVerifiedOk && isPremiumOk;
         });
