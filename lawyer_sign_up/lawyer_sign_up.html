@@ -199,7 +199,7 @@
       }
     });
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwpj2E1TeUUWtG2YDKqGjAv92JTV86B6kbYuA64aJoeO5Xr5DtwITZiKotOMQlvSQregw/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec";
     const RAZORPAY_KEY = "rzp_test_tIKdX9hYFI2dVg"; // Change in production
 
     let confirmationResult, recaptchaVerifier;
@@ -377,6 +377,21 @@
       document.getElementById("successModal").style.display = "none";
       location.reload();
     }
+
+
+      function showPlanInfo() {
+        document.getElementById("planInfoModal").style.display = "flex";
+      }
+    
+      function closePlanInfo() {
+        document.getElementById("planInfoModal").style.display = "none";
+      }
+    
+      // Auto-show the modal when the page loads
+      window.onload = function () {
+        showPlanInfo();
+      };
+    
   </script>
   <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
        background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
@@ -387,5 +402,24 @@
               color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
   </div>
+
+  //popup/modal that explains the benefits of FREE, BASIC, and PREMIUM plans
+  <div id="planInfoModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closePlanInfo()">&times;</span>
+    <h3>📣 Why Join VakeelBabu? – India's Trusted Legal Directory</h3>
+    <p>VakeelBabu is India’s fast-growing online legal directory connecting lawyers with people in need of legal help.
+      <br>
+      Get discovered by thousands of clients looking for legal help every day. Choose a plan that suits your needs:
+    </p>
+    <ul class="justified-list" style="color: #000;">
+      <li><b style="color:gold;">💎 PREMIUM (₹499/month):</b> Top visibility in search results, "Premium" & "Verified" badges, profile photo, testimonials, and 'Contact Now' button.</li>
+      <li><b style="color:#28a745;">✔ BASIC (₹199/month):</b> Displayed with "Verified" badge, searchable by city/name, photo and contact number shown.</li>
+      <li><b style="color:#999;">🆓 FREE:</b> Your profile will still appear in public search results with your name, city, and contact – a great way to start!</li>
+    </ul>
+    <p><i>📝 We recommend registering at least for FREE. You can upgrade anytime!</i></p>
+    <button onclick="closePlanInfo()" class="modal-contact-btn">Got it, Proceed to Sign Up</button>
+  </div>
+</div>
 </body>
 </html>
