@@ -547,10 +547,12 @@ tbody tr:hover {
   position: absolute;
   top: 8px;
   left: 8px;
-  background-color: #00c3ff;
-  color: white;
-  padding: 4px 8px;
+  background-color: linear-gradient(45deg, #ffd700, #ffec8b, #ffd700);
+  color: #000;
+  padding: 4px 10px;
   font-size: 12px;
   font-weight: bold;
-  border-radius: 4px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+  animation: shine 2s infinite linear;
 }
