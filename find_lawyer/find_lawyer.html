@@ -178,25 +178,37 @@
       const pageSize = 6;
 
       async function fetchData() {
-          const res = await fetch(scriptURL);
-          lawyers = await res.json();
+        const res = await fetch(scriptURL);
+        const raw = await res.json();
+        console.log("Raw response:", raw);
       
-          function rank(lawyer) {
-            if (lawyer.plan === "PREMIUM") return 0;
-            if (lawyer.plan === "BASIC") return 1;
-            return 2;
-          }
+        // Normalize based on expected column names from your Google Sheet
+        lawyers = raw.map(row => ({
+          name: row["Name"] || "",
+          phone: row["Phone"] || "",
+          photo: row["Photo URL"] || "",
+          city: row["City"] || "",
+          plan: (row["Plan"] || "FREE").toUpperCase(),
+          verified: (row["Verified"] || "").toLowerCase() === "yes" || row["Verified"] === true,
+          testimonials: row["Testimonials"] || ""
+        }));
       
-          lawyers.sort((a, b) => {
-            const r1 = rank(a);
-            const r2 = rank(b);
-            if (r1 !== r2) return r1 - r2;
-            return (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase());
-          });
-      
-          filtered = [...lawyers];
-          render();
+        function rank(lawyer) {
+          if (lawyer.plan === "PREMIUM") return 0;
+          if (lawyer.plan === "BASIC") return 1;
+          return 2;
         }
+      
+        lawyers.sort((a, b) => {
+          const r1 = rank(a);
+          const r2 = rank(b);
+          if (r1 !== r2) return r1 - r2;
+          return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
+        });
+      
+        filtered = [...lawyers];
+        render();
+      }
 
         function render() {
             const grid = document.getElementById("lawyerGrid");
