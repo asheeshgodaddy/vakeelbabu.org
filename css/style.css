@@ -547,7 +547,7 @@ tbody tr:hover {
   position: absolute;
   top: 8px;
   left: 8px;
-  background-color: linear-gradient(45deg, #ffd700, #ffec8b, #ffd700);
+  background-color: rgb(233, 254, 3);
   color: #000;
   padding: 4px 10px;
   font-size: 12px;
