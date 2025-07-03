@@ -166,120 +166,112 @@
     </div>
     <div class="lawyer-grid" id="lawyerGrid"></div>
     <div class="pagination" id="pagination"></div>
+    <br>
+    <br>
+    <br>
 
     <script>
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbwlaUkufVx1m2_dDBTFjWio0lkxZCAcLlT66S73z19w5CnxtcloVWdG-Tr283c-RI2A/exec';
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec';
       let lawyers = [];
       let filtered = [];
       let currentPage = 1;
       const pageSize = 6;
 
       async function fetchData() {
-        const res = await fetch(scriptURL);
-        lawyers = await res.json();
-
-        // Sorting Premium > Featured (but not Premium)> Verified (but not Premium or Featured) > Others (unverified and not featured or premium)
-        function rank(lawyer) {
-          if (lawyer.plan === "PREMIUM") return 0;
-          if (lawyer.featured && lawyer.plan !== "PREMIUM") return 1;
-          if (lawyer.verified && !lawyer.featured && lawyer.plan !== "PREMIUM") return 2;
-          return 3;
-        }
-        
-        lawyers.sort((a, b) => {
-          const r1 = rank(a);
-          const r2 = rank(b);
-          if (r1 !== r2) return r1 - r2;
-          return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-        });
-
-
-        filtered = [...lawyers];
-        render();
-      }
-
-      function render() {
-        const grid = document.getElementById("lawyerGrid");
-        grid.innerHTML = "";
-        const start = (currentPage - 1) * pageSize;
-        const pageItems = filtered.slice(start, start + pageSize);
-
-        pageItems.forEach(l => {
-          const card = document.createElement("div");
-          card.className = "card" 
-            + (l.featured ? " featured" : "")
-            + (l.plan === "PREMIUM" ? " premium" : "");
-
-
-          const verifiedBadge = l.verified
-            ? '<span class="verified-badge">✔ Verified</span>'
-            : '';
-
-          const testimonial = l.testimonials
-            ? `<div class="testimonial">“${l.testimonials.split(';')[0].trim()}”</div>`
-            : '';
-
-          console.log(l.name, "Verified:", l.verified);
-
-          card.innerHTML = `
-            <img src="${l.photo}" alt="photo">
-            <h3>${l.name}</h3>
-            ${verifiedBadge}
-            <p>${l.city}</p>
-            <p>${l.phone}</p>
-            ${testimonial}
-            <div class="button-group">
-              <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
-              <button onclick="deleteLawyer('${l.phone}')">Delete</button>
-            </div>
-          `;
-
-          grid.appendChild(card);
-        });
-
-        renderPagination();
-      }
-
-      function renderPagination() {
-        const totalPages = Math.ceil(filtered.length / pageSize);
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
-        for (let i = 1; i <= totalPages; i++) {
-          const btn = document.createElement("button");
-          btn.textContent = i;
-          if (i === currentPage) btn.style.fontWeight = "bold";
-          btn.onclick = () => { currentPage = i; render(); };
-          pagination.appendChild(btn);
-        }
-      }
-
-      function deleteLawyer(phone) {
-        const code = prompt("Enter Admin Code to delete:");
-        if (!code) return;
-        fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
-          method: 'DELETE'
-        }).then(r => r.text()).then(msg => {
-          if (msg === "DELETED") {
-            alert("Deleted successfully");
-            lawyers = lawyers.filter(l => l.phone !== phone);
-            filtered = filtered.filter(l => l.phone !== phone);
-            render();
-          } else {
-            alert("Delete failed: " + msg);
+          const res = await fetch(scriptURL);
+          lawyers = await res.json();
+      
+          function rank(lawyer) {
+            if (lawyer.plan === "PREMIUM") return 0;
+            if (lawyer.plan === "BASIC") return 1;
+            return 2;
           }
-        });
-      }
+      
+          lawyers.sort((a, b) => {
+            const r1 = rank(a);
+            const r2 = rank(b);
+            if (r1 !== r2) return r1 - r2;
+            return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+          });
+      
+          filtered = [...lawyers];
+          render();
+        }
 
+        function render() {
+            const grid = document.getElementById("lawyerGrid");
+            grid.innerHTML = "";
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filtered.slice(start, start + pageSize);
+        
+            pageItems.forEach(l => {
+              const card = document.createElement("div");
+              card.className = "card" 
+                + (l.plan === "PREMIUM" ? " premium" : "")
+                + (l.verified ? " verified" : "");
+        
+              const testimonial = l.testimonials
+                ? `<div class="testimonial">“${l.testimonials.split(';')[0].trim()}”</div>`
+                : '';
+        
+              card.innerHTML = `
+                <img src="${l.photo}" alt="photo">
+                <h3>${l.name}</h3>
+                <p>${l.phone}</p>
+                ${testimonial}
+                <div class="button-group">
+                  <button class="contact-now" onclick="contactNow('${l.phone}')">Contact Now</button>
+                  <button onclick="deleteLawyer('${l.phone}')">Delete</button>
+                </div>
+                ${l.verified ? '<span class="verified-badge">✔ Verified</span>' : ''}
+              `;
+        
+              grid.appendChild(card);
+            });
+        
+            renderPagination();
+          }
+
+
+          function renderPagination() {
+            const totalPages = Math.ceil(filtered.length / pageSize);
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+            for (let i = 1; i <= totalPages; i++) {
+              const btn = document.createElement("button");
+              btn.textContent = i;
+              if (i === currentPage) btn.style.fontWeight = "bold";
+              btn.onclick = () => { currentPage = i; render(); };
+              pagination.appendChild(btn);
+            }
+          }
+
+          function deleteLawyer(phone) {
+            const code = prompt("Enter Admin Code to delete:");
+            if (!code) return;
+            fetch(`${scriptURL}?phone=${phone}&code=${encodeURIComponent(code)}`, {
+              method: 'DELETE'
+            }).then(r => r.text()).then(msg => {
+              if (msg === "DELETED") {
+                alert("Deleted successfully");
+                lawyers = lawyers.filter(l => l.phone !== phone);
+                filtered = filtered.filter(l => l.phone !== phone);
+                render();
+              } else {
+                alert("Delete failed: " + msg);
+              }
+            });
+          }
+    
       function contactNow(phone) {
         alert("Please call or WhatsApp the lawyer at: " + phone);
-        // Optional: redirect to a contact page or trigger modal
       }
-
+    
       function applyFilters() {
         const q = document.getElementById("search").value.toLowerCase();
         const showVerifiedOnly = document.getElementById("onlyVerified").checked;
         const showPremiumOnly = document.getElementById("onlyPremium").checked;
-      
+    
         filtered = lawyers.filter(l => {
           const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
           const isVerifiedOk = !showVerifiedOnly || l.verified;
@@ -303,16 +295,16 @@
         render();
       });
 
-      document.getElementById("onlyVerified").addEventListener("change", () => {
-        const q = document.getElementById("search").value.toLowerCase();
-        currentPage = 1;
-        filtered = lawyers.filter(l => {
-          const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
-          const isVerified = !document.getElementById("onlyVerified").checked || l.verified;
-          return matchesSearch && isVerified;
-        });
-        render();
-      });
+//      document.getElementById("onlyVerified").addEventListener("change", () => {
+//        const q = document.getElementById("search").value.toLowerCase();
+//        currentPage = 1;
+//        filtered = lawyers.filter(l => {
+//          const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
+//          const isVerified = !document.getElementById("onlyVerified").checked || l.verified;
+//          return matchesSearch && isVerified;
+//        });
+//        render();
+//      });
 
 
       fetchData();
