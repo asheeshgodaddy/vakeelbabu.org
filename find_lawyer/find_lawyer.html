@@ -191,7 +191,7 @@
             const r1 = rank(a);
             const r2 = rank(b);
             if (r1 !== r2) return r1 - r2;
-            return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            return (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase());
           });
       
           filtered = [...lawyers];
@@ -215,7 +215,7 @@
                 : '';
         
               card.innerHTML = `
-                <img src="${l.photo}" alt="photo">
+                <img src="${l.photo || 'default-photo.jpg'}" alt="photo">
                 <h3>${l.name}</h3>
                 <p>${l.phone}</p>
                 ${testimonial}
@@ -273,7 +273,7 @@
         const showPremiumOnly = document.getElementById("onlyPremium").checked;
     
         filtered = lawyers.filter(l => {
-          const matchesSearch = l.name.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
+          const matchesSearch = (l.name || '').toLowerCase().includes(q) || (l.city || '').toLowerCase().includes(q);
           const isVerifiedOk = !showVerifiedOnly || l.verified;
           const isPremiumOk = !showPremiumOnly || l.plan === "PREMIUM";
           return matchesSearch && isVerifiedOk && isPremiumOk;
@@ -323,8 +323,18 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
-      const scrollmenu = document.getElementById("scrollmenu");
+      
+    const scrollmenu = document.getElementById("scrollmenu");
+    if (scrollmenu) {
       const offsetTop = scrollmenu.offsetTop;
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset >= offsetTop) {
+          scrollmenu.classList.add("fixed");
+        } else {
+          scrollmenu.classList.remove("fixed");
+        }
+      });
+    }
 
       window.addEventListener("scroll", function () {
         if (window.pageYOffset >= offsetTop) {
