@@ -104,19 +104,7 @@
     </div> 
     <script src="/src/g_trans.js"></script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-                
     <!-- JavaScript to fix the menu on top while scrolling-->
-    <script>
-      const scrollmenu = document.getElementById("scrollmenu");
-      const offsetTop = scrollmenu.offsetTop;
-
-      window.addEventListener("scroll", function () {
-        if (window.pageYOffset >= offsetTop) {
-          scrollmenu.classList.add("fixed");
-        } else {
-          scrollmenu.classList.remove("fixed");
-        }
-      });
-    </script>
+    <script src="/src/fix_menu.js"></script>
   </body>
 </html>
