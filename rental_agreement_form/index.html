@@ -62,12 +62,39 @@
     <br>
 
     <form id="rentalForm">
+      <label>Name of the Landlord</label>
       <input name="landlord_name" placeholder="Landlord Name" required>
+
+      <label>Name of the Tenant</label>
       <input name="tenant_name" placeholder="Tenant Name" required>
+
+      <label>Tenant's Present Address</label>
+      <textarea name="tenant_address" placeholder="Tenant's Present Address" required></textarea>
+
+      <label>Property Address</label>
       <textarea name="property_address" placeholder="Property Address" required></textarea>
-      <input name="rent_amount" placeholder="Rent (INR)" required>
-      <input name="duration" placeholder="Duration (months)" required>
-      <input type="date" name="start_date" required>
+
+      <label>Place of Agreement</label>
+      <input name="place_of_agreement" placeholder="Place of Agreement" required>
+
+      <label>Rent Amount</label>
+      <input name="rent_amount" placeholder="Rent (INR)" type="number" required id="rent_amount">
+
+      <label>Rent Amount - In Words</label>
+      <input name="rent_in_words" placeholder="Rent in Words" readonly style="background: #eee; color: #555;" id="rent_in_words">
+
+      <label>Date of Execution of this rent agreement</label>
+      <input type="date" name="exec_date" required id="exec_date">
+
+      <label>Start Date of the rent agreement</label>
+      <input type="date" name="start_date" required id="start_date">
+
+      <label>Effective Until</label>
+      <input type="text" name="end_date" placeholder="Effective Until Date" readonly style="background: #eee; color: #555;" id="end_date">
+
+      <label>% Increase After 11 Months</label>
+      <input name="rent_increase_percentage" placeholder="% Increase After 11 Months" type="number" required>
+      
       <button type="submit">Generate Agreement</button>
     </form>
     <div id="msg"></div>
@@ -113,5 +140,45 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <!-- JavaScript to fix the menu on top while scrolling-->
     <script src="/src/fix_menu.js"></script>
+    
+    <script>
+      // Convert number to words (basic version)
+      function numberToWords(num) {
+        const a = [
+          '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven',
+          'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen',
+          'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+        ];
+        const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+    
+        if ((num = num.toString()).length > 9) return 'Overflow';
+        
+        const n = ('000000000' + num).substr(-9).match(/(\d{2})(\d{2})(\d{2})(\d{3})/);
+        if (!n) return;
+        
+        let str = '';
+        str += n[1] != 0 ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' Crore ' : '';
+        str += n[2] != 0 ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' Lakh ' : '';
+        str += n[3] != 0 ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' Thousand ' : '';
+        str += n[4] != 0 ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' ' : '';
+        return str.trim() + ' Rupees Only';
+      }
+    
+      document.getElementById("rent_amount").addEventListener("input", function () {
+        const value = parseInt(this.value);
+        const words = isNaN(value) ? '' : numberToWords(value);
+        document.getElementById("rent_in_words").value = words;
+      });
+    
+      document.getElementById("start_date").addEventListener("change", function () {
+        const start = new Date(this.value);
+        if (!isNaN(start)) {
+          const end = new Date(start.setMonth(start.getMonth() + 11));
+          const formatted = end.toISOString().split('T')[0];
+          document.getElementById("end_date").value = formatted;
+        }
+      });
+    </script>
+
   </body>
 </html>
