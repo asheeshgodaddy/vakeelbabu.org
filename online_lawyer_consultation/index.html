@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/favicon.png">
+  <meta name="theme-color" content="#2c2f34">
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Lawyer Consultation | VakeelBabu</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
+    .container { display: flex; flex-wrap: wrap; padding: 40px; gap: 40px; justify-content: space-between; }
+    .left { flex: 1 1 55%; }
+    .right { flex: 1 1 35%; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); }
+    .heading { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+    .subtext { font-size: 16px; color: #444; margin-bottom: 20px; }
+    .highlight-box { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .badge { display: inline-block; background: #eaf9f0; color: #28a745; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+    .form-field { width: 100%; margin-bottom: 16px; }
+    .form-field input, .form-field select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+    .consult-btn { width: 100%; background-color: #ffc107; border: none; padding: 12px; font-weight: bold; font-size: 16px; border-radius: 6px; cursor: pointer; }
+    .discount-label { margin-top: 16px; font-size: 14px; color: #28a745; font-weight: 600; }
+    .expertise-section { display: flex; gap: 16px; margin-top: 20px; overflow-x: auto; }
+    .expertise-card { min-width: 150px; background: #fff; padding: 16px; border-radius: 10px; text-align: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05); }
+    .expertise-card img { width: 50px; margin-bottom: 8px; }
+    .expertise-card p { font-weight: 600; font-size: 14px; margin: 0; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
+  
+  <div class="container">
+    <div class="left">
+      <div class="heading">Online Lawyer Consultation</div>
+      <div class="subtext">Affordable legal solutions from expert lawyers. Full litigation, documentation and support.</div>
+      <div class="highlight-box">
+        <span>✅ Guaranteed satisfaction or your money back</span>
+      </div>
+      <div class="highlight-box">
+        <span class="badge">500+ lawyers are available</span>
+        <span class="badge" style="background:#fef3f3;color:#dc3545;">No ongoing calls</span>
+      </div>
+      <div class="expertise-section">
+        <div class="expertise-card">
+          <img src="https://cdn-icons-png.flaticon.com/512/4727/4727426.png" alt="Legal Notices">
+          <p>Legal Notices</p>
+        </div>
+        <div class="expertise-card">
+          <img src="https://cdn-icons-png.flaticon.com/512/2060/2060433.png" alt="Property Lawyer">
+          <p>Property Lawyer</p>
+        </div>
+        <div class="expertise-card">
+          <img src="https://cdn-icons-png.flaticon.com/512/2910/2910794.png" alt="Civil Lawyer">
+          <p>Civil Lawyer</p>
+        </div>
+        <div class="expertise-card">
+          <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Company Law">
+          <p>Company Law</p>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <form id="consultForm">
+        <div class="form-field">
+          <input type="email" id="email" placeholder="Email" required />
+        </div>
+        <div class="form-field">
+          <input type="tel" id="phone" placeholder="Mobile Number" required />
+          <div id="recaptcha-container"></div>
+          <button type="button" onclick="sendOTP()">Send OTP</button>
+        </div>
+        <div class="form-field">
+          <input type="text" id="city" placeholder="City/Pincode" required />
+        </div>
+        <div class="form-field">
+          <select id="language" required>
+            <option value="">Select Language</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <select id="problem" required>
+            <option value="">Problem Type</option>
+            <option value="Property Dispute">Property Dispute</option>
+            <option value="Divorce">Divorce</option>
+            <option value="Cheque Bounce">Cheque Bounce</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label><input type="checkbox" checked /> Get updates on <strong>WhatsApp</strong></label>
+        </div>
+        <button type="submit" class="consult-btn">Consult now</button>
+        <div class="discount-label">
+          <s>₹799</s> <strong>₹399</strong> for a 30-minute Lawyer Consultation
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function sendOTP() {
+      const phone = "+91" + document.getElementById("phone").value;
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+      auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
+        .then(confirmResult => {
+          const otp = prompt("Enter OTP sent to your phone:");
+          return confirmResult.confirm(otp);
+        })
+        .then(result => {
+          alert("Phone number verified");
+        })
+        .catch(error => {
+          alert("OTP Error: " + error.message);
+        });
+    }
+
+    document.getElementById("consultForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const amount = 399 * 100; // in paise
+      const phone = document.getElementById("phone").value;
+      const name = document.getElementById("email").value;
+      const city = document.getElementById("city").value;
+      const lang = document.getElementById("language").value;
+      const problem = document.getElementById("problem").value;
+
+      const options = {
+        key: "YOUR_RAZORPAY_KEY",
+        amount: amount,
+        currency: "INR",
+        name: "VakeelBabu Consultation",
+        description: "30-minute legal consultation",
+        handler: async function (response) {
+          const res = await fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_URL/exec", {
+            method: "POST",
+            body: JSON.stringify({
+              type: "book_consult",
+              name,
+              phone,
+              city,
+              lang,
+              problem,
+              amount: 399,
+              paymentId: response.razorpay_payment_id
+            })
+          });
+          const data = await res.json();
+          alert("Consultation booked! You'll be contacted soon.");
+        },
+        prefill: { contact: phone, email: name },
+        theme: { color: "#ffc107" }
+      };
+      const rzp = new Razorpay(options);
+      rzp.open();
+    });
+  </script>
+</body>
+</html>
