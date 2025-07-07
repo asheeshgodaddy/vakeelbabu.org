@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Favicon -->
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/favicon.png">
+  <meta name="theme-color" content="#2c2f34">
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Lawyer Consultation | VakeelBabu</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      color: white;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 40px;
+      gap: 40px;
+      justify-content: space-between;
+    }
+    .info-section {
+      flex: 1 1 55%;
+    }
+    .info-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .info-description {
+      font-size: 16px;
+      color: #cdd48f;
+      margin-bottom: 20px;
+    }
+    .info-bullets {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .badge-success {
+      background: #eaf9f0;
+      color: #28a745;
+    }
+    .badge-danger {
+      background: #fef3f3;
+      color: #dc3545;
+    }
+    .badge-good {
+      background: #fef3f3;
+      color: #010c34f4;
+    }
+    .blink-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #02681a;
+      border-radius: 50%;
+      margin-left: 8px;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      60% { opacity: 0.3; }
+    }
+
+    .expertise-cards {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    .card {
+      min-width: 150px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+    .card img {
+      width: 50px;
+      margin-bottom: 8px;
+    }
+    .form-section {
+      flex: 1 1 35%;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+    form > div {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+    button[type="submit"] {
+      width: 100%;
+      background-color: #ffc107;
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .price-discount {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #28a745;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
+  
+  <div class="container">
+    <div class="info-section">
+      <div class="blinking-red">
+        <h1>
+          <a href="#" style="text-decoration: none; color: inherit;">
+            Online Lawyer Consultation <br>
+          </a>
+        </h1>
+      </div>
+      <div class="info-bullets">
+        <span class="badge badge-good">
+          <span id="lawyer-count"></span> lawyers are available
+          <span class="blink-dot"></span>
+        </span>
+        <span class="badge badge-good">
+          <span id="call-count"></span> 📞 ongoing calls
+          <span class="blink-dot"></span>
+        </span>
+      </div>
+      <div class="info-description">
+        <div class="info-bullets">Expert legal services at affordable rates: 
+          <br>&nbsp;&nbsp;&nbsp;💰 Fair prices
+          <br>&nbsp;&nbsp;&nbsp;⚖️ Comprehensive litigation
+          <br>&nbsp;&nbsp;&nbsp;📂 Documentation
+          <br>&nbsp;&nbsp;&nbsp;🔒 Confidential & Secure Consultationssupport
+        </div>
+      </div>
+      
+      <div class="info-bullets">✅ We stand by our service. If you're not completely satisfied, we’ll issue a full refund — no hassle.</div>
+
+    </div>
+    <div class="form-section">
+      <form id="contactForm" action="https://script.google.com/macros/s/AKfycbx7ej09Jv7Ti9um0lXTnZ7dUwwGBU6mBzSu-JF7g6vaHkV-J_yrpYKOl5nQ_NWiPnXo/exec" method="POST">
+        <input name="email" placeholder="Email Address *" required type="email">
+        <input name="name" placeholder="Full Name *" required>
+        <input type="phone" id="phoneInput" placeholder="Enter your 10-digit phone number *" pattern="\d{10}" maxlength="10" inputmode="numeric" required>
+        <div id="recaptcha-container"></div>
+        <button type="button" onclick="sendOTP()" style="padding-top: 5px;">Send OTP</button>
+        <input type="text" id="city" placeholder="City/Pincode *" required />
+        <select name="language" required>
+          <option value="">Select Language</option>
+          <option value="English">English</option>
+          <option value="Hindi">Hindi</option>
+        </select>
+        <select name="issue" required>
+          <option value="">Select legal Problem</option>
+          <option>Cheque Bounce</option>
+          <option>Civil</option>
+          <option>Corporate</option>
+          <option>Criminal</option>
+          <option>Divorce</option>
+          <option>Documentation</option>
+          <option>Property</option>
+          <option>Others</option>
+        </select>
+        <select name="urgency" required>
+          <option value="">Select urgency</option>
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+          <option>Emergency</option>
+        </select>
+        <div class="price-discount"><s>₹899</s> <strong>₹499</strong> for a 30-minute Lawyer Consultation</div>
+        <button type="submit">📞 Book a Consultation Now !!</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function sendOTP() {
+      const phone = "+91" + document.getElementById("phone").value;
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+      auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
+        .then(confirmResult => {
+          const otp = prompt("Enter OTP sent to your phone:");
+          return confirmResult.confirm(otp);
+        })
+        .then(result => {
+          alert("Phone number verified");
+        })
+        .catch(error => {
+          alert("OTP Error: " + error.message);
+        });
+    }
+
+    document.getElementById("consultForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (!otpVerified) {
+        alert("❌ Please verify your phone number first.");
+        return;
+      }
+    
+      const form = e.target;
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+    
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
+      const name = document.querySelector('[name="name"]').value;
+      const city = document.getElementById("city").value;
+      const lang = document.getElementById("language").value;
+      const issue = document.querySelector('[name="issue"]').value;
+      const urgency = document.querySelector('[name="urgency"]').value;
+    
+      const options = {
+        key: "YOUR_RAZORPAY_KEY",
+        amount: 49900,
+        currency: "INR",
+        name: "VakeelBabu",
+        description: "Legal Consultation",
+        handler: async function (response) {
+          // Call Google Script
+          await fetch("https://script.google.com/macros/s/AKfycbzgo9AmsxKbwQRgk0JASQZs2ET1kom0hf0lWw5-lM2Fd93k0NRZvbL2f7nv9bOjqZQ7/exec", {
+            method: "POST",
+            body: JSON.stringify({
+              type: "book_consult",
+              name,
+              phone,
+              email,
+              city,
+              lang,
+              issue,
+              urgency,
+              amount: 499,
+              paymentId: response.razorpay_payment_id
+            })
+          });
+    
+          showModal("✅ Consultation Booked Successfully!");
+          form.reset();
+          otpVerified = false;
+          submitBtn.disabled = true;
+        },
+        prefill: { contact: phone, email: email },
+        theme: { color: "#ffc107" }
+      };
+    
+      const rzp = new Razorpay(options);
+      rzp.open();
+    });
+
+  </script>
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      const lawyerCount = Math.floor(Math.random() * (1200 - 1 + 1)) + 1;
+      const callCount = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+
+      document.getElementById("lawyer-count").textContent = `${lawyerCount}+`;
+      document.getElementById("call-count").textContent = `${callCount}+`;
+    });
+  </script>
+  <script>
+    let otpVerified = false;
+    document.getElementById("submitBtn").disabled = true;
+    
+    function sendOTP() {
+      const phone = "+91" + document.getElementById("phone").value;
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+    
+      firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
+        .then(confirmResult => {
+          const otp = prompt("Enter OTP:");
+          return confirmResult.confirm(otp);
+        })
+        .then(result => {
+          otpVerified = true;
+          document.getElementById("submitBtn").disabled = false;
+          alert("✅ Phone number verified!");
+        })
+        .catch(error => {
+          alert("❌ OTP Error: " + error.message);
+        });
+    }
+  </script>
+
+  <div id="modal" class="modal">
+  <div class="modal-content" id="modal-message"></div>
+  </div>
+  
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background: white;
+      margin: 15% auto;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+  
+  <script>
+    function showModal(message) {
+      const modal = document.getElementById("modal");
+      const msgBox = document.getElementById("modal-message");
+      msgBox.innerText = message;
+      modal.style.display = "block";
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>
