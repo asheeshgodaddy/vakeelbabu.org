@@ -259,6 +259,9 @@
           // Call Google Script
           await fetch("https://script.google.com/macros/s/AKfycbzgo9AmsxKbwQRgk0JASQZs2ET1kom0hf0lWw5-lM2Fd93k0NRZvbL2f7nv9bOjqZQ7/exec", {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json"  // ✅ THIS IS REQUIRED
+            },
             body: JSON.stringify({
               type: "book_consult",
               name,
