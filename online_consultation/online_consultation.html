@@ -135,6 +135,18 @@
       font-weight: 600;
     }
   </style>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
+      authDomain: "vakeelbabu-org.firebaseapp.com",
+      projectId: "vakeelbabu-org",
+      storageBucket: "vakeelbabu-org.appspot.com",
+      messagingSenderId: "972570830530",
+      appId: "1:972570830530:web:609292922896728b16fd5b",
+      measurementId: "G-3CVWS84Y4X"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 </head>
 
 <body>
@@ -181,10 +193,10 @@
 
     </div>
     <div class="form-section">
-      <form id="contactForm" action="https://script.google.com/macros/s/AKfycbx7ej09Jv7Ti9um0lXTnZ7dUwwGBU6mBzSu-JF7g6vaHkV-J_yrpYKOl5nQ_NWiPnXo/exec" method="POST">
+      <form id="consultForm" action="https://script.google.com/macros/s/AKfycbx7ej09Jv7Ti9um0lXTnZ7dUwwGBU6mBzSu-JF7g6vaHkV-J_yrpYKOl5nQ_NWiPnXo/exec" method="POST">
         <input name="email" placeholder="Email Address *" required type="email">
         <input name="name" placeholder="Full Name *" required>
-        <input type="phone" id="phoneInput" placeholder="Enter your 10-digit phone number *" pattern="\d{10}" maxlength="10" inputmode="numeric" required>
+        <input type="tel" id="phone" name="phone"placeholder="Enter your 10-digit phone number *" pattern="\d{10}" maxlength="10" inputmode="numeric" required>
         <div id="recaptcha-container"></div>
         <button type="button" onclick="sendOTP()" style="padding-top: 5px;">Send OTP</button>
         <input type="text" id="city" placeholder="City/Pincode *" required />
@@ -212,38 +224,12 @@
           <option>Emergency</option>
         </select>
         <div class="price-discount"><s>₹899</s> <strong>₹499</strong> for a 30-minute Lawyer Consultation</div>
-        <button type="submit">📞 Book a Consultation Now !!</button>
+        <button type="submit" id="submitBtn">📞 Book a Consultation Now !!</button>
       </form>
     </div>
   </div>
   <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_BUCKET",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-
-    function sendOTP() {
-      const phone = "+91" + document.getElementById("phone").value;
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-      auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
-        .then(confirmResult => {
-          const otp = prompt("Enter OTP sent to your phone:");
-          return confirmResult.confirm(otp);
-        })
-        .then(result => {
-          alert("Phone number verified");
-        })
-        .catch(error => {
-          alert("OTP Error: " + error.message);
-        });
-    }
-
     document.getElementById("consultForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!otpVerified) {
@@ -310,23 +296,31 @@
       document.getElementById("call-count").textContent = `${callCount}+`;
     });
   </script>
+  
   <script>
     let otpVerified = false;
-    document.getElementById("submitBtn").disabled = true;
-    
+    let confirmationResult;
+    let recaptchaVerifier;
+  
+    window.onload = function () {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible'
+      });
+      recaptchaVerifier.render();
+    };
+  
     function sendOTP() {
       const phone = "+91" + document.getElementById("phone").value;
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-    
-      firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
-        .then(confirmResult => {
-          const otp = prompt("Enter OTP:");
-          return confirmResult.confirm(otp);
-        })
+      firebase.auth().signInWithPhoneNumber(phone, recaptchaVerifier)
         .then(result => {
+          confirmationResult = result;
+          const otp = prompt("Enter OTP sent to your phone:");
+          return confirmationResult.confirm(otp);
+        })
+        .then(() => {
           otpVerified = true;
-          document.getElementById("submitBtn").disabled = false;
           alert("✅ Phone number verified!");
+          document.getElementById("submitBtn").disabled = false;
         })
         .catch(error => {
           alert("❌ OTP Error: " + error.message);
