@@ -147,6 +147,28 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
+  
+  <script>
+  let recaptchaVerifier;
+  let confirmationResult;
+  let otpVerified = false;
+
+  window.onload = function () {
+    if (!recaptchaVerifier) {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: function(response) {
+          console.log("reCAPTCHA resolved");
+        }
+      });
+
+      recaptchaVerifier.render().then(widgetId => {
+        window.recaptchaWidgetId = widgetId;
+      });
+    }
+  };
+</script>
+
 </head>
 
 <body>
@@ -300,44 +322,21 @@
       document.getElementById("call-count").textContent = `${callCount}+`;
     });
   </script>
-  
+   
   <script>
-    let recaptchaVerifier;
-    let confirmationResult;
-    let otpVerified = false;
-  
-    window.onload = function () {
-      if (!recaptchaVerifier) {
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible',
-          callback: function(response) {
-            console.log("reCAPTCHA solved");
-          }
-        });
-  
-        recaptchaVerifier.render().then(widgetId => {
-          window.recaptchaWidgetId = widgetId;
-        });
-      }
-    };
-  </script>
-  
-  <script>
-    let otpSent = false;
-    
     function sendOTP() {
-      console.log("sendOTP called"); // logging events
+      console.log("sendOTP called");
       const phoneField = document.getElementById("phone");
       const otpInput = document.getElementById("otpInput");
       const otpBtn = event.target;
-    
+  
       if (!otpSent) {
         const phone = "+91" + phoneField.value;
         if (phoneField.value.length !== 10) {
           alert("Please enter a valid 10-digit phone number.");
           return;
         }
-    
+  
         firebase.auth().signInWithPhoneNumber(phone, recaptchaVerifier)
           .then(result => {
             confirmationResult = result;
@@ -347,6 +346,7 @@
           })
           .catch(error => {
             alert("❌ Failed to send OTP: " + error.message);
+            console.error(error);
           });
       } else {
         const enteredOtp = document.getElementById("otpInput").value;
@@ -354,9 +354,10 @@
           .then(() => {
             otpVerified = true;
             alert("✅ Phone number verified!");
-            document.getElementById("submitBtn").disabled = false;
-            document.getElementById("submitBtn").style.opacity = "1";
-            document.getElementById("submitBtn").style.cursor = "pointer";
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+            submitBtn.style.cursor = "pointer";
             otpBtn.disabled = true;
           })
           .catch(err => {
@@ -365,6 +366,7 @@
       }
     }
   </script>
+
 
   <div id="modal" class="modal">
   <div class="modal-content" id="modal-message"></div>
