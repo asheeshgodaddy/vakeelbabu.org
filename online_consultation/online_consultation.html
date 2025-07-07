@@ -254,17 +254,18 @@
   </div>
   <script>
     const auth = firebase.auth();
+  
     document.getElementById("consultForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       if (!otpVerified) {
         alert("❌ Please verify your phone number first.");
         return;
       }
-    
+  
       const form = e.target;
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
-    
+  
       const phone = document.getElementById("phone").value;
       const email = document.getElementById("email").value;
       const name = document.getElementById("name").value;
@@ -272,7 +273,7 @@
       const lang = document.getElementById("language").value;
       const issue = document.getElementById("issue").value;
       const urgency = document.getElementById("urgency").value;
-    
+  
       const options = {
         key: "rzp_test_5hUlHD5xojSBJn",
         amount: 49900,
@@ -280,27 +281,37 @@
         name: "VakeelBabu",
         description: "Legal Consultation",
         handler: async function (response) {
-          // Call Google Script
-          await fetch("https://script.google.com/macros/s/AKfycbzlFOpTpvK_i2urHeIPTDAhZkMCH6ZkL1ETbqQWS4apzKhZOC-YlGo0cUc_8CpqE8xU/exec", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"  // ✅ THIS IS REQUIRED
-            },
-            body: JSON.stringify({
-              type: "book_consult",
-              name,
-              phone,
-              email,
-              city,
-              lang,
-              issue,
-              urgency,
-              amount: 499,
-              paymentId: response.razorpay_payment_id
-            })
-          });
-    
-          showModal("✅ Consultation Booked Successfully!");
+          try {
+            const res = await fetch("https://script.google.com/macros/s/AKfycbxE1_GCGAtx9BFWvAHClhlvTr84Ud26j_Js48tJAQyCRKlGj4OL8Yj17o8Hmli7z1Kt/exec", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                type: "book_consult",
+                name,
+                phone,
+                email,
+                city,
+                lang,
+                issue,
+                urgency,
+                amount: 499,
+                paymentId: response.razorpay_payment_id
+              })
+            });
+  
+            const data = await res.json();
+            if (data.status === "success") {
+              showModal("✅ Consultation Booked Successfully!");
+            } else {
+              showModal("❌ Error: " + data.message);
+            }
+          } catch (err) {
+            console.error("❌ Failed to send to Google Script", err);
+            showModal("❌ Submission failed. Please try again.");
+          }
+  
           form.reset();
           otpVerified = false;
           submitBtn.disabled = true;
@@ -308,12 +319,12 @@
         prefill: { contact: phone, email: email },
         theme: { color: "#ffc107" }
       };
-    
+  
       const rzp = new Razorpay(options);
       rzp.open();
     });
-
   </script>
+
   <script>
     window.addEventListener("DOMContentLoaded", function () {
       const lawyerCount = Math.floor(Math.random() * (1200 - 1 + 1)) + 1;
