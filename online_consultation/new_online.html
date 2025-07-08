@@ -255,7 +255,7 @@
     */
 
     function sendOTP() {
-      const fullPhone = "+91" + document.getElementById("phoneInput").value;
+      const fullPhone = "+91" + document.getElementById("signupPhone").value;
       firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
