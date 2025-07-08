@@ -238,7 +238,7 @@
   
   
   <!-- JavaScript to fix the menu on top while scrolling-->
-  <script src="/src/fix_menu.js"></script>
+  <!--script src="/src/fix_menu.js"></script-->
   
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec";
@@ -391,10 +391,7 @@
       function closePlanInfo() {
         document.getElementById("planInfoModal").style.display = "none";
       }
-    
-      // Auto-show the modal when the page loads
-      let recaptchaVerifier; // Declare globally
-      
+         
       window.onload = function () {
         // ✅ Only show modal here
         showPlanInfo();
