@@ -145,6 +145,9 @@
           <option>Emergency</option>
       </select>
       <button type="submit" id="finalSubmit" disabled>Submit</button>
+      <p id="submittingMsg" style="display:none; text-align:center; font-weight:bold; color:#007bff;">
+        ⏳ Submitting, please wait...
+      </p>
       <p id="message"></p>
     </form>
   </div>
@@ -255,30 +258,65 @@
     */
 
     function sendOTP() {
-      const fullPhone = "+91" + document.getElementById("signupPhone").value;
+      const phone = document.getElementById("phoneInput").value.trim();
+      const phoneStatus = document.getElementById("phoneStatus");
+      const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
+    
+      if (!/^\d{10}$/.test(phone)) {
+        phoneStatus.textContent = "❌ Please enter a valid 10-digit phone number.";
+        return;
+      }
+    
+      document.getElementById("signupPhone").value = phone;
+      const fullPhone = "+91" + phone;
+    
+      // Disable button and show timer
+      sendOTPBtn.disabled = true;
+      startResendTimer(sendOTPBtn, 5); // 5 seconds timer
+    
       firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
           document.getElementById("otpSection").style.display = "block";
-          document.getElementById("otpMessage").textContent = "OTP sent!";
+          document.getElementById("otpMessage").textContent = "✅ OTP sent to +91 " + phone;
+          document.getElementById("otpInput").focus();
         })
         .catch(() => {
-          document.getElementById("otpMessage").textContent = "OTP send failed.";
+          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Please try again.";
+          sendOTPBtn.disabled = false; // Re-enable on error
         });
     }
 
-    function verifyOTP() {
-      const code = document.getElementById("otpInput").value;
-      confirmationResult.confirm(code)
-        .then(() => {
-          document.getElementById("verifiedOTP").value = "true";
-          document.getElementById("otpMessage").textContent = "OTP verified ✅";
-          document.getElementById("finalSubmit").disabled = false;
-        })
-        .catch(() => {
-          document.getElementById("otpMessage").textContent = "Invalid OTP ❌";
-        });
+    function startResendTimer(button, seconds) {
+      let remaining = seconds;
+      button.textContent = `Resend OTP in ${remaining}s`;
+    
+      const countdown = setInterval(() => {
+        remaining--;
+        button.textContent = `Resend OTP in ${remaining}s`;
+    
+        if (remaining <= 0) {
+          clearInterval(countdown);
+          button.textContent = "Send OTP";
+          button.disabled = false;
+        }
+      }, 1000);
     }
+
+    function verifyOTP() {
+        const code = document.getElementById("otpInput").value;
+      
+        confirmationResult.confirm(code)
+          .then(() => {
+            document.getElementById("verifiedOTP").value = "true";
+            document.getElementById("otpMessage").textContent = "✅ OTP verified successfully!";
+            document.getElementById("finalSubmit").disabled = false; // auto-enable final submit
+          })
+          .catch(() => {
+            document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Please try again.";
+          });
+      }
+
 
     document.getElementById('plan').addEventListener('change', function () {
       const value = this.value;
@@ -317,6 +355,7 @@
             name: "Vakeel Babu",
             description: `${plan} Plan`,
             handler: function (response) {
+              isPaymentInProgress = false;
               document.getElementById('payment_id').value = response.razorpay_payment_id;
               submitForm();
             },
@@ -325,6 +364,7 @@
             },
             theme: { color: "#007bff" }
           };
+          isPaymentInProgress = true;
           const rzp = new Razorpay(options);
           rzp.open();
         }
@@ -332,7 +372,20 @@
       reader.readAsDataURL(file);
     });
 
+
+    let isSubmitting = false; // 🚫 Prevent double submission
+    let isPaymentInProgress = false;
+    
     function submitForm() {
+      if (isSubmitting || isPaymentInProgress) {
+        console.warn("Submission blocked: Already submitting or payment pending.");
+        return;
+      }
+    
+      isSubmitting = true;
+      document.getElementById('finalSubmit').disabled = true;
+      document.getElementById('submittingMsg').style.display = "block";
+    
       const form = document.getElementById("signupForm");
       fetch(SCRIPT_URL, {
         method: "POST",
@@ -341,24 +394,27 @@
         .then(res => res.json())
         .then(data => {
           const msg = document.getElementById('message');
+          document.getElementById('submittingMsg').style.display = "none";
+    
           if (data.success) {
-          //  msg.textContent = "🎉 Submitted successfully!";
-          //  form.reset();
-          //  document.getElementById("finalSubmit").disabled = true;
-          //  setTimeout(() => location.reload(), 3000);
             const name = document.querySelector("input[name='name']").value;
             form.reset();
-            document.getElementById("finalSubmit").disabled = true;
-            showSuccessModal(name); // ✅ Show modal instead of auto-reload
+            showSuccessModal(name);
           } else {
             msg.style.color = "red";
             msg.textContent = data.message || "Something went wrong.";
+            document.getElementById("finalSubmit").disabled = false;
+            isSubmitting = false;
           }
         })
         .catch(() => {
           document.getElementById('message').textContent = "Server error. Try again.";
+          document.getElementById('submittingMsg').style.display = "none";
+          document.getElementById("finalSubmit").disabled = false;
+          isSubmitting = false;
         });
     }
+
     
     function showSuccessModal(name) {
       document.getElementById("userNameDisplay").textContent = name;
