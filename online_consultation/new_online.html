@@ -113,15 +113,20 @@
       <input name="name" placeholder="Full Name" required>
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
       <button type="button" onclick="sendOTP()">Send OTP</button>
+      
       <div id="recaptcha-container"></div>
+      
       <div id="otpSection" style="display:none;">
         <input type="text" id="otpInput" placeholder="Enter OTP" required>
         <button type="button" onclick="verifyOTP()">Verify OTP</button>
         <p id="otpMessage"></p>
       </div>
-      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
-      <input name="city" placeholder="City" required>
+
       <input type="hidden" name="phone" id="signupPhone">
+      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
+      <p id="phoneStatus"></p>
+      
+      <input name="city" placeholder="City" required>
       <input type="hidden" name="payment_id" id="payment_id">
       <select name="language" id="language" required>
           <option value="">Select Language</option>
@@ -155,6 +160,83 @@
   
   <script src="/src/g_trans.js"></script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    let confirmationResult;
+    let recaptchaVerifier;
+    let isSubmitting = false;
+    let isPaymentInProgress = false;
+  
+    window.addEventListener('DOMContentLoaded', () => {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible'
+      });
+      recaptchaVerifier.render();
+    });
+  
+    function sendOTP() {
+      const phone = document.getElementById("phoneInput").value.trim();
+      const phoneStatus = document.getElementById("phoneStatus");
+      const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
+  
+      if (!/^\d{10}$/.test(phone)) {
+        phoneStatus.textContent = "❌ Please enter a valid 10-digit phone number.";
+        return;
+      }
+  
+      // Save phone in hidden field for later
+      document.getElementById("signupPhone").value = phone;
+      const fullPhone = "+91" + phone;
+  
+      sendOTPBtn.disabled = true;
+      startResendTimer(sendOTPBtn, 30);
+  
+      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
+        .then(result => {
+          confirmationResult = result;
+          document.getElementById("otpSection").style.display = "block";
+          document.getElementById("otpInput").focus();
+          document.getElementById("otpMessage").textContent = "✅ OTP sent to +91 " + phone;
+        })
+        .catch(error => {
+          console.error("OTP Error:", error);
+          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Try again.";
+          sendOTPBtn.disabled = false;
+        });
+    }
+  
+    function verifyOTP() {
+      const code = document.getElementById("otpInput").value;
+      confirmationResult.confirm(code)
+        .then(() => {
+          document.getElementById("verifiedOTP").value = "true";
+          document.getElementById("otpMessage").textContent = "✅ OTP verified successfully!";
+          document.getElementById("finalSubmit").disabled = false;
+        })
+        .catch(() => {
+          document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Please try again.";
+        });
+    }
+  
+    function startResendTimer(button, seconds) {
+      let remaining = seconds;
+      button.textContent = `Resend OTP in ${remaining}s`;
+  
+      const countdown = setInterval(() => {
+        remaining--;
+        button.textContent = `Resend OTP in ${remaining}s`;
+  
+        if (remaining <= 0) {
+          clearInterval(countdown);
+          button.textContent = "Send OTP";
+          button.disabled = false;
+        }
+      }, 1000);
+    }
+  </script>
+
+  
+  
   <!-- JavaScript to fix the menu on top while scrolling-->
   <script src="/src/fix_menu.js"></script>
   
@@ -188,82 +270,6 @@
       });
       recaptchaVerifier.render();
     };
-
-    function sendOTP() {
-      const phoneInput = document.getElementById("phoneInput");
-      const phone = phoneInput.value.trim();
-      const phoneStatus = document.getElementById("phoneStatus");
-      const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
-    
-      if (!/^\d{10}$/.test(phone)) {
-        phoneStatus.textContent = "❌ Please enter a valid 10-digit phone number.";
-        return;
-      }
-    
-      // ✅ Store phone in hidden field for later use
-      document.getElementById("signupPhone").value = phone;
-    
-      const fullPhone = "+91" + phone;
-    
-      // ✅ Disable button and show resend timer
-      sendOTPBtn.disabled = true;
-      startResendTimer(sendOTPBtn, 30);
-    
-      // ✅ Ensure reCAPTCHA is available
-      if (!window.recaptchaVerifier) {
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible'
-        });
-        recaptchaVerifier.render();
-      }
-    
-      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
-        .then(result => {
-          confirmationResult = result;
-    
-          // ✅ SHOW OTP INPUT SECTION
-          document.getElementById("otpSection").style.display = "block";
-          document.getElementById("otpInput").focus();
-          document.getElementById("otpMessage").textContent = "✅ OTP sent to +91 " + phone;
-        })
-        .catch(error => {
-          console.error("OTP Error:", error);
-          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Try again.";
-          sendOTPBtn.disabled = false;
-        });
-    }
-
-
-    function startResendTimer(button, seconds) {
-      let remaining = seconds;
-      button.textContent = `Resend OTP in ${remaining}s`;
-    
-      const countdown = setInterval(() => {
-        remaining--;
-        button.textContent = `Resend OTP in ${remaining}s`;
-    
-        if (remaining <= 0) {
-          clearInterval(countdown);
-          button.textContent = "Send OTP";
-          button.disabled = false;
-        }
-      }, 1000);
-    }
-
-    function verifyOTP() {
-        const code = document.getElementById("otpInput").value;
-      
-        confirmationResult.confirm(code)
-          .then(() => {
-            document.getElementById("verifiedOTP").value = "true";
-            document.getElementById("otpMessage").textContent = "✅ OTP verified successfully!";
-            document.getElementById("finalSubmit").disabled = false; // auto-enable final submit
-          })
-          .catch(() => {
-            document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Please try again.";
-          });
-      }
-
 
     document.getElementById('plan').addEventListener('change', function () {
       const value = this.value;
@@ -324,6 +330,11 @@
     let isPaymentInProgress = false;
     
     function submitForm() {
+      if (document.getElementById("verifiedOTP").value !== "true") {
+        alert("Please verify OTP first.");
+        return;
+      }
+      
       if (isSubmitting || isPaymentInProgress) {
         console.warn("Submission blocked: Already submitting or payment pending.");
         return;
