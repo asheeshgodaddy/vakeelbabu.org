@@ -136,7 +136,7 @@
       <div class="form-section">
         <h2 style="text-align: center;">Send Us a Message</h2>
         <p><br>Fill out the form below and our legal experts will get back to you within 2 hours.<br></p>
-        <form id="contactForm" action="https://script.google.com/macros/s/AKfycbx7ej09Jv7Ti9um0lXTnZ7dUwwGBU6mBzSu-JF7g6vaHkV-J_yrpYKOl5nQ_NWiPnXo/exec" method="POST">
+        <form id="contactForm" action="https://script.google.com/macros/s/AKfycbyYLaMq18PIoqP2LDgZcbHnMivvIoVqJZLWPAyUEYhOvPDzY1LmFrdMFt43T9CRAw9S/exec" method="POST">
           <input name="name" placeholder="Full Name *" required>
           <input type="phone" id="phoneInput" placeholder="Enter your 10-digit phone number *" pattern="\d{10}" maxlength="10" inputmode="numeric" required>
           <input name="email" placeholder="Email Address *" required type="email">
@@ -225,7 +225,7 @@
         submitButton.disabled = true;
         submitButton.textContent = "Sending...";
       
-        fetch("https://script.google.com/macros/s/AKfycbx7ej09Jv7Ti9um0lXTnZ7dUwwGBU6mBzSu-JF7g6vaHkV-J_yrpYKOl5nQ_NWiPnXo/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbyYLaMq18PIoqP2LDgZcbHnMivvIoVqJZLWPAyUEYhOvPDzY1LmFrdMFt43T9CRAw9S/exec", {
           method: "POST",
           body: data
         })
