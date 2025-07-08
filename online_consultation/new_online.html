@@ -90,6 +90,7 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
+  <div id="recaptcha-container"></div>
 </head>
 
 <body>
@@ -258,7 +259,8 @@
     */
 
     function sendOTP() {
-      const phone = document.getElementById("phoneInput").value.trim();
+      const phoneInput = document.getElementById("phoneInput");
+      const phone = phoneInput.value.trim();
       const phoneStatus = document.getElementById("phoneStatus");
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
     
@@ -267,25 +269,39 @@
         return;
       }
     
+      // ✅ Store phone in hidden field for later use
       document.getElementById("signupPhone").value = phone;
+    
       const fullPhone = "+91" + phone;
     
-      // Disable button and show timer
+      // ✅ Disable button and show resend timer
       sendOTPBtn.disabled = true;
-      startResendTimer(sendOTPBtn, 5); // 5 seconds timer
+      startResendTimer(sendOTPBtn, 30);
+    
+      // ✅ Ensure reCAPTCHA is available
+      if (!window.recaptchaVerifier) {
+        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+          size: 'invisible'
+        });
+        recaptchaVerifier.render();
+      }
     
       firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
+    
+          // ✅ SHOW OTP INPUT SECTION
           document.getElementById("otpSection").style.display = "block";
-          document.getElementById("otpMessage").textContent = "✅ OTP sent to +91 " + phone;
           document.getElementById("otpInput").focus();
+          document.getElementById("otpMessage").textContent = "✅ OTP sent to +91 " + phone;
         })
-        .catch(() => {
-          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Please try again.";
-          sendOTPBtn.disabled = false; // Re-enable on error
+        .catch(error => {
+          console.error("OTP Error:", error);
+          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Try again.";
+          sendOTPBtn.disabled = false;
         });
     }
+
 
     function startResendTimer(button, seconds) {
       let remaining = seconds;
