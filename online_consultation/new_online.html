@@ -323,9 +323,6 @@
       reader.readAsDataURL(file);
     });
 
-
-    let isSubmitting = false; // 🚫 Prevent double submission
-    let isPaymentInProgress = false;
     
     function submitForm() {
       if (document.getElementById("verifiedOTP").value !== "true") {
