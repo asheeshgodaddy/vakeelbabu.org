@@ -159,7 +159,7 @@
   <script src="/src/fix_menu.js"></script>
   
   <script>
-
+    /*
     document.getElementById('plan').addEventListener('change', function () {
       const plan = this.value;
     
@@ -192,6 +192,7 @@
         testimonial.value = '';
       }
     });
+    */
 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec";
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
@@ -451,16 +452,21 @@
       }
     
       // Auto-show the modal when the page loads
+      let recaptchaVerifier; // Declare globally
+      
       window.onload = function () {
-        // ✅ Initialize Firebase reCAPTCHA
+        // ✅ Only show modal here
+        showPlanInfo();
+      };
+      
+      // ✅ Initialize recaptcha as soon as page is parsed
+      window.addEventListener('DOMContentLoaded', () => {
         recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
           size: 'invisible'
         });
         recaptchaVerifier.render();
-      
-        // ✅ Show modal
-        showPlanInfo();
-      };
+      });
+
   </script>
   <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
        background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
