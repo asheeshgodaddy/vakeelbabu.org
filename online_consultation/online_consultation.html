@@ -253,7 +253,8 @@
     </div>
   </div>
   <script>
-    const auth = firebase.auth();
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSAVfTlLExqacZthkETQfFWBalIZifPXJkW9eIEXoIHC11eZroQ65ODKVHiE0kpuJZ/exec";
+    const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn";
   
     document.getElementById("consultForm").addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -262,7 +263,6 @@
         return;
       }
   
-      const form = e.target;
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
   
@@ -275,14 +275,14 @@
       const urgency = document.getElementById("urgency").value;
   
       const options = {
-        key: "rzp_test_5hUlHD5xojSBJn",
+        key: RAZORPAY_KEY,
         amount: 49900,
         currency: "INR",
         name: "VakeelBabu",
         description: "Legal Consultation",
         handler: async function (response) {
           try {
-            const formData = new URLSearchParams();
+            const formData = new FormData();
             formData.append("type", "book_consult");
             formData.append("name", name);
             formData.append("phone", phone);
@@ -293,29 +293,29 @@
             formData.append("urgency", urgency);
             formData.append("amount", "499");
             formData.append("paymentId", response.razorpay_payment_id);
-            
-            const res = await fetch("https://script.google.com/macros/s/AKfycbxumX61J0sXdV6h9lgbIAW-6jWYNxYB88UR7-V0QMiim6K90oghbvJSpNyXEv29eMk0/exec", {
+  
+            const res = await fetch(SCRIPT_URL, {
               method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-              },
-              body: formData.toString()
+              body: formData
             });
   
             const data = await res.json();
-            if (data.status === "success") {
+            if (data.status === "success" || data.success === true) {
               showModal("✅ Consultation Booked Successfully!");
             } else {
-              showModal("❌ Error: " + data.message);
+              showModal("❌ Error: " + (data.message || "Unknown error"));
             }
           } catch (err) {
             console.error("❌ Failed to send to Google Script", err);
             showModal("❌ Submission failed. Please try again.");
           }
   
-          form.reset();
+          document.getElementById("consultForm").reset();
           otpVerified = false;
-          submitBtn.disabled = true;
+          otpSent = false;
+          document.getElementById("submitBtn").disabled = true;
+          document.getElementById("submitBtn").style.opacity = "0.6";
+          document.getElementById("submitBtn").style.cursor = "not-allowed";
         },
         prefill: { contact: phone, email: email },
         theme: { color: "#ffc107" }
@@ -325,6 +325,7 @@
       rzp.open();
     });
   </script>
+
 
   <script>
     window.addEventListener("DOMContentLoaded", function () {
