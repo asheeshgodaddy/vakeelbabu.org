@@ -159,41 +159,6 @@
   <script src="/src/fix_menu.js"></script>
   
   <script>
-    /*
-    document.getElementById('plan').addEventListener('change', function () {
-      const plan = this.value;
-    
-      // Request Verified Badge
-      const verified = document.getElementById("verified");
-      if (plan === "BASIC" || plan === "PREMIUM") {
-        verified.disabled = false;
-        verified.checked = true;
-      } else {
-        verified.disabled = true;
-        verified.checked = false;
-      }
-    
-      // Request Featured Listing
-      const featured = document.getElementById("featured");
-      if (plan === "PREMIUM") {
-        featured.disabled = false;
-        featured.checked = true;
-      } else {
-        featured.disabled = true;
-        featured.checked = false;
-      }
-    
-      // Short Testimonial
-      const testimonial = document.getElementById("testimonialInput");
-      if (plan === "PREMIUM") {
-        testimonial.disabled = false;
-      } else {
-        testimonial.disabled = true;
-        testimonial.value = '';
-      }
-    });
-    */
-
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec";
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
 
@@ -223,41 +188,6 @@
       });
       recaptchaVerifier.render();
     };
-
-    /*
-    // ✅ Check phone before anything
-    const phoneStatus = document.getElementById("phoneStatus");
-    const signupForm = document.getElementById("signupForm");
-
-    phoneInput.addEventListener("input", () => {
-      const phone = phoneInput.value.trim();
-      if (phone.length === 10) {
-        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
-        fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
-          .then(res => res.text())
-          .then(result => {
-            if (result === "DUPLICATE") {
-              phoneStatus.style.color = "red";
-              phoneStatus.textContent = "🚫 Phone number already registered.";
-              signupForm.style.display = "none";
-            } else {
-              phoneStatus.style.color = "green";
-              phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
-              signupForm.style.display = "block";
-              document.getElementById("signupPhone").value = phone;
-            }
-          })
-          .catch(() => {
-            phoneStatus.style.color = "red";
-            phoneStatus.textContent = "⚠️ Error checking phone.";
-            signupForm.style.display = "none";
-          });
-      } else {
-        phoneStatus.textContent = "";
-        signupForm.style.display = "none";
-      }
-    });
-    */
 
     function sendOTP() {
       const phoneInput = document.getElementById("phoneInput");
