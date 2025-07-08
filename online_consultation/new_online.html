@@ -90,7 +90,6 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
-  <div id="recaptcha-container"></div>
 </head>
 
 <body>
@@ -109,7 +108,7 @@
 
     <!-- ✅ Step 1: From which will take inputs and send OTP -->
     <form id="signupForm">
-      <input type="email" id="email" placeholder="Email Address *" required type="email">
+      <input type="email" id="email" placeholder="Email Address *" required>
       <input name="name" placeholder="Full Name" required>
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
       <button type="button" onclick="sendOTP()">Send OTP</button>
@@ -171,7 +170,11 @@
       recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
         size: 'invisible'
       });
-      recaptchaVerifier.render();
+    
+      recaptchaVerifier.render().catch(err => {
+        console.error("reCAPTCHA failed:", err);
+        document.getElementById("otpMessage").textContent = "❌ reCAPTCHA failed. Check your internet.";
+      });
     });
   
     function sendOTP() {
@@ -262,66 +265,42 @@
       }
     });
 
-    window.onload = () => {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible'
-      });
-      recaptchaVerifier.render();
-    };
-
-    document.getElementById('plan').addEventListener('change', function () {
-      const value = this.value;
-      document.getElementById('featuredSection').style.display = (value === "PREMIUM") ? "block" : "none";
-      document.getElementById('testimonialSection').style.display = (value === "PREMIUM") ? "block" : "none";
-    });
-
+    const isPaid = false; // set true later when needed
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
-
       if (document.getElementById("verifiedOTP").value !== "true") {
         alert("Please verify OTP first.");
         return;
       }
 
-      const plan = document.getElementById("plan").value;
-      const file = document.getElementById('photoInput').files[0];
-      if (!file) {
-        alert("Upload a photo.");
-        return;
+      if (isPaid) {
+        const options = {
+          key: RAZORPAY_KEY,
+          amount: 49900,
+          currency: "INR",
+          name: "Vakeel Babu",
+          description: "Paid consultation",
+          handler: function (response) {
+            isPaymentInProgress = false;
+            document.getElementById('payment_id').value = response.razorpay_payment_id;
+            submitForm();
+          },
+          prefill: {
+            contact: "+91" + document.getElementById("signupPhone").value,
+            name: document.querySelector("input[name='name']").value,
+            email: document.getElementById("email").value
+          },
+          theme: { color: "#007bff" }
+        };
+        isPaymentInProgress = true;
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } else {
+        submitForm(); // 🔁 Free consultation flow
       }
 
-      const reader = new FileReader();
-      reader.onload = function (evt) {
-        const base64 = evt.target.result.split(',')[1];
-        document.getElementById('photoField').value = base64;
-
-        if (plan === "FREE") {
-          submitForm();
-        } else {
-          const amount = plan === "BASIC" ? 19900 : 49900;
-          const options = {
-            key: RAZORPAY_KEY,
-            amount: amount,
-            currency: "INR",
-            name: "Vakeel Babu",
-            description: `${plan} Plan`,
-            handler: function (response) {
-              isPaymentInProgress = false;
-              document.getElementById('payment_id').value = response.razorpay_payment_id;
-              submitForm();
-            },
-            prefill: {
-              contact: "+91" + document.getElementById("signupPhone").value
-            },
-            theme: { color: "#007bff" }
-          };
-          isPaymentInProgress = true;
-          const rzp = new Razorpay(options);
-          rzp.open();
-        }
-      };
-      reader.readAsDataURL(file);
     });
+
 
     
     function submitForm() {
@@ -392,13 +371,6 @@
         showPlanInfo();
       };
       
-      // ✅ Initialize recaptcha as soon as page is parsed
-      window.addEventListener('DOMContentLoaded', () => {
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible'
-        });
-        recaptchaVerifier.render();
-      });
 
   </script>
   <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
