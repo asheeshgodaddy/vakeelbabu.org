@@ -108,7 +108,7 @@
 
     <!-- ✅ Step 1: From which will take inputs and send OTP -->
     <form id="signupForm">
-      <input type="email" id="email" placeholder="Email Address *" required>
+      <input type="email" name="email" id="email" placeholder="Email Address *" required>
       <input name="name" placeholder="Full Name" required>
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
       <button type="button" onclick="sendOTP()">Send OTP</button>
