@@ -122,12 +122,6 @@
       <input name="city" placeholder="City" required>
       <input type="hidden" name="phone" id="signupPhone">
       <input type="hidden" name="payment_id" id="payment_id">
-      <select name="plan" id="plan" required>
-        <option value="">-- Choose a plan --</option>
-        <option value="FREE">Free (₹0)</option>
-        <option value="BASIC">Basic (₹199/month)</option>
-        <option value="PREMIUM">Premium (₹499/month)</option>
-      </select>
       <select name="language" id="language" required>
           <option value="">Select Language</option>
           <option value="English">English</option>
@@ -142,7 +136,14 @@
           <option>Documentation</option>
           <option>Property</option>
           <option>Others</option>
-      </select>      
+      </select>
+      <select name="urgency" id="urgency" required>
+          <option value="">Select urgency</option>
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+          <option>Emergency</option>
+      </select>
       <button type="submit" id="finalSubmit" disabled>Submit</button>
       <p id="message"></p>
     </form>
@@ -254,7 +255,7 @@
     */
 
     function sendOTP() {
-      const fullPhone = "+91" + document.getElementById("signupPhone").value;
+      const fullPhone = "+91" + document.getElementById("phoneInput").value;
       firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
         .then(result => {
           confirmationResult = result;
