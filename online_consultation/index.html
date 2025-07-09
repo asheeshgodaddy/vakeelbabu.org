@@ -371,7 +371,7 @@
       window.confirmationResult.confirm(code)
         .then(() => {
           document.getElementById("verifiedOTP").value = "true";
-          document.getElementById("otpMessage").textContent = "✅ OTP verified successfully!";
+          document.getElementById("otpMessage").textContent = "✅ ✅ ✅ OTP verified successfully!";
           // Optional: Enable form submission
         })
         .catch((error) => {
@@ -430,6 +430,8 @@
         alert("Please verify OTP first.");
         return;
       }
+      
+      document.getElementById('submittingMsg').style.display = "block";
 
       if (isPaid) {
         const options = {
@@ -456,24 +458,24 @@
       } else {
         submitForm(); // 🔁 Free consultation flow
       }
-
     });
 
     function submitForm() {
+      document.getElementById('submittingMsg').style.display = "block";
+      console.log("✅ submitForm called");
       if (document.getElementById("verifiedOTP").value !== "true") {
         alert("Please verify OTP first.");
         return;
       }
       
       if (isSubmitting || isPaymentInProgress) {
-        console.warn("Submission blocked: Already submitting or payment pending.");
+        console.warn("⛔ Submission blocked: Already submitting or payment pending.");
         return;
       }
     
       isSubmitting = true;
       document.getElementById('finalSubmit').disabled = true;
-      document.getElementById('submittingMsg').style.display = "block";
-    
+          
       const form = document.getElementById("signupForm");
       fetch(SCRIPT_URL, {
         method: "POST",
