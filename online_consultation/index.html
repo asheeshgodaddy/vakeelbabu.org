@@ -181,6 +181,7 @@
       measurementId: "G-3CVWS84Y4X"
     };
     firebase.initializeApp(firebaseConfig);
+    firebase.auth().useDeviceLanguage();
   </script>
 </head>
 
@@ -354,23 +355,31 @@
         })
         .catch(error => {
           console.error("OTP Error:", error);
-          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. Try again.";
+          document.getElementById("otpMessage").textContent = "❌ Failed to send OTP. " + (error.message || "Try again.");
           sendOTPBtn.disabled = false;
         });
     }
   
     function verifyOTP() {
       const code = document.getElementById("otpInput").value;
+    
+      if (!window.confirmationResult) {
+        document.getElementById("otpMessage").textContent = "❌ Please click 'Send OTP' again.";
+        return;
+      }
+    
       window.confirmationResult.confirm(code)
         .then(() => {
           document.getElementById("verifiedOTP").value = "true";
           document.getElementById("otpMessage").textContent = "✅ OTP verified successfully!";
-          document.getElementById("finalSubmit").disabled = false;
+          // Optional: Enable form submission
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("OTP Verification Failed:", error);
           document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Please try again.";
         });
     }
+
   
     function startResendTimer(button, seconds) {
       let remaining = seconds;
