@@ -166,9 +166,11 @@
       width: auto;
       height: 16px;
     }
-        .consult-flow {
+
+    /*Visual workflow starts*/
+    .consult-flow {
     padding: 40px 20px;
-    background-color: #f8f9fa;
+    background-color: #b3d5f7;
     text-align: center;
     }
 
@@ -192,7 +194,7 @@
     }
 
     .tile {
-    background: #ffffff;
+    background: #013d82;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 20px;
@@ -214,13 +216,13 @@
 
     .tile h3 {
     font-size: 18px;
-    color: #007bff;
+    color: #e0e5ea;
     margin: 10px 0 6px;
     }
 
     .tile p {
     font-size: 14px;
-    color: #333;
+    color: #e5c617;
     }
 
     .arrow {
@@ -238,16 +240,17 @@
     /* Responsive Stack */
     @media (max-width: 768px) {
     .flow-container {
-          flex-direction: column;
-      }
-      .flow-step {
-          flex-direction: column;
-      }
-      .arrow {
-          transform: rotate(90deg);
-          margin: 10px 0;
-      }
+        flex-direction: column;
     }
+    .flow-step {
+        flex-direction: column;
+    }
+    .arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+    }
+    /*Visual workflow ends*/
   </style>
   <script>
     const firebaseConfig = {
