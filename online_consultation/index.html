@@ -366,6 +366,8 @@
           document.getElementById("verifiedOTP").value = "true";
           document.getElementById("otpMessage").textContent = "🎉🎉🎉 OTP verified successfully!";
           document.getElementById("finalSubmit").disabled = false; // ✅ Enable submit button here
+          document.getElementById("finalSubmit").style.opacity = "1";
+          document.getElementById("finalSubmit").style.cursor = "pointer";          
           // Optional: Enable form submission
         })
         .catch((error) => {
