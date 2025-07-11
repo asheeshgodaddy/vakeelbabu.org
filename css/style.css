@@ -556,3 +556,54 @@ tbody tr:hover {
   box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
   animation: shine 2s infinite linear;
 }
+
+/* === HAMBURGER STYLES === */
+.hamburger-container {
+  display: none;
+  padding: 10px;
+  background: #487ac0;
+  text-align: right;
+}
+
+.hamburger-button {
+  background-color: #1e40af;
+  color: white;
+  font-size: 20px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Mobile menu hidden by default */
+.mobile-combined-menu {
+  display: none;
+  background-color: #487ac0;
+  padding: 10px;
+}
+
+.mobile-combined-menu .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-combined-menu a {
+  padding: 10px;
+  background-color: #1e3a8a;
+  color: white;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* === Show only on mobile === */
+@media (max-width: 768px) {
+  .hamburger-container {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+}
