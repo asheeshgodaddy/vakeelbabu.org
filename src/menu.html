@@ -71,11 +71,16 @@
 </nav>
 
 <script>
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-  hamburgerBtn?.addEventListener('click', () => {
-    const isVisible = mobileMenu.style.display === "block";
-    mobileMenu.style.display = isVisible ? "none" : "block";
+    if (hamburgerBtn && mobileMenu) {
+      hamburgerBtn.addEventListener('click', function () {
+        const isVisible = mobileMenu.style.display === "block";
+        mobileMenu.style.display = isVisible ? "none" : "block";
+      });
+    }
   });
 </script>
+
