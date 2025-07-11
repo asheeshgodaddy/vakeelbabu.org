@@ -574,10 +574,18 @@ tbody tr:hover {
   border-radius: 6px;
 }
 
-/* Mobile menu hidden by default */
+/* Initially hidden with max-height = 0 */
 .mobile-combined-menu {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
   background-color: #487ac0;
+  padding: 0 10px;
+  transition: max-height 0.4s ease-in-out, padding 0.3s ease-in-out;
+}
+
+/* When active: */
+.mobile-combined-menu.active {
+  max-height: 1000px; /* Enough to fit all menu items */
   padding: 10px;
 }
 
@@ -607,7 +615,17 @@ tbody tr:hover {
     display: none !important;
   }
 }
-.mobile-combined-menu {
+
+/* Dimming Overlay */
+#menu-overlay {
   display: none;
-  transition: all 0.3s ease-in-out;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 998;
+}
+
+#menu-overlay.active {
+  display: block;
 }
