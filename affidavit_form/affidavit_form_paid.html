@@ -31,22 +31,6 @@
       border: none;
       cursor: pointer;
     }
-    .form-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    
-    .form-column {
-      flex: 1;
-      min-width: 250px;
-    }
-    
-    @media (max-width: 768px) {
-      .form-grid {
-        flex-direction: column;
-      }
-    }
   </style>
 </head>
 <body> 
@@ -71,38 +55,33 @@
   <br>
   <form id="affidavitForm">
     <input type="hidden" name="type" value="affidavit">
-    <div class="form-grid">
-      <div class="form-column">
-        <label>Age of Applicant</label><input type="text" name="age" required>
-        <label>Applicant's Father Name</label><input type="text" name="father_name" required>
-        <label>Applicant's Husband Name</label><input type="text" name="husband_name">
-        <label>Pincode of Applicant's Complete Residential Address</label><input type="text" name="pincode" required>
-        <label>Applicant's Complete Residential Address</label><textarea name="residential_address" required></textarea>
-        <label>Applicant's Maiden Name</label><input type="text" name="maiden_name">
-        <label>Applicant's Marriage Certificate Number</label><input type="text" name="marriage_cert_number">
-        <label>Applicant's Place Of Marriage</label><input type="text" name="place_of_marriage">
-        <label>Applicant's Date Of Marriage</label><input type="date" name="date_of_marriage">
-        <label>Issuing Authority of Marriage Certificate</label><input type="text" name="issuing_authority">
-      </div>
-  
-      <div class="form-column">
-        <label>Date Of Issue of Marriage Certificate</label><input type="date" name="date_of_issue">
-        <label>Applicant's Aadhaar Number</label><input type="text" name="aadhaar">
-        <label>Applicant's PAN Number</label><input type="text" name="pan">
-        <label>Applicant's Present Name After Marriage</label><input type="text" name="present_name_after_marriage">
-        <label>Applicant's Full Name</label><input type="text" name="full_name">
-        <label>Applicant's Last Name</label><input type="text" name="last_name">
-        <label>Applicant's First Name</label><input type="text" name="first_name">
-        <label>Applicant's Middle Name</label><input type="text" name="middle_name">
-        <label>Applicant's Present Name</label><input type="text" name="present_name">
-        <label>Date (Today)</label><input type="date" name="date">
-        <label>Place Of Issue</label><input type="text" name="place_of_issue">
-        <label>Full Name Of Deponent</label><input type="text" name="deponent_name">
-      </div>
-    </div>
-  
+    <!-- All existing fields -->
+    <label>Age of Applicant</label><input type="text" name="age" required>
+    <label>Applicant's Father Name</label><input type="text" name="father_name" required>
+    <label>Applicant's Husband Name</label><input type="text" name="husband_name">
+    <label>Pincode of Applicant's Complete Residential Address</label><input type="text" name="pincode" required>
+    <label>Applicant's Complete Residential Address</label><textarea name="residential_address" required></textarea>
+    <label>Applicant's Maiden Name</label><input type="text" name="maiden_name">
+    <label>Applicant's Marriage Certificate Number</label><input type="text" name="marriage_cert_number">
+    <label>Applicant's Place Of Marriage</label><input type="text" name="place_of_marriage">
+    <label>Applicant's Date Of Marriage</label><input type="date" name="date_of_marriage">
+    <label>Issuing Authority of Marriage Certificate</label><input type="text" name="issuing_authority">
+    <label>Date Of Issue of Marriage Certificate</label><input type="date" name="date_of_issue">
+    <label>Applicant's Aadhaar Number</label><input type="text" name="aadhaar">
+    <label>Applicant's PAN Number</label><input type="text" name="pan">
+    <label>Applicant's Present Name After Marriage</label><input type="text" name="present_name_after_marriage">
+    <label>Applicant's Full Name</label><input type="text" name="full_name">
+    <label>Applicant's Last Name</label><input type="text" name="last_name">
+    <label>Applicant's First Name</label><input type="text" name="first_name">
+    <label>Applicant's Middle Name</label><input type="text" name="middle_name">
+    <label>Applicant's Present Name</label><input type="text" name="present_name">
+    <label>Date (Today)</label><input type="date" name="date">
+    <label>Place Of Issue</label><input type="text" name="place_of_issue">
+    <label>Full Name Of Deponent</label><input type="text" name="deponent_name">
+
     <button type="submit">Pay ₹99 & Download PDF</button>
   </form>
+
   <div id="msg"></div>
 
   <script>
