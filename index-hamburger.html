@@ -74,7 +74,7 @@
             });
   
             // ❌ Button inside menu for manual close
-            const closeBtn = mobileMenu.querySelector('button[onclick]');
+            const closeBtn = document.getElementById('closeMobileMenuBtn');
             if (closeBtn) {
               closeBtn.addEventListener('click', () => {
                 mobileMenu.classList.remove('active');
