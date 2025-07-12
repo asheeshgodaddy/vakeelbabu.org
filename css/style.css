@@ -613,34 +613,43 @@ tbody tr:hover {
 }
 
 /* Dimming Overlay */
+#mobileMenu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: rgba(1, 38, 83, 0.98);
+  z-index: 1000;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(-100%);
+}
+
+#mobileMenu.active {
+  display: block;
+  transform: translateY(0);
+}
+
 #menu-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 998;
+  z-index: 999;
 }
 
 #menu-overlay.active {
   display: block;
 }
 
-#mobileMenu {
-  display: none;
-  position: fixed;
-  top: 60px; /* adjust as per your header */
-  left: 0;
-  width: 100vw;
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-  background-color: rgba(1, 38, 83, 0.98);
-  z-index: 999;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: all 0.3s ease-in-out;
-}
-
-#mobileMenu.active {
-  display: block;
+#logo-banner {
+  text-align: center;
+  background-color: white; /* or transparent */
+  z-index: 0;
+  position: relative;
 }
