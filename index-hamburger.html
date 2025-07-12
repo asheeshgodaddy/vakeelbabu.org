@@ -45,36 +45,49 @@
 </head>
 
 <body> 
+  <!-- HEADER + MENU OVERLAY -->
   <div id="menu-overlay"></div>
   <header>
     <div id="nav-placeholder"></div>
+  
     <script>
       fetch("/src/menu-mobile.html")
         .then(response => response.text())
         .then(data => {
           document.getElementById("nav-placeholder").innerHTML = data;
-    
-          // ✅ Attach event listeners AFTER menu is injected
+  
+          // ✅ After content is injected, now safely attach event listeners
           const hamburgerBtn = document.getElementById('hamburgerBtn');
           const mobileMenu = document.getElementById('mobileMenu');
           const overlay = document.getElementById('menu-overlay');
-    
+  
           if (hamburgerBtn && mobileMenu && overlay) {
             hamburgerBtn.addEventListener('click', () => {
-              mobileMenu.classList.toggle('active');
-              overlay.classList.toggle('active');
-              document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+              mobileMenu.classList.add('active');
+              overlay.classList.add('active');
+              document.body.style.overflow = 'hidden';
             });
-    
+  
             overlay.addEventListener('click', () => {
               mobileMenu.classList.remove('active');
               overlay.classList.remove('active');
               document.body.style.overflow = '';
             });
+  
+            // ❌ Button inside menu for manual close
+            const closeBtn = mobileMenu.querySelector('button[onclick]');
+            if (closeBtn) {
+              closeBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+              });
+            }
           }
         });
     </script>
   </header>
+
 
   <!-- Hero Section -->
   <div class="text-container-frontface">
