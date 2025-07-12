@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Affidavit Form | Vakeel Babu</title>
-    <link rel="icon" href="../images/fevicon.png" type="image/png">
+    <link rel="icon" href="/images/favicon.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 
     <style>
       form {
@@ -49,7 +49,7 @@
         <div id="nav-placeholder"></div>
   
         <script>
-          fetch("../src/menu.html")
+          fetch("/src/menu.html")
             .then(response => response.text())
             .then(data => {
               document.getElementById("nav-placeholder").innerHTML = data;
@@ -57,79 +57,41 @@
         </script>
       </header>
 
-    <br>
-    <h1 style="text-align:center;">AFFIDAVIT FOR CHANGE OF NAME AFTER MARRIAGE</h1>
+    <div class="container">
+      <div class="text-container">
+        <br>
+        <h2 style="text-align:center;">AFFIDAVIT FOR CHANGE OF NAME AFTER MARRIAGE</h2>
+        <p style="text-align:center;">(*All fields are mandatory.)</p>
+      </div>
+    </div>
     <br>
     <form id="affidavitForm">
       <input type="hidden" name="type" value="affidavit">
-    
-      <label>Age</label>
-      <input type="text" name="age" required>
-    
-      <label>Applicant Father Name</label>
-      <input type="text" name="father_name" required>
-    
-      <label>Husband Name</label>
-      <input type="text" name="husband_name">
-    
-      <label>Pincode</label>
-      <input type="text" name="pincode" required>
-    
-      <label>Applicant Complete Residential Address</label>
-      <textarea name="residential_address" required></textarea>
-    
-      <label>Maiden Name</label>
-      <input type="text" name="maiden_name">
-    
-      <label>Marriage Certificate Number</label>
-      <input type="text" name="marriage_cert_number">
-    
-      <label>Place Of Marriage</label>
-      <input type="text" name="place_of_marriage">
-    
-      <label>Date Of Marriage</label>
-      <input type="date" name="date_of_marriage">
-    
-      <label>Issuing Authority</label>
-      <input type="text" name="issuing_authority">
-    
-      <label>Date Of Issue</label>
-      <input type="date" name="date_of_issue">
-    
-      <label>Aadhaar Number</label>
-      <input type="text" name="aadhaar">
-    
-      <label>PAN Number</label>
-      <input type="text" name="pan">
-    
-      <label>Present Name After Marriage</label>
-      <input type="text" name="present_name_after_marriage">
-    
-      <label>Full Name</label>
-      <input type="text" name="full_name">
-    
-      <label>Last Name</label>
-      <input type="text" name="last_name">
-    
-      <label>First Name</label>
-      <input type="text" name="first_name">
-    
-      <label>Middle Name</label>
-      <input type="text" name="middle_name">
-    
-      <label>Present Name</label>
-      <input type="text" name="present_name">
-    
-      <label>Date (Today)</label>
-      <input type="date" name="date">
-    
-      <label>Place Of Issue</label>
-      <input type="text" name="place_of_issue">
-    
-      <label>Full Name Of Deponent</label>
-      <input type="text" name="deponent_name">
-    
-      <button type="submit">Generate Affidavit PDF</button>
+      <!-- All existing fields -->
+      <label>Age of Applicant</label><input type="text" name="age" required>
+      <label>Applicant's Father Name</label><input type="text" name="father_name" required>
+      <label>Applicant's Husband Name</label><input type="text" name="husband_name">
+      <label>Pincode of Applicant's Complete Residential Address</label><input type="text" name="pincode" required>
+      <label>Applicant's Complete Residential Address</label><textarea name="residential_address" required></textarea>
+      <label>Applicant's Maiden Name</label><input type="text" name="maiden_name">
+      <label>Applicant's Marriage Certificate Number</label><input type="text" name="marriage_cert_number">
+      <label>Applicant's Place Of Marriage</label><input type="text" name="place_of_marriage">
+      <label>Applicant's Date Of Marriage</label><input type="date" name="date_of_marriage">
+      <label>Issuing Authority of Marriage Certificate</label><input type="text" name="issuing_authority">
+      <label>Date Of Issue of Marriage Certificate</label><input type="date" name="date_of_issue">
+      <label>Applicant's Aadhaar Number</label><input type="text" name="aadhaar">
+      <label>Applicant's PAN Number</label><input type="text" name="pan">
+      <label>Applicant's Present Name After Marriage</label><input type="text" name="present_name_after_marriage">
+      <label>Applicant's Full Name</label><input type="text" name="full_name">
+      <label>Applicant's Last Name</label><input type="text" name="last_name">
+      <label>Applicant's First Name</label><input type="text" name="first_name">
+      <label>Applicant's Middle Name</label><input type="text" name="middle_name">
+      <label>Applicant's Present Name</label><input type="text" name="present_name">
+      <label>Date (Today)</label><input type="date" name="date">
+      <label>Place Of Issue</label><input type="text" name="place_of_issue">
+      <label>Full Name Of Deponent</label><input type="text" name="deponent_name">
+  
+      <button type="submit">Download PDF</button>
     </form>
     
     <div id="msg"></div>
@@ -143,7 +105,7 @@
         const formData = new FormData(form);
     
         try {
-          const res = await fetch("https://script.google.com/macros/s/AKfycbw2o7Z-kFoM1Lh3AaJg7Cgqt9xw53ebhr60xqTlovsraXDsW0cJF_pO25sw7gseommx/exec", {
+          const res = await fetch("https://script.google.com/macros/s/AKfycbxTc2DorJ9IgNC5FZObGV6xQA12wl0v2ubo6sqgtTOxa33LiFzNuUf-ysm68R_9NF4B/exec", {
             method: "POST",
             body: formData
           });
@@ -169,29 +131,10 @@
       });
     </script>
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-          new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,hi,es,fr,de', // customize the languages
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, 'google_translate_element');
-        }
-    </script>
+    <script src="/src/g_trans.js"></script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
                 
     <!-- JavaScript to fix the menu on top while scrolling-->
-    <script>
-      const scrollmenu = document.getElementById("scrollmenu");
-      const offsetTop = scrollmenu.offsetTop;
-
-      window.addEventListener("scroll", function () {
-        if (window.pageYOffset >= offsetTop) {
-          scrollmenu.classList.add("fixed");
-        } else {
-          scrollmenu.classList.remove("fixed");
-        }
-      });
-    </script>
+    <script src="/src/fix_menu.js"></script>
   </body>
 </html>

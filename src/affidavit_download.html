@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download Affidavit</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 40px; }
+    button {
+      background: #487ac0;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #msg { margin-top: 20px; color: green; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>✅ Payment Successful</h1>
+  <p>Your affidavit is being generated...</p>
+  <div id="msg"></div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('affidavit_form_data') || '{}');
+    const msg = document.getElementById('msg');
+
+    if (!data.full_name || !data.age) {
+      msg.innerText = "Missing form data. Please fill the form again.";
+      throw new Error("Missing form data");
+    }
+
+    const formData = new FormData();
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    fetch("https://script.google.com/macros/s/AKfycbw2o7Z-kFoM1Lh3AaJg7Cgqt9xw53ebhr60xqTlovsraXDsW0cJF_pO25sw7gseommx/exec", {
+      method: "POST",
+      body: formData
+    })
+    .then(r => r.text())
+    .then(base64 => {
+      if (!base64 || base64.startsWith("ERROR")) {
+        msg.textContent = base64 || "Unknown error.";
+        return;
+      }
+
+      const byteCharacters = atob(base64);
+      const byteArray = new Uint8Array([...byteCharacters].map(c => c.charCodeAt(0)));
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Affidavit.pdf";
+      link.click();
+
+      msg.textContent = "🎉 Download started successfully!";
+      setTimeout(() => {
+        window.location.href = "https://www.vakeelbabu.org/documents/";
+      }, 1000);
+    })
+    .catch(err => {
+      msg.textContent = "Error: " + err.message;
+    });
+  </script>
+</body>
+</html>

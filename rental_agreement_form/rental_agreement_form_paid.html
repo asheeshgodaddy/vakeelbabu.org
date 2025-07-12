@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Rental Agreement | Vakeel Babu</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #487ac0;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .success {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      text-align: center;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
+
+  <br>
+  <h1 style="text-align:center;">Rental Agreement Request Form</h1>
+  <br>
+
+  <form id="rentalForm">
+    <input name="landlord_name" placeholder="Landlord Name" required>
+    <input name="tenant_name" placeholder="Tenant Name" required>
+    <textarea name="property_address" placeholder="Property Address" required></textarea>
+    <input name="rent_amount" placeholder="Rent (INR)" required>
+    <input name="duration" placeholder="Duration (months)" required>
+    <input type="date" name="start_date" required>
+    <button type="submit">Pay ₹49 & Generate PDF</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <script>
+    document.getElementById("rentalForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      // Store form data in localStorage
+      localStorage.setItem('rental_form_data', JSON.stringify(data));
+
+      // Razorpay Payment
+      const options = {
+        key: "rzp_test_tIKdX9hYFI2dVg", // TODO: Replace with your real Razorpay key
+        amount: 4900, // ₹49 in paise
+        currency: "INR",
+        name: "Vakeel Babu",
+        description: "Rental Agreement Download",
+        handler: function (response) {
+          window.location.href = "/src/rental_download.html?pid=" + response.razorpay_payment_id;
+        },
+        prefill: {
+          name: data.tenant_name || "",
+          email: ""
+        },
+        theme: {
+          color: "#487ac0"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    });
+  </script>
+
+  <script src="/src/g_trans.js"></script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- JavaScript to fix the menu on top while scrolling-->
+  <script src="/src/fix_menu.js"></script>
+</body>
+</html>
