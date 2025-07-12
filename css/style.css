@@ -646,3 +646,10 @@ tbody tr:hover {
 #menu-overlay.active {
   display: block;
 }
+
+#logo-banner {
+  text-align: center;
+  background-color: white; /* or transparent */
+  z-index: 0;
+  position: relative;
+}
