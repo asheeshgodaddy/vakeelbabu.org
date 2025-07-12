@@ -40,7 +40,7 @@
   <!-- Logo Banner (Always Visible) -->
   <div class="flex justify-center my-4">
     <a href="/">
-      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers" style="height: 5.6cm; width: 100%; display: block; margin: 0 auto;" class="w-full max-w-7xl h-auto">
+      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers" style="z-index: 0; position: relative;">
     </a>
   </div>
 
@@ -81,6 +81,7 @@
     hamburgerBtn.addEventListener('click', function () {
       mobileMenu.classList.toggle('active');
       overlay.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
     });
 
     // Close menu when clicking outside
