@@ -53,6 +53,25 @@
         .then(response => response.text())
         .then(data => {
           document.getElementById("nav-placeholder").innerHTML = data;
+    
+          // ✅ Attach event listeners AFTER menu is injected
+          const hamburgerBtn = document.getElementById('hamburgerBtn');
+          const mobileMenu = document.getElementById('mobileMenu');
+          const overlay = document.getElementById('menu-overlay');
+    
+          if (hamburgerBtn && mobileMenu && overlay) {
+            hamburgerBtn.addEventListener('click', () => {
+              mobileMenu.classList.toggle('active');
+              overlay.classList.toggle('active');
+              document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+            });
+    
+            overlay.addEventListener('click', () => {
+              mobileMenu.classList.remove('active');
+              overlay.classList.remove('active');
+              document.body.style.overflow = '';
+            });
+          }
         });
     </script>
   </header>
