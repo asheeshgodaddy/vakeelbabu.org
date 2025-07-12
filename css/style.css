@@ -575,14 +575,15 @@ tbody tr:hover {
 }
 
 /* Initially hidden with max-height = 0 */
-.mobile-combined-menu {
-  max-height: 0;
-  overflow: hidden;
-  background-color: #487ac0;
-  padding: 0 10px;
-  transition: max-height 0.4s ease-in-out, padding 0.3s ease-in-out;
+.mobile-combined-menu a {
+  padding: 10px;
+  background-color: #1e3a8a;
+  color: white;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
 }
-
 /* When active: */
 .mobile-combined-menu.active {
   max-height: 1000px; /* Enough to fit all menu items */

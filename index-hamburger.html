@@ -3,6 +3,7 @@
 
 <html lang="en"> 
 <head>
+  <div id="menu-overlay"></div>
   <meta charset="UTF-8">
   <title>Vakeel Babu & Associates | Legal Advice in India | Online Lawyer Consultation</title> 
 
@@ -46,45 +47,13 @@
 <body> 
   <header>
     <div id="nav-placeholder"></div>
-    <div id="menu-overlay"></div>
-  <script>
-    fetch("/src/menu.html")
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("nav-placeholder").innerHTML = data;
-
-        // After menu loads
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const overlay = document.getElementById('menu-overlay');
-
-        const openMenu = () => {
-          mobileMenu.classList.add("active");
-          overlay.classList.add("active");
-        };
-
-        const closeMenu = () => {
-          mobileMenu.classList.remove("active");
-          overlay.classList.remove("active");
-        };
-
-        if (hamburgerBtn && mobileMenu) {
-          hamburgerBtn.addEventListener('click', () => {
-            const isActive = mobileMenu.classList.contains("active");
-            isActive ? closeMenu() : openMenu();
-          });
-
-          // Close menu when clicking on any link
-          mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', closeMenu);
-          });
-
-          // Close menu if user taps outside
-          overlay.addEventListener('click', closeMenu);
-        }
-      });
-  </script>
-
+    <script>
+      fetch("/src/menu-mobile.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
   </header>
 
   <!-- Hero Section -->
