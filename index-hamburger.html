@@ -53,12 +53,17 @@
       fetch("/src/menu-mobile.html")
         .then(response => response.text())
         .then(data => {
+          console.log("menu-mobile.html loaded successfully");
           document.getElementById("nav-placeholder").innerHTML = data;
   
           // ✅ After content is injected, now safely attach event listeners
           const hamburgerBtn = document.getElementById('hamburgerBtn');
           const mobileMenu = document.getElementById('mobileMenu');
           const overlay = document.getElementById('menu-overlay');
+          console.log("hamburgerBtn:", hamburgerBtn);
+          console.log("mobileMenu:", mobileMenu);
+          console.log("overlay:", overlay);
+          console.log("closeBtn:", closeBtn);
   
           if (hamburgerBtn && mobileMenu && overlay) {
             hamburgerBtn.addEventListener('click', () => {
