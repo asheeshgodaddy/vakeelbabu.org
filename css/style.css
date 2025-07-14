@@ -672,7 +672,7 @@ tbody tr:hover {
   }
 
   .scrollmenu {
-    display: none !important; /* hide top and bottom menu on mobile */
+    /*display: none !important; /* hide top and bottom menu on mobile */
   }
 }
 
