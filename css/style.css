@@ -66,10 +66,10 @@ header img {
   display: inline-block;
   padding: 10px 8px;
   margin: 4px;
-  background-color: #1e40af;  /* Deep blue */
+  background-color: #4667d2;  /* light blue */
   color: white;
   font-weight: bold;
-  border-radius: 9999px; /* Fully rounded pill */
+  border-radius: 99px; /* rounded pill */
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   white-space: nowrap;
@@ -81,8 +81,9 @@ header img {
 }
 
 .menu a:hover {
-  background-color: #0d0c0c;
-  color: rgb(29, 180, 214);
+  background-color: #0c326e;
+  color: #f1f5f9;
+  transform: scale(1.05);
 }
 
 /* === TRANSLATOR SECTION FIX === */
