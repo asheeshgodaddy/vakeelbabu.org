@@ -582,14 +582,6 @@ tbody tr:hover {
   border-radius: 5px;
 }
 
-/* Make sure it hides on desktop */
-@media (max-width: 768px) {
-  .hamburger-container {
-    display: block !important;
-    background: red !important; /* for visibility test */
-  }
-}
-
 /* Initially hidden with max-height = 0 */
 .mobile-combined-menu a {
   margin: 8px 0;
@@ -629,6 +621,9 @@ tbody tr:hover {
 /* Show hamburger only on mobile */
 @media (max-width: 768px) {
   .hamburger-container {
+    display: block !important;
+    background: red !important; /* for visibility test */
+    border: 2px dashed yellow;
     background: #003366;
     text-align: right;
     padding: 10px 20px;
