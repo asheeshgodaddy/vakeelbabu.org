@@ -230,6 +230,7 @@ ul.justified-list li {
 @media (max-width: 768px) {
   .scrollmenu {
     flex-wrap: wrap;
+    display: none !important;
   }
 
   .menu {
@@ -605,10 +606,14 @@ tbody tr:hover {
   padding: 15px;
   background-color: #002b5c;
   border-top: 2px solid #fff;
+  transition: max-height 0.4s ease;
+  overflow: hidden;
+  max-height: 0;
 }
 
 .mobile-combined-menu.active {
   display: flex;
+  max-height: 1000px; /* adjust as needed */
 }
 
 
@@ -629,14 +634,15 @@ tbody tr:hover {
     padding: 8px 14px;
     border: none;
     border-radius: 6px;
+    cursor: pointer;
   }
 
   .mobile-combined-menu {
     display: none;
     flex-direction: column;
-    padding: 15px;
     background-color: #002b5c;
-    border-top: 2px solid #fff;
+    padding: 15px;
+    z-index: 1001;
   }
 
   .mobile-combined-menu.active {
@@ -652,6 +658,17 @@ tbody tr:hover {
     text-align: center;
     font-weight: bold;
     text-decoration: none;
+  }
+
+  .mobile-combined-menu .menu a {
+    background-color: #1e3a8a;
+    margin: 6px 0;
+    padding: 12px;
+    color: white;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
   }
 
   .scrollmenu {
