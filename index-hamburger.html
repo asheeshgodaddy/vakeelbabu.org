@@ -54,44 +54,36 @@
       <button id="hamburgerBtn" class="hamburger-button">☰ Menu</button>
     </div>
   
-  <script>
-    fetch("/src/menu-mobile.html")
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("nav-placeholder").innerHTML = data;
-  
-        // Defer script execution until DOM inside nav-placeholder is ready
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const overlay = document.getElementById('menu-overlay');
-        const closeBtn = document.getElementById('closeMobileMenuBtn');
-        
-        if (hamburgerBtn && mobileMenu) {
-          hamburgerBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
-            if (overlay) overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-          });
-        }
-        
-        if (overlay) {
-          overlay.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-          });
-        }
-        
-        if (closeBtn) {
-          closeBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            if (overlay) overlay.classList.remove('active');
-            document.body.style.overflow = '';
-          });
-        }
+    <script>
+      fetch("/src/menu-mobile.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+    
+          const hamburgerBtn = document.getElementById('hamburgerBtn');
+          const mobileMenu = document.getElementById('mobileMenu');
+          const overlay = document.getElementById('menu-overlay');
+          const closeBtn = document.getElementById('closeMobileMenuBtn');
+    
+          if (hamburgerBtn && mobileMenu && overlay) {
+            hamburgerBtn.addEventListener('click', () => {
+              mobileMenu.classList.add('active');
+              overlay.classList.add('active');
+              document.body.classList.add('menu-open');
+            });
+    
+            overlay.addEventListener('click', closeMenu);
+            if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    
+            function closeMenu() {
+              mobileMenu.classList.remove('active');
+              overlay.classList.remove('active');
+              document.body.classList.remove('menu-open');
+            }
+          }
+        });
+    </script>
 
-      });
-  </script>
 
   </header>
 
