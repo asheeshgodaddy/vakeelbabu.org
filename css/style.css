@@ -230,6 +230,7 @@ ul.justified-list li {
 @media (max-width: 768px) {
   .scrollmenu {
     flex-wrap: wrap;
+    display: none !important;
   }
 
   .menu {
