@@ -38,7 +38,7 @@ header img {
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-  background-color: #021d42;
+  background-color: #033273;
   padding: 10px 20px;
   color: white;
   width: 100%;
@@ -69,7 +69,7 @@ header img {
   background-color: #4667d2;  /* light blue */
   color: white;
   font-weight: bold;
-  border-radius: 99px; /* rounded pill */
+  border-radius: 50px; /* rounded pill */
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   white-space: nowrap;
