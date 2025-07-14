@@ -622,8 +622,8 @@ tbody tr:hover {
 @media (max-width: 768px) {
   .hamburger-container {
     display: block !important;
-    background: red !important; /* for visibility test */
-    border: 2px dashed yellow;
+    /*background: red !important; /* for visibility test */
+    /*border: 2px dashed yellow;  */
     background: #003366;
     text-align: right;
     padding: 10px 20px;
