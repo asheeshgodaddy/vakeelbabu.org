@@ -62,39 +62,35 @@
         document.getElementById("nav-placeholder").innerHTML = data;
   
         // Defer script execution until DOM inside nav-placeholder is ready
-        setTimeout(() => {
-          const hamburgerBtn = document.getElementById('hamburgerBtn');
-          const mobileMenu = document.getElementById('mobileMenu');
-          const overlay = document.getElementById('menu-overlay');
-          const closeBtn = document.getElementById('closeMobileMenuBtn');
-  
-          if (hamburgerBtn && mobileMenu) {
-            hamburgerBtn.addEventListener('click', () => {
-              mobileMenu.classList.add('active');
-              if (overlay) {
-                overlay.classList.add('active');
-              }
-              document.body.style.overflow = 'hidden';
-            });
-          }
-  
-          if (overlay) {
-            overlay.addEventListener('click', () => {
-              mobileMenu.classList.remove('active');
-              overlay.classList.remove('active');
-              document.body.style.overflow = '';
-            });
-          }
-  
-          if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-              mobileMenu.classList.remove('active');
-              if (overlay) overlay.classList.remove('active');
-              document.body.style.overflow = '';
-            });
-          }
-  
-        }, 100); // 👈 small delay ensures DOM elements are rendered
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('menu-overlay');
+        const closeBtn = document.getElementById('closeMobileMenuBtn');
+        
+        if (hamburgerBtn && mobileMenu) {
+          hamburgerBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            if (overlay) overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          });
+        }
+        
+        if (overlay) {
+          overlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        }
+        
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        }
+
       });
   </script>
 
