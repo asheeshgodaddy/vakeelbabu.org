@@ -574,12 +574,19 @@ tbody tr:hover {
 }
 
 .hamburger-button {
-  background-color: #1e40af;
-  color: white;
-  font-size: 20px;
-  padding: 8px 14px;
+  background: #f9f9f9;
   border: none;
-  border-radius: 6px;
+  font-size: 18px;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Make sure it hides on desktop */
+@media (min-width: 768px) {
+  .hamburger-container.mobile-only {
+    display: none;
+  }
 }
 
 /* Initially hidden with max-height = 0 */
@@ -682,16 +689,15 @@ tbody tr:hover {
   display: none;
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
+  right: 0;
+  width: 80%;
+  max-width: 300px;
   height: 100vh;
-  overflow-y: auto;
-  background-color: rgba(1, 38, 83, 0.98);
-  z-index: 1000;
+  background: #1d1d1d;
+  z-index: 999;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: transform 0.3s ease-in-out;
-  transform: translateY(-100%);
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #mobileMenu.active {
@@ -718,3 +724,4 @@ tbody tr:hover {
   z-index: 0;
   position: relative;
 }
+
