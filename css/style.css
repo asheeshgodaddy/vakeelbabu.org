@@ -584,8 +584,9 @@ tbody tr:hover {
 
 /* Make sure it hides on desktop */
 @media (max-width: 768px) {
-  .hamburger-container.mobile-only {
+  .hamburger-container {
     display: block !important;
+    background: red !important; /* for visibility test */
   }
 }
 
@@ -628,7 +629,6 @@ tbody tr:hover {
 /* Show hamburger only on mobile */
 @media (max-width: 768px) {
   .hamburger-container {
-    display: block;
     background: #003366;
     text-align: right;
     padding: 10px 20px;
