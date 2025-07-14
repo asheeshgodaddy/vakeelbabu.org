@@ -583,9 +583,9 @@ tbody tr:hover {
 }
 
 /* Make sure it hides on desktop */
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .hamburger-container.mobile-only {
-    display: none;
+    display: block !important;
   }
 }
 
