@@ -49,47 +49,49 @@
   <header>
     <div id="nav-placeholder"></div>
   
-    <script>
-      fetch("/src/menu-mobile.html")
-        .then(response => response.text())
-        .then(data => {
-          console.log("menu-mobile.html loaded successfully");
-          document.getElementById("nav-placeholder").innerHTML = data;
+  <script>
+    fetch("/src/menu-mobile.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("nav-placeholder").innerHTML = data;
   
-          // ✅ After content is injected, now safely attach event listeners
+        // Defer script execution until DOM inside nav-placeholder is ready
+        setTimeout(() => {
           const hamburgerBtn = document.getElementById('hamburgerBtn');
           const mobileMenu = document.getElementById('mobileMenu');
           const overlay = document.getElementById('menu-overlay');
-          console.log("hamburgerBtn:", hamburgerBtn);
-          console.log("mobileMenu:", mobileMenu);
-          console.log("overlay:", overlay);
-          console.log("closeBtn:", closeBtn);
+          const closeBtn = document.getElementById('closeMobileMenuBtn');
   
-          if (hamburgerBtn && mobileMenu && overlay) {
+          if (hamburgerBtn && mobileMenu) {
             hamburgerBtn.addEventListener('click', () => {
               mobileMenu.classList.add('active');
-              overlay.classList.add('active');
+              if (overlay) {
+                overlay.classList.add('active');
+              }
               document.body.style.overflow = 'hidden';
             });
+          }
   
+          if (overlay) {
             overlay.addEventListener('click', () => {
               mobileMenu.classList.remove('active');
               overlay.classList.remove('active');
               document.body.style.overflow = '';
             });
-  
-            // ❌ Button inside menu for manual close
-            const closeBtn = document.getElementById('closeMobileMenuBtn');
-            if (closeBtn) {
-              closeBtn.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-              });
-            }
           }
-        });
-    </script>
+  
+          if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+              mobileMenu.classList.remove('active');
+              if (overlay) overlay.classList.remove('active');
+              document.body.style.overflow = '';
+            });
+          }
+  
+        }, 100); // 👈 small delay ensures DOM elements are rendered
+      });
+  </script>
+
   </header>
 
 
