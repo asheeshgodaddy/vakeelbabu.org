@@ -28,7 +28,20 @@ body::before {
   background-color: rgba(1, 38, 83, 0.949); /* White overlay with 75% opacity */
   z-index: -1;
 }
+.contact-info {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  word-wrap: break-word;
+  text-align: center;
+  margin: 10px 0;
+}
 
+.contact-info a {
+  color: #ffe600;
+  text-decoration: underline;
+  word-break: break-word;
+}
 /* === HEADER IMAGE === */
 header img {
   height: 35%;
