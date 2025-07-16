@@ -101,7 +101,7 @@
     const container = document.getElementById('resultContainer');
     container.innerHTML = '';
 
-    if (!data || !data["Plan"]) {
+    if (!data || !data["plan"]) {
       // Not found → new user
       container.innerHTML = `
         <p style="color:red;">Phone number not found in our system.<br><br><br></p>
@@ -112,10 +112,10 @@
 
     // Registered user
     //const { name, city, plan, photo } = data;
-    const name = data["Name"];
-    const city = data["City"];
-    const plan = data["Plan"];
-    const photo = data["Photo URL"];
+    const name = data["name"];
+    const city = data["city"];
+    const plan = data["plan"];
+    const photo = data["photo url"];
     let html = `
       <div class="card-container">
         ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
