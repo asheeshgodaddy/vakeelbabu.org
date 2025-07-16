@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upgrade Lawyer Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css"> <!-- Your existing CSS -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .form-container input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 6px;
+    }
+    .card-container {
+      margin-top: 30px;
+      background-color: #fff;
+      border: 2px solid #0077cc;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .btn-upgrade {
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Check & Upgrade Plan</h2>
+  <input type="tel" id="phone" placeholder="Enter your registered phone number" />
+  <button onclick="checkNumber()">Check</button>
+  
+  <div id="resultContainer"></div>
+</div>
+
+<script>
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbycYoZujlxJ5tMYrSGMdTVJruaEg3Ul2ggCXzaUK4t1ugoR15uBqo5Tn27Pqa-CYXVpmw/exec";
+
+  async function checkNumber() {
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) return alert("Please enter phone number.");
+
+    const res = await fetch(`${SHEET_API_URL}?phone=${encodeURIComponent(phone)}`);
+    const data = await res.json();
+    renderResult(data, phone);
+  }
+
+  function renderResult(data, phone) {
+    const container = document.getElementById('resultContainer');
+    container.innerHTML = '';
+
+    if (!data || !data.plan) {
+      // Not found → new user
+      container.innerHTML = `
+        <p style="color:red;">Phone number not found in our system.</p>
+        <a href="/src/lawyer_sign_up.html" class="btn-upgrade" style="background:blue;">Register Now</a>
+      `;
+      return;
+    }
+
+    // Registered user
+    const { name, city, plan, photo } = data;
+    let html = `
+      <div class="card-container">
+        <h3>${name}</h3>
+        <p>📍 ${city}</p>
+        <p>📞 ${phone}</p>
+        <p>Current Plan: <strong>${plan}</strong></p>
+        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
+    `;
+
+    if (plan === "PREMIUM") {
+      html += `<p class="text-success" style="color:green;font-weight:bold;">✅ You are already a PREMIUM member</p>`;
+    } else if (plan === "BASIC") {
+      html += `
+        <button class="btn-upgrade" onclick="handlePayment('${phone}', 'PREMIUM', 300)">Upgrade to PREMIUM (₹300)</button>
+      `;
+    } else if (plan === "FREE") {
+      html += `
+        <p>Select Upgrade Option:</p>
+        <label><input type="radio" name="plan" value="BASIC" checked> BASIC (₹199)</label><br>
+        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹300)</label><br>
+        <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
+      `;
+    }
+
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function submitFreeUpgrade(phone) {
+    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+    const amount = selectedPlan === "PREMIUM" ? 300 : 199;
+    handlePayment(phone, selectedPlan, amount);
+  }
+
+  function handlePayment(phone, plan, amount) {
+    const options = {
+      key: "rzp_test_5hUlHD5xojSBJn",  // Replace with real Razorpay key
+      amount: amount * 100,
+      currency: "INR",
+      name: "VakeelBabu.org",
+      description: `Upgrade to ${plan}`,
+      handler: function (response) {
+        // After successful payment
+        updatePlan(phone, plan);
+      },
+      prefill: {
+        contact: phone
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  async function updatePlan(phone, plan) {
+    const res = await fetch(SHEET_API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "upgrade", phone, plan }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const result = await res.json();
+    alert(result.message || "Plan upgraded successfully!");
+    checkNumber(); // Refresh info
+  }
+</script>
+</body>
+</html>
