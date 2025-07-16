@@ -111,14 +111,18 @@
     }
 
     // Registered user
-    const { name, city, plan, photo } = data;
+    //const { name, city, plan, photo } = data;
+    const name = data["Name"];
+    const city = data["City"];
+    const plan = data["Plan"];
+    const photo = data["Photo URL"];
     let html = `
       <div class="card-container">
+        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
         <h3>${name}</h3>
         <p>📍 ${city}</p>
         <p>📞 ${phone}</p>
         <p>Current Plan: <strong>${plan}</strong></p>
-        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
     `;
 
     if (plan === "PREMIUM") {
