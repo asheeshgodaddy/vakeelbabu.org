@@ -54,7 +54,7 @@
 </div>
 
 <script>
-  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz1hZnqZHovZiZb1W1ZKuQhnIg5jxryFGKULQ2hwnS3Dn8OpePigyNw6utHCUWZG3ZdBg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1hZnqZHovZiZb1W1ZKuQhnIg5jxryFGKULQ2hwnS3Dn8OpePigyNw6utHCUWZG3ZdBg/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
@@ -158,7 +158,7 @@
   }
 
   async function updatePlan(phone, plan) {
-    const res = await fetch(SHEET_API_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify({ action: "upgrade", phone, plan }),
       headers: {
