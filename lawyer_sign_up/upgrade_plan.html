@@ -101,7 +101,7 @@
     const container = document.getElementById('resultContainer');
     container.innerHTML = '';
 
-    if (!data || !data.plan) {
+    if (!data || !data["Plan"]) {
       // Not found → new user
       container.innerHTML = `
         <p style="color:red;">Phone number not found in our system.<br><br><br></p>
