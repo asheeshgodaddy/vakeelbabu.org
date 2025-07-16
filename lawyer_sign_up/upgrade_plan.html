@@ -54,35 +54,45 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4nScbGdn_n4L8w0HAnlxnkno1yoejq6phSZf5CO0r8RxzblVTerDjUU_UPhNGOAoK/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvvVCtMo5BFZdJSGlzJuglhSxNpaIwKWtPbYvUoakPVaFHi7wgI0BLd7cZz4ZzEWfs/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
 
   phoneInput.addEventListener("input", () => {
-      const phone = phoneInput.value.trim();
-      if (phone.length === 10) {
-        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
-        fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
-          .then(res => res.text())
-          .then(result => {
-            if (result === "DUPLICATE") {
-              phoneStatus.style.color = "red";
-              phoneStatus.textContent = "🚫 Phone number already registered.";
-            } else {
-              phoneStatus.style.color = "green";
-              phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
-              document.getElementById("signupPhone").value = phone;
-            }
-          })
-          .catch(() => {
-            phoneStatus.style.color = "red";
-            phoneStatus.textContent = "⚠️ Error checking phone.";
-          });
-      } else {
-        phoneStatus.textContent = "";
-      }
-   });
+    const phone = phoneInput.value.trim();
+    if (phone.length === 10) {
+      phoneStatus.textContent = "🔍 Checking registration status...";
+      fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
+        .then(res => res.text())
+        .then(result => {
+          if (result === "DUPLICATE") {
+            phoneStatus.style.color = "green";
+            phoneStatus.textContent = "✅ Phone number is registered. Fetching details...";
+            // 👇 Fetch full lawyer data from Google Sheet
+            fetch(`${SCRIPT_URL}?phone=${phone}`)
+              .then(res => res.json())
+              .then(data => renderResult(data, phone))
+              .catch(() => {
+                phoneStatus.style.color = "red";
+                phoneStatus.textContent = "⚠️ Error fetching user details.";
+              });
+          } else {
+            phoneStatus.style.color = "blue";
+            phoneStatus.textContent = "❌ Phone number not found. Please register.";
+            renderResult(null, phone);
+          }
+        })
+        .catch(() => {
+          phoneStatus.style.color = "red";
+          phoneStatus.textContent = "⚠️ Error checking phone.";
+        });
+    } else {
+      phoneStatus.textContent = "";
+      document.getElementById("resultContainer").innerHTML = "";
+    }
+  });
+
 
   function renderResult(data, phone) {
     const container = document.getElementById('resultContainer');
