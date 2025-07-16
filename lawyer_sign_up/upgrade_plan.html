@@ -44,8 +44,11 @@
 
 <div class="form-container">
   <h2>Check & Upgrade Plan</h2>
-  <input type="tel" id="phone" placeholder="Enter your registered phone number" />
-  <button onclick="checkNumber()">Check</button>
+    <!-- ✅ Step 1: Phone Number Check -->
+    <form id="phoneCheckForm">
+      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
+      <p id="phoneStatus"></p>
+    </form>
   
   <div id="resultContainer"></div>
 </div>
@@ -53,14 +56,38 @@
 <script>
   const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz1hZnqZHovZiZb1W1ZKuQhnIg5jxryFGKULQ2hwnS3Dn8OpePigyNw6utHCUWZG3ZdBg/exec";
 
-  async function checkNumber() {
-    const phone = document.getElementById('phone').value.trim();
-    if (!phone) return alert("Please enter phone number.");
+  // ✅ Check phone before anything
+  const phoneStatus = document.getElementById("phoneStatus");
+  const signupForm = document.getElementById("signupForm");
 
-    const res = await fetch(`${SHEET_API_URL}?phone=${encodeURIComponent(phone)}`);
-    const data = await res.json();
-    renderResult(data, phone);
-  }
+  phoneInput.addEventListener("input", () => {
+      const phone = phoneInput.value.trim();
+      if (phone.length === 10) {
+        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
+        fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
+          .then(res => res.text())
+          .then(result => {
+            if (result === "DUPLICATE") {
+              phoneStatus.style.color = "red";
+              phoneStatus.textContent = "🚫 Phone number already registered.";
+              signupForm.style.display = "none";
+            } else {
+              phoneStatus.style.color = "green";
+              phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
+              signupForm.style.display = "block";
+              document.getElementById("signupPhone").value = phone;
+            }
+          })
+          .catch(() => {
+            phoneStatus.style.color = "red";
+            phoneStatus.textContent = "⚠️ Error checking phone.";
+            signupForm.style.display = "none";
+          });
+      } else {
+        phoneStatus.textContent = "";
+        signupForm.style.display = "none";
+      }
+   });
 
   function renderResult(data, phone) {
     const container = document.getElementById('resultContainer');
