@@ -54,7 +54,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwC0QNO3pNoo9Tngoq_QWkwkSXXVwR6ZuIsm_H6KQWP3XWaFTIVKUXD4S-xmlkQTjOhsA/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHhHq1_q103Y73Kz2r84nfe1RZNSWnIcAgZvlibJNTE3S44qnY7A1yK_TVfStiKa5vog/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
@@ -71,8 +71,11 @@
             phoneStatus.textContent = "✅ Phone number is registered. Fetching details...";
             // 👇 Fetch full lawyer data from Google Sheet
             fetch(`${SCRIPT_URL}?phone=${phone}`)
-              .then(res => res.json())
-              .then(data => renderResult(data, phone))
+                .then(res => res.json())
+                .then(data => {
+                  console.log("Fetched user data:", data); // ✅ ADD THIS LINE
+                  renderResult(data, phone);
+                })
               .catch(() => {
                 phoneStatus.style.color = "red";
                 phoneStatus.textContent = "⚠️ Error fetching user details.";
