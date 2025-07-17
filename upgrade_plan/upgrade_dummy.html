@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Upgrade Lawyer Plan</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/style.css"> <!-- Your existing CSS -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -57,7 +58,7 @@
     const phone = document.getElementById('phone').value.trim();
     if (!phone) return alert("Please enter phone number.");
 
-    const res = await fetch(`${SHEET_API_URL}?phone=${encodeURIComponent(phone)}`);
+    const res = await fetch(`${SHEET_API_URL}?action=verify&phone=${encodeURIComponent(phone)}`);
     const data = await res.json();
     renderResult(data, phone);
   }
