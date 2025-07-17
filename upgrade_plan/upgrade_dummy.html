@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upgrade Lawyer Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css"> <!-- Your existing CSS -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .form-container input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 6px;
+    }
+    .card-container {
+      margin-top: 30px;
+      background-color: #fff;
+      border: 2px solid #0077cc;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .btn-upgrade {
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Check & Upgrade Plan</h2>
+    <!-- ✅ Step 1: Phone Number Check -->
+    <form id="phoneCheckForm">
+      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
+      <p id="phoneStatus"></p>
+    </form>
+  
+  <div id="resultContainer"></div>
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYE4Sq60oGx9P5S4ASKU69SWzHdMXD8701BiwQOfEPWzpfXswrb1skpdNWJOW7xYcH2w/exec";
+
+  // ✅ Check phone before anything
+  const phoneStatus = document.getElementById("phoneStatus");
+
+  phoneInput.addEventListener("input", () => {
+    const phone = phoneInput.value.trim();
+    if (phone.length === 10) {
+      phoneStatus.textContent = "🔍 Checking registration status...";
+      fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
+        .then(res => res.text())
+        .then(result => {
+          if (result === "DUPLICATE") {
+            phoneStatus.style.color = "green";
+            phoneStatus.textContent = "✅ Phone number is registered. Fetching details...";
+            // 👇 Fetch full lawyer data from Google Sheet
+            fetch(`${SCRIPT_URL}?phone=${phone}`)
+                .then(res => res.json())
+                .then(data => {
+                  console.log("Fetched user data:", data); // ✅ ADD THIS LINE
+                  renderResult(data, phone);
+                })
+              .catch(() => {
+                phoneStatus.style.color = "red";
+                phoneStatus.textContent = "⚠️ Error fetching user details.";
+              });
+          } else {
+            phoneStatus.style.color = "blue";
+            phoneStatus.textContent = "❌ Phone number not found. Please register.";
+            renderResult(null, phone);
+          }
+        })
+        .catch(() => {
+          phoneStatus.style.color = "red";
+          phoneStatus.textContent = "⚠️ Error checking phone.";
+        });
+    } else {
+      phoneStatus.textContent = "";
+      document.getElementById("resultContainer").innerHTML = "";
+    }
+  });
+
+
+  function renderResult(data, phone) {
+    const container = document.getElementById('resultContainer');
+    container.innerHTML = '';
+
+    if (!data || !data["plan"]) {
+      // Not found → new user
+      container.innerHTML = `
+        <p style="color:red;">Phone number not found in our system.<br><br><br></p>
+        <a href="/lawyer_sign_up/" class="btn-upgrade" style="background:blue;">Register Now</a>
+      `;
+      return;
+    }
+
+    // Registered user
+    //const { name, city, plan, photo } = data;
+    const name = data["name"];
+    const city = data["city"];
+    const plan = data["plan"];
+    const photo = data["photo url"];
+    let html = `
+      <div class="card-container">
+        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
+        <h3>${name}</h3>
+        <p>📍 ${city}</p>
+        <p>📞 ${phone}</p>
+        <p>Current Plan: <strong>${plan}</strong></p>
+    `;
+
+    if (plan === "PREMIUM") {
+      html += `<p class="text-success" style="color:green;font-weight:bold;">✅ You are already a PREMIUM member</p>`;
+    } else if (plan === "BASIC") {
+      html += `
+        <button class="btn-upgrade" onclick="handlePayment('${phone}', 'PREMIUM', 300)">Upgrade to PREMIUM (₹300)</button>
+      `;
+    } else if (plan === "FREE") {
+      html += `
+        <p>Select Upgrade Option:</p>
+        <label><input type="radio" name="plan" value="BASIC" checked> BASIC (₹199)</label><br>
+        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹499)</label><br>
+        <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
+      `;
+    }
+
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function submitFreeUpgrade(phone) {
+    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+    const amount = selectedPlan === "PREMIUM" ? 499 : 199;
+    handlePayment(phone, selectedPlan, amount);
+  }
+
+  function handlePayment(phone, plan, amount) {
+    const options = {
+      key: "rzp_test_5hUlHD5xojSBJn",  // Replace with real Razorpay key
+      amount: amount * 100,
+      currency: "INR",
+      name: "VakeelBabu.org",
+      description: `Upgrade to ${plan}`,
+      handler: function (response) {
+        // After successful payment
+        updatePlan(phone, plan);
+      },
+      prefill: {
+        contact: phone
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  // body: JSON.stringify({ action: "upgrade", phone: "9212004244", plan: "PREMIUM"}),
+  
+    async function updatePlan(phone, plan) {
+      const res = await fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_URL/exec", {
+        method: "POST",
+        body: JSON.stringify({
+          action: "upgrade",
+          phone: phone,
+          plan: plan
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    
+      const result = await res.json();
+    
+      if (result.success) {
+        alert(result.message || "✅ Plan upgraded successfully!");
+      } else {
+        alert("❌ " + (result.error || "Something went wrong"));
+      }
+    }
+  
+</script>
+</body>
+</html>
