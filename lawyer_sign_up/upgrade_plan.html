@@ -54,7 +54,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxivfjXm8qZnLW8UoKTw_kmzPa1iggXYS7x69jaM0ph10iGuvWWxEtqmTg4EI5hngtBJA/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxUng2ffa72j-zdWpcpiHLdKWqc_sp-H2w5vsxlWml5fczTI_sW33HTJHAL_AM05eXOA/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
@@ -168,8 +168,6 @@
     const rzp = new Razorpay(options);
     rzp.open();
   }
-
-  //body: JSON.stringify({ action: "upgrade", phone, plan }),
 
   async function updatePlan(phone, plan) {
     const res = await fetch(SCRIPT_URL, {
