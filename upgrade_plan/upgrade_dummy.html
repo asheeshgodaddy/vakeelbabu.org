@@ -97,14 +97,14 @@
       html += `
         <p>Select Upgrade Option:</p>
         <div style="margin-top: 10px;">
-          <label style="display: flex; align-items: center; margin-bottom: 10px;">
-            <input type="radio" name="plan" value="BASIC" style="margin-right: 10px;">
+          <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <span>BASIC (₹199)</span>
+            <input type="radio" name="plan" value="BASIC">
           </label>
         
-          <label style="display: flex; align-items: center; margin-bottom: 10px;">
-            <input type="radio" name="plan" value="PREMIUM" style="margin-right: 10px;">
+          <label style="display: flex; justify-content: space-between; align-items: center;">
             <span>PREMIUM (₹499)</span>
+            <input type="radio" name="plan" value="PREMIUM">
           </label>
         </div>
         <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
