@@ -1,238 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upgrade Lawyer Plan</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f2f2f2;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input, select, button {
-            padding: 10px;
-            width: 100%;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-        .status {
-            margin-top: 10px;
-        }
-        .card {
-            background: #fff;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .photo {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
-        .upgrade-options {
-            margin-top: 15px;
-        }
-        .upgrade-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        .register-button {
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        .message {
-            margin-top: 15px;
-            font-weight: bold;
-            color: orange;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Upgrade Lawyer Plan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/style.css"> <!-- Your existing CSS -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .form-container input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 6px;
+    }
+    .card-container {
+      margin-top: 30px;
+      background-color: #fff;
+      border: 2px solid #0077cc;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .btn-upgrade {
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Upgrade Lawyer Plan</h2>
 
-    <label for="phone">Phone Number:</label>
-    <input type="text" id="phone" maxlength="10" placeholder="Enter 10-digit phone number" />
-    <div class="status" id="phoneStatus"></div>
+<div class="form-container">
+  <h2>Check & Upgrade Plan</h2>
+  <input type="tel" id="phone" placeholder="Enter your registered phone number" />
+  <button onclick="checkNumber()">Check</button>
+  
+  <div id="resultContainer"></div>
+</div>
 
-    <div id="notRegistered" style="display: none;">
-        <button class="register-button" onclick="window.location.href='lawyer_sign_up.html'">Go to Lawyer Sign Up</button>
-    </div>
+<script>
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzaDJDLq3PLAlBOSJpANH7Wgxfr4u_dFMwlNGTtSr8qP67hCHA-kq4v6R_rTL66W1x-8A/exec";
 
-    <div class="card" id="lawyerCard" style="display: none;">
-        <div id="lawyerInfo"></div>
-        <div id="upgradeOptions" class="upgrade-options"></div>
-        <div id="upgradeMessage" class="message" style="display: none;"></div>
-    </div>
+  async function checkNumber() {
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) return alert("Please enter phone number.");
 
-    <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaDJDLq3PLAlBOSJpANH7Wgxfr4u_dFMwlNGTtSr8qP67hCHA-kq4v6R_rTL66W1x-8A/exec";
+    const res = await fetch(`${SHEET_API_URL}?phone=${encodeURIComponent(phone)}`);
+    const data = await res.json();
+    renderResult(data, phone);
+  }
 
-        const phoneInput = document.getElementById("phone");
-        const phoneStatus = document.getElementById("phoneStatus");
-        const lawyerCard = document.getElementById("lawyerCard");
-        const lawyerInfoDiv = document.getElementById("lawyerInfo");
-        const upgradeOptionsDiv = document.getElementById("upgradeOptions");
-        const upgradeMessageDiv = document.getElementById("upgradeMessage");
-        const notRegisteredDiv = document.getElementById("notRegistered");
+  function renderResult(data, phone) {
+    const container = document.getElementById('resultContainer');
+    container.innerHTML = '';
 
-        phoneInput.addEventListener("input", async () => {
-            const phone = phoneInput.value.trim();
-            if (phone.length !== 10) {
-                phoneStatus.textContent = "Please enter a valid 10-digit phone number.";
-                lawyerCard.style.display = "none";
-                notRegisteredDiv.style.display = "none";
-                upgradeMessageDiv.style.display = "none";
-                return;
-            }
+    if (!data || !data.plan) {
+      // Not found → new user
+      container.innerHTML = `
+        <p style="color:red;">Phone number not found in our system.</p>
+        <a href="/src/lawyer_sign_up.html" class="btn-upgrade" style="background:blue;">Register Now</a>
+      `;
+      return;
+    }
 
-            try {
-                const res = await fetch(`${SCRIPT_URL}?action=verify&phone=${phone}`);
-                const result = await res.json();
+    // Registered user
+    const { name, city, plan, photo } = data;
+    let html = `
+      <div class="card-container">
+        <h3>${name}</h3>
+        <p>📍 ${city}</p>
+        <p>📞 ${phone}</p>
+        <p>Current Plan: <strong>${plan}</strong></p>
+        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
+    `;
 
-                if (result.success === false) {
-                    phoneStatus.style.color = "blue";
-                    phoneStatus.textContent = result.error;
-                    lawyerCard.style.display = "none";
-                    notRegisteredDiv.style.display = "block";
-                    upgradeMessageDiv.style.display = "none";
-                    renderResult(null);
-                } else {
-                    phoneStatus.style.color = "green";
-                    phoneStatus.textContent = "✅ Phone number is registered.";
-                    notRegisteredDiv.style.display = "none";
-                    renderResult(result);
-                }
-            } catch (err) {
-                phoneStatus.style.color = "red";
-                phoneStatus.textContent = "⚠️ Error checking phone.";
-                lawyerCard.style.display = "none";
-                notRegisteredDiv.style.display = "none";
-                upgradeMessageDiv.style.display = "none";
-            }
-        });
+    if (plan === "PREMIUM") {
+      html += `<p class="text-success" style="color:green;font-weight:bold;">✅ You are already a PREMIUM member</p>`;
+    } else if (plan === "BASIC") {
+      html += `
+        <button class="btn-upgrade" onclick="handlePayment('${phone}', 'PREMIUM', 300)">Upgrade to PREMIUM (₹300)</button>
+      `;
+    } else if (plan === "FREE") {
+      html += `
+        <p>Select Upgrade Option:</p>
+        <label><input type="radio" name="plan" value="BASIC" checked> BASIC (₹199)</label><br>
+        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹300)</label><br>
+        <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
+      `;
+    }
 
-        function renderResult(data) {
-            if (!data) {
-                lawyerCard.style.display = "none";
-                upgradeOptionsDiv.innerHTML = "";
-                upgradeMessageDiv.style.display = "none";
-                return;
-            }
+    html += `</div>`;
+    container.innerHTML = html;
+  }
 
-            lawyerCard.style.display = "block";
-            lawyerInfoDiv.innerHTML = `
-                <img src="${data["photo url"] || "https://via.placeholder.com/100"}" class="photo" />
-                <h3>${data.name || "N/A"}</h3>
-                <p><strong>City:</strong> ${data.city || "N/A"}</p>
-                <p><strong>Current Plan:</strong> ${data.plan || "N/A"}</p>
-            `;
+  function submitFreeUpgrade(phone) {
+    const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
+    const amount = selectedPlan === "PREMIUM" ? 499 : 199;
+    handlePayment(phone, selectedPlan, amount);
+  }
 
-            upgradeOptionsDiv.innerHTML = "";
-            upgradeMessageDiv.style.display = "none";
+  function handlePayment(phone, plan, amount) {
+    const options = {
+      key: "rzp_test_5hUlHD5xojSBJn",  // Replace with real Razorpay key
+      amount: amount * 100,
+      currency: "INR",
+      name: "VakeelBabu.org",
+      description: `Upgrade to ${plan}`,
+      handler: function (response) {
+        // After successful payment
+        updatePlan(phone, plan);
+      },
+      prefill: {
+        contact: phone
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
 
-            if (data.plan && data.plan.toUpperCase() === "PREMIUM") {
-                upgradeMessageDiv.textContent = "Already registered as a PREMIUM lawyer";
-                upgradeMessageDiv.style.display = "block";
-            } else if (data.plan && data.plan.toUpperCase() === "BASIC") {
-                const upgradeButton = document.createElement("button");
-                upgradeButton.classList.add("upgrade-button");
-                upgradeButton.textContent = "Upgrade to PREMIUM (INR 300)";
-                upgradeButton.onclick = () => confirmUpgrade(data.phone, "PREMIUM", 300);
-                upgradeOptionsDiv.appendChild(upgradeButton);
-            } else if (data.plan && data.plan.toUpperCase() === "FREE") {
-                const premiumOption = document.createElement("input");
-                premiumOption.type = "radio";
-                premiumOption.id = "premiumPlan";
-                premiumOption.name = "upgradePlan";
-                premiumOption.value = "PREMIUM";
-
-                const premiumLabel = document.createElement("label");
-                premiumLabel.setAttribute("for", "premiumPlan");
-                premiumLabel.textContent = "PREMIUM (INR 300)";
-
-                const basicOption = document.createElement("input");
-                basicOption.type = "radio";
-                basicOption.id = "basicPlan";
-                basicOption.name = "upgradePlan";
-                basicOption.value = "BASIC";
-
-                const basicLabel = document.createElement("label");
-                basicLabel.setAttribute("for", "basicPlan");
-                basicLabel.textContent = "BASIC (INR 199)";
-
-                const upgradeButton = document.createElement("button");
-                upgradeButton.classList.add("upgrade-button");
-                upgradeButton.textContent = "Upgrade Plan";
-                upgradeButton.onclick = () => {
-                    const selectedPlan = document.querySelector('input[name="upgradePlan"]:checked');
-                    if (selectedPlan) {
-                        const plan = selectedPlan.value;
-                        const amount = plan === "PREMIUM" ? 300 : 199;
-                        confirmUpgrade(data.phone, plan, amount);
-                    } else {
-                        alert("Please select a plan to upgrade.");
-                    }
-                };
-
-                upgradeOptionsDiv.appendChild(premiumOption);
-                upgradeOptionsDiv.appendChild(premiumLabel);
-                upgradeOptionsDiv.appendChild(document.createElement("br"));
-                upgradeOptionsDiv.appendChild(basicOption);
-                upgradeOptionsDiv.appendChild(basicLabel);
-                upgradeOptionsDiv.appendChild(document.createElement("br"));
-                upgradeOptionsDiv.appendChild(upgradeButton);
-            }
-        }
-
-        async function confirmUpgrade(phone, plan, amount) {
-            if (confirm(`Confirm upgrade to ${plan} for INR ${amount}?`)) {
-                // In a real scenario, you would integrate with a payment gateway here.
-                // For this example, we'll just proceed with the plan update.
-                await updatePlan(phone, plan);
-            }
-        }
-
-        async function updatePlan(phone, plan) {
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "upgrade", phone, plan })
-                });
-
-                const result = await res.json();
-                alert(result.message || result.error || `Plan upgraded to ${plan} successfully!`);
-                phoneInput.dispatchEvent(new Event("input")); // Refresh lawyer info
-            } catch (err) {
-                alert("⚠️ Error updating plan.");
-            }
-        }
-    </script>
+  async function updatePlan(phone, plan) {
+    const res = await fetch(SHEET_API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "upgrade", phone, plan }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const result = await res.json();
+    alert(result.message || "Plan upgraded successfully!");
+    checkNumber(); // Refresh info
+  }
+</script>
 </body>
 </html>
