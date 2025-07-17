@@ -172,7 +172,8 @@
   async function updatePlan(phone, plan) {
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "upgrade", phone, plan }),
+      //body: JSON.stringify({ action: "upgrade", phone, plan }),
+      body: JSON.stringify({ action: "upgrade", "9212004244", "PREMIUM"}),
       headers: {
         "Content-Type": "application/json"
       }
