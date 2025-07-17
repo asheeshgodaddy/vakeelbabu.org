@@ -131,18 +131,13 @@
     rzp.open();
   }
 
-  async function updatePlan(phone, plan) {
-    const res = await fetch(SHEET_API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "upgrade", phone, plan }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const result = await res.json();
-    alert(result.message || "Plan upgraded successfully!");
-    checkNumber(); // Refresh info
-  }
+    async function updatePlan(phone, plan) {
+      const res = await fetch(`${SHEET_API_URL}?action=upgrade&phone=${encodeURIComponent(phone)}&plan=${encodeURIComponent(plan)}`);
+      const result = await res.json();
+      alert(result.message || "Plan upgraded successfully!");
+      checkNumber(); // Refresh info
+    }
+
 </script>
 </body>
 </html>
