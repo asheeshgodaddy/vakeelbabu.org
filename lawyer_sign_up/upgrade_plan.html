@@ -169,12 +169,12 @@
     rzp.open();
   }
 
-  // body: JSON.stringify({ action: "upgrade", phone, plan}),
+  // body: JSON.stringify({ action: "upgrade", phone: "9212004244", plan: "PREMIUM"}),
   
   async function updatePlan(phone, plan) {
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "upgrade", phone: "9212004244", plan: "PREMIUM"}),
+      body: JSON.stringify({ action: "upgrade", phone, plan}),
       headers: {
         "Content-Type": "application/json"
       }
