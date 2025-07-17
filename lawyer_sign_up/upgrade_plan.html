@@ -172,17 +172,31 @@
   // body: JSON.stringify({ action: "upgrade", phone: "9212004244", plan: "PREMIUM"}),
   
   async function updatePlan(phone, plan) {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "upgrade", phone, plan}),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const result = await res.json();
-    alert(result.message || "Plan upgraded successfully!");
-    phoneInput.dispatchEvent(new Event("input")); // ✅ Trigger refresh
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: "upgrade",
+          phone: phone,  // dynamic phone
+          plan: plan     // dynamic plan
+        })
+      });
+  
+      const result = await res.json();
+      alert(result.message || "Plan upgraded successfully!");
+      
+      // Trigger refresh or recheck the form
+      phoneInput.dispatchEvent(new Event("input"));
+  
+    } catch (error) {
+      console.error("Upgrade failed:", error);
+      alert("Something went wrong. Please try again.");
+    }
   }
+
 
 </script>
 </body>
