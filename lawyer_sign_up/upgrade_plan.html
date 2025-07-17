@@ -54,7 +54,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6tIW8xvl5TmZZTqkMmZHENKY6ye0c0RQvxLY403MAEBP64k5itecvtcgkbYACXsudHg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9yv73fzyX2s0hkJ0kLr55QmbwzYHol231LUa7Kpp2sA0tbhztmuO7uP4HPL87qEj-ZQ/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
@@ -135,7 +135,7 @@
       html += `
         <p>Select Upgrade Option:</p>
         <label><input type="radio" name="plan" value="BASIC" checked> BASIC (₹199)</label><br>
-        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹300)</label><br>
+        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹499)</label><br>
         <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
       `;
     }
@@ -146,7 +146,7 @@
 
   function submitFreeUpgrade(phone) {
     const selectedPlan = document.querySelector('input[name="plan"]:checked').value;
-    const amount = selectedPlan === "PREMIUM" ? 300 : 199;
+    const amount = selectedPlan === "PREMIUM" ? 499 : 199;
     handlePayment(phone, selectedPlan, amount);
   }
 
@@ -179,8 +179,9 @@
     });
     const result = await res.json();
     alert(result.message || "Plan upgraded successfully!");
-    checkNumber(); // Refresh info
+    phoneInput.dispatchEvent(new Event("input")); // ✅ Trigger refresh
   }
+
 </script>
 </body>
 </html>
