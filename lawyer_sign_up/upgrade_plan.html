@@ -54,7 +54,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxguW_eS6WSAQNPxBMPFZadSNlqoAf6iv8OtTDJSiUVEQn5P0HkKKcCiR0LkETMzPEGWQ/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwzqCxPFozXtC-tWYsKwHSCAxjxYorsVBImfaU5ESZRpSHBH4dY4rSSax6NVY8Gql1crA/exec";
 
   // ✅ Check phone before anything
   const phoneStatus = document.getElementById("phoneStatus");
@@ -173,6 +173,7 @@
   
   async function updatePlan(phone, plan) {
     try {
+      console.log("Sending request to upgrade plan for:", phone, plan);
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
         headers: {
@@ -193,7 +194,7 @@
   
     } catch (error) {
       console.error("Upgrade failed:", error);
-      alert("Something went wrong. Please try again.");
+      alert("Something went wrong. Please try again.\n" + error.message);
     }
   }
 
