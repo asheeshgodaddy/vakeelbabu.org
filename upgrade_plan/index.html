@@ -42,6 +42,17 @@
   </style>
 </head>
 <body>
+  <header>
+    <div id="nav-placeholder"></div>
+
+    <script>
+      fetch("/src/menu.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("nav-placeholder").innerHTML = data;
+        });
+    </script>
+  </header>
 
 <div class="form-container">
   <h2>Check & Upgrade Plan</h2>
