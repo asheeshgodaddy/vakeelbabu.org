@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Upgrade Lawyer Plan</title>
+  <link rel="icon" href="/images/favicon.png" type="image/png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/style.css"> <!-- Your existing CSS -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -44,85 +45,46 @@
 
 <div class="form-container">
   <h2>Check & Upgrade Plan</h2>
-    <!-- ✅ Step 1: Phone Number Check -->
-    <form id="phoneCheckForm">
-      <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
-      <p id="phoneStatus"></p>
-    </form>
+  <input type="tel" id="phone" placeholder="Enter your registered phone number" />
+  <button onclick="checkNumber()">Check</button>
   
   <div id="resultContainer"></div>
 </div>
 
 <script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAMRN7kDdJE-qP9uBxJyWYaM51G7ArtWvPe9kWIcWHHDZmt9LojFusiBh0QiB10Lgtbw/exec";
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzaDJDLq3PLAlBOSJpANH7Wgxfr4u_dFMwlNGTtSr8qP67hCHA-kq4v6R_rTL66W1x-8A/exec";
 
-  // ✅ Check phone before anything
-  const phoneStatus = document.getElementById("phoneStatus");
+  async function checkNumber() {
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone) return alert("Please enter phone number.");
 
-  phoneInput.addEventListener("input", () => {
-    const phone = phoneInput.value.trim();
-    if (phone.length === 10) {
-      phoneStatus.textContent = "🔍 Checking registration status...";
-      fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
-        .then(res => res.text())
-        .then(result => {
-          if (result === "DUPLICATE") {
-            phoneStatus.style.color = "green";
-            phoneStatus.textContent = "✅ Phone number is registered. Fetching details...";
-            // 👇 Fetch full lawyer data from Google Sheet
-            fetch(`${SCRIPT_URL}?phone=${phone}`)
-                .then(res => res.json())
-                .then(data => {
-                  console.log("Fetched user data:", data); // ✅ ADD THIS LINE
-                  renderResult(data, phone);
-                })
-              .catch(() => {
-                phoneStatus.style.color = "red";
-                phoneStatus.textContent = "⚠️ Error fetching user details.";
-              });
-          } else {
-            phoneStatus.style.color = "blue";
-            phoneStatus.textContent = "❌ Phone number not found. Please register.";
-            renderResult(null, phone);
-          }
-        })
-        .catch(() => {
-          phoneStatus.style.color = "red";
-          phoneStatus.textContent = "⚠️ Error checking phone.";
-        });
-    } else {
-      phoneStatus.textContent = "";
-      document.getElementById("resultContainer").innerHTML = "";
-    }
-  });
-
+    const res = await fetch(`${SHEET_API_URL}?action=verify&phone=${encodeURIComponent(phone)}`);
+    const data = await res.json();
+    renderResult(data, phone);
+  }
 
   function renderResult(data, phone) {
     const container = document.getElementById('resultContainer');
     container.innerHTML = '';
 
-    if (!data || !data["plan"]) {
+    if (!data || !data.plan) {
       // Not found → new user
       container.innerHTML = `
-        <p style="color:red;">Phone number not found in our system.<br><br><br></p>
+        <p style="color:red;">Phone number not found in our system.<br><br><br><br></p>
         <a href="/lawyer_sign_up/" class="btn-upgrade" style="background:blue;">Register Now</a>
       `;
       return;
     }
 
     // Registered user
-    //const { name, city, plan, photo } = data;
-    const name = data["name"];
-    const city = data["city"];
-    const plan = data["plan"];
-    const photo = data["photo url"];
+    const { name, city, plan, photo } = data;
     let html = `
       <div class="card-container">
-        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
         <h3>${name}</h3>
         <p>📍 ${city}</p>
         <p>📞 ${phone}</p>
         <p>Current Plan: <strong>${plan}</strong></p>
+        ${photo ? `<img src="${photo}" alt="Photo" style="width:100px;border-radius:50%;">` : ''}
     `;
 
     if (plan === "PREMIUM") {
@@ -134,8 +96,18 @@
     } else if (plan === "FREE") {
       html += `
         <p>Select Upgrade Option:</p>
-        <label><input type="radio" name="plan" value="BASIC" checked> BASIC (₹199)</label><br>
-        <label><input type="radio" name="plan" value="PREMIUM"> PREMIUM (₹499)</label><br>
+        <div style="margin-top: 10px;">
+          <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span>BASIC (₹199)
+              <input type="radio" name="plan" value="BASIC">
+            </span>
+          </label>
+        
+          <label style="display: flex; justify-content: space-between; align-items: center;">
+            <span>PREMIUM (₹499)</span>
+            <input type="radio" name="plan" value="PREMIUM">
+          </label>
+        </div>
         <button class="btn-upgrade" onclick="submitFreeUpgrade('${phone}')">Upgrade</button>
       `;
     }
@@ -169,35 +141,12 @@
     rzp.open();
   }
 
-  // body: JSON.stringify({ action: "upgrade", phone: "9212004244", plan: "PREMIUM"}),
-  
-  async function updatePlan(phone, plan) {
-    try {
-      console.log("Sending request to upgrade plan for:", phone, plan);
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          action: "upgrade",
-          phone: phone,  // dynamic phone
-          plan: plan     // dynamic plan
-        })
-      });
-  
+    async function updatePlan(phone, plan) {
+      const res = await fetch(`${SHEET_API_URL}?action=upgrade&phone=${encodeURIComponent(phone)}&plan=${encodeURIComponent(plan)}`);
       const result = await res.json();
       alert(result.message || "Plan upgraded successfully!");
-      
-      // Trigger refresh or recheck the form
-      phoneInput.dispatchEvent(new Event("input"));
-  
-    } catch (error) {
-      console.error("Upgrade failed:", error);
-      alert("Something went wrong. Please try again.\n" + error.message);
+      checkNumber(); // Refresh info
     }
-  }
-
 
 </script>
 </body>
