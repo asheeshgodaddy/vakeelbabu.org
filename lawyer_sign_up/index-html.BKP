@@ -204,7 +204,8 @@
       }
     });
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyt0EnBaiIAYCzUpfh3lUh2SCZdiCrKas1gw8DK--rtSGf4gwV9a2LzYxyb6PZqGu7WvA/exec";
+    //const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1hZnqZHovZiZb1W1ZKuQhnIg5jxryFGKULQ2hwnS3Dn8OpePigyNw6utHCUWZG3ZdBg/exec"; // This is from VB gmail. 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_0Ntl-dxu-ZaoI4cJbdMGfSzbqULJrimcarlFrJokckiNqwjOk2zBqlriE8ANVgLE/exec"
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
 
     let confirmationResult, recaptchaVerifier;
@@ -285,7 +286,7 @@
       confirmationResult.confirm(code)
         .then(() => {
           document.getElementById("verifiedOTP").value = "true";
-          document.getElementById("otpMessage").textContent = "OTP verified ✅";
+          document.getElementById("otpMessage").textContent = "🎉🎉🎉 OTP verified successfully!";
           document.getElementById("finalSubmit").disabled = false;
         })
         .catch(() => {
