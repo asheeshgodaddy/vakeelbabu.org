@@ -103,9 +103,43 @@
           });
       </script>
   </header>
+
+<div class="signup-wrapper">
+  <div class="sample-cards" id="sampleCardsBox">
+    <div class="sample-card">
+      <div class="badge premium">💎 Premium</div>
+      <div class="badge verified">✔ Verified</div>
+      <img src="/images/logo.png" alt="Sample Lawyer">
+      <b>Sample - Featured</b>
+      <p>📞 0000000001</p>
+      <p>📍 City</p>
+      <p><i>“Criminal, Civil”</i></p>
+      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
+    </div>
+
+    <div class="sample-card">
+      <div class="badge verified">✔ Verified</div>
+      <img src="/images/logo.png" alt="Sample Lawyer">
+      <b>Sample - Verified</b>
+      <p>📞 0000000000</p>
+      <p>📍 City</p>
+      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
+    </div>
+
+    <div class="sample-card">
+      <div class="badge free">🆓 Free</div>
+      <img src="/images/logo.png" alt="Sample Lawyer">
+      <b>Sample - Free</b>
+      <p>📞 0000000003</p>
+      <p>📍 City</p>
+      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
+    </div>
+  </div>
+
+  <!-- Main form container -->
   <div class="container">
     <h2>Sign Up as Advocate</h2>
-
+    <!-- Keep your form here as-is -->
     <!-- ✅ Step 1: Phone Number Check -->
     <form id="phoneCheckForm">
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
@@ -250,11 +284,14 @@
               phoneStatus.style.color = "red";
               phoneStatus.textContent = "🚫 Phone number already registered.";
               signupForm.style.display = "none";
+              document.getElementById("sampleCardsBox").classList.remove("hide");
             } else {
               phoneStatus.style.color = "green";
               phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
               signupForm.style.display = "block";
               document.getElementById("signupPhone").value = phone;
+              // Hide sample cards after verified
+              document.getElementById("sampleCardsBox").classList.add("hide");
             }
           })
           .catch(() => {
