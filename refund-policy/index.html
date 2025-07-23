@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>About Vakeel Babu | Trusted Legal Advice Platform in India</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <meta name="description" content="Learn more about Vakeel Babu - a legal advice platform connecting Indians with expert lawyers for free and affordable legal help.">
+    <meta name="keywords" content="about Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
+
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+
+  <body> 
+   <header>
+      <div id="nav-placeholder"></div>
+
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
+    </header>
+
+    <div class="container">
+      <div class="text-container">
+        <br>
+        <h1> <b>Vakeel Babu</b> - Refund Policy </h1>
+        <p class="text-section">
+            <br><b><i>(For Customers making any payment to us)</i></b>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
