@@ -418,6 +418,7 @@
     </div>
     <div class="form-section">
       <form id="signupForm">
+        <div><input name="form_type" value="consultation" type="hidden"></div>
         <div><input type="email" name="email" id="email" placeholder="Email Address *" required></div>
         <div><input name="name" placeholder="Full Name" required></div>
         <div><input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric"></div>
@@ -574,7 +575,7 @@
   <!--script src="/src/fix_menu.js"></script-->
   
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9bTsfpO7eLdiIXY8yP5ab4iVY5JLhibcyO0zg7ODz825JbUE9OUUBYo-u9abLr3Q_/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTNSodrTkg1nnF5vgYUX4I4f9bhl3UhX1xHfFPaoxpKF3hXAG1fTPWDC-lH9Cwa7cy/exec";
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
 
     const phoneInput = document.getElementById("phoneInput");
