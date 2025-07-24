@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Online Lawyer Consultation | VakeelBabu</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/calling.css">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -748,5 +749,12 @@
       document.getElementById("call-count").textContent = `${callCount}+`;
     });
   </script>
+
+  <!-- 📞 Floating Call Button -->
+  <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
+  
+  <!-- 💬 Floating WhatsApp Button -->
+  <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
+
 </body>
 </html>
