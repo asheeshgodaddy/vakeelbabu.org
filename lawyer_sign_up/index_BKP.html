@@ -5,6 +5,7 @@
   <title>Lawyer Sign Up | Vakeel Babu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/calling.css">
   <link rel="icon" href="/images/favicon.png" type="image/png">
 
   <!-- Razorpay JS -->
@@ -103,83 +104,9 @@
           });
       </script>
   </header>
-<style>
-  .signup-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    align-items: flex-start;
-  }
-  .sample-cards {
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .sample-card {
-    border-radius: 15px;
-    padding: 16px;
-    background-color: #d6f0ff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    font-family: aptos, sans-serif;
-  }
-  .sample-card img {
-    width: 80px;
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto 10px;
-  }
-  .badge {
-    font-size: 12px;
-    display: inline-block;
-    padding: 4px 8px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    font-weight: bold;
-  }
-  .premium { background-color: gold; color: black; }
-  .verified { background-color: #28a745; color: white; }
-  .free { background-color: #6c757d; color: white; }
-  .hide {
-    display: none !important;
-  }
-</style>
-<div class="signup-wrapper">
-  <div class="sample-cards" id="sampleCardsBox">
-    <div class="sample-card">
-      <div class="badge premium">💎 Premium</div>
-      <div class="badge verified">✔ Verified</div>
-      <img src="/images/logo.png" alt="Sample Lawyer">
-      <b>Sample - Featured</b>
-      <p>📞 0000000001</p>
-      <p>📍 City</p>
-      <p><i>“Criminal, Civil”</i></p>
-      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
-    </div>
-
-    <div class="sample-card">
-      <div class="badge verified">✔ Verified</div>
-      <img src="/images/logo.png" alt="Sample Lawyer">
-      <b>Sample - Verified</b>
-      <p>📞 0000000000</p>
-      <p>📍 City</p>
-      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
-    </div>
-
-    <div class="sample-card">
-      <div class="badge free">🆓 Free</div>
-      <img src="/images/logo.png" alt="Sample Lawyer">
-      <b>Sample - Free</b>
-      <p>📞 0000000003</p>
-      <p>📍 City</p>
-      <button style="background: green; color: white; width: 100%; border: none; padding: 8px;">Contact Now</button>
-    </div>
-  </div>
-
-  <!-- Main form container -->
   <div class="container">
     <h2>Sign Up as Advocate</h2>
-    <!-- Keep your form here as-is -->
+
     <!-- ✅ Step 1: Phone Number Check -->
     <form id="phoneCheckForm">
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
@@ -234,6 +161,7 @@
       </div>
       
       <button type="submit" id="finalSubmit" disabled>Submit</button>
+      <a href="/refund-policy/" target="_blank">Vakeel Babu - Refund Policy</a>
       <p id="message"></p>
     </form>
   </div>
@@ -279,7 +207,7 @@
     });
 
     //const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz1hZnqZHovZiZb1W1ZKuQhnIg5jxryFGKULQ2hwnS3Dn8OpePigyNw6utHCUWZG3ZdBg/exec"; // This is from VB gmail. 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_0Ntl-dxu-ZaoI4cJbdMGfSzbqULJrimcarlFrJokckiNqwjOk2zBqlriE8ANVgLE/exec"
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymH1XWUJMWSZadH65H-NqCBR9dMZn5t9cXW64fDSZ53iG8Dew5OdBo2OIhDS6a_XsidA/exec"
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
 
     let confirmationResult, recaptchaVerifier;
@@ -324,14 +252,11 @@
               phoneStatus.style.color = "red";
               phoneStatus.textContent = "🚫 Phone number already registered.";
               signupForm.style.display = "none";
-              document.getElementById("sampleCardsBox").classList.remove("hide");
             } else {
               phoneStatus.style.color = "green";
               phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
               signupForm.style.display = "block";
               document.getElementById("signupPhone").value = phone;
-              // Hide sample cards after verified
-              document.getElementById("sampleCardsBox").classList.add("hide");
             }
           })
           .catch(() => {
@@ -509,6 +434,13 @@
       <button onclick="closePlanInfo()" class="modal-contact-btn" style="background-color: #007bff;">Got it, Proceed to Sign Up</button>
     </div>
   </div>
+
+  <!-- 📞 Floating Call Button -->
+  <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
+  
+  <!-- 💬 Floating WhatsApp Button -->
+  <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
+
   
 </body>
 </html>
