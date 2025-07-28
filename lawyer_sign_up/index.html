@@ -335,7 +335,7 @@
             description: `${plan} Plan`,
             handler: function (response) {
               document.getElementById('payment_id').value = response.razorpay_payment_id;
-              document.getElementById('payment_amount').value = amount;
+              document.getElementById('payment_amount').value = amount / 100;
               submitForm();
             },
             prefill: {
