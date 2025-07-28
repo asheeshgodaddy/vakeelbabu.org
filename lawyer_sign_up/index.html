@@ -122,6 +122,7 @@
       <input type="hidden" name="photo" id="photoField">
       <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
       <input type="hidden" name="payment_id" id="payment_id">
+      <input type="hidden" name="payment_amount" id="payment_amount">
 
       <select name="plan" id="plan" required>
         <option value="">-- Choose a plan --</option>
@@ -333,8 +334,20 @@
             name: "Vakeel Babu",
             description: `${plan} Plan`,
             handler: function (response) {
-              document.getElementById('payment_id').value = response.razorpay_payment_id;
-              submitForm();
+              if (response?.razorpay_payment_id && response?.razorpay_payment_amount) {
+                document.getElementById('payment_id').value = response.razorpay_payment_id;
+                document.getElementById('payment_amount').value = response.razorpay_payment_amount;
+                // Optional: Save order ID and signature
+                if (response.razorpay_order_id) {
+                  document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                }
+                if (response.razorpay_signature) {
+                  document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                }
+                submitForm();
+              } else {
+                alert("Payment information incomplete. Please contact support.");
+              }
             },
             prefill: {
               contact: "+91" + document.getElementById("signupPhone").value
