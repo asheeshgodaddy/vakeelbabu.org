@@ -19,6 +19,11 @@
           .then(response => response.text())
           .then(data => {
             document.getElementById("nav-placeholder").innerHTML = data;
+
+            // Now load fix_menu.js AFTER menu is inserted
+            const script = document.createElement("script");
+            script.src = "/src/fix_menu.js";
+            document.body.appendChild(script);
           });
       </script>
     </header>
@@ -59,14 +64,13 @@
            <br>
             - When you contact us via forms<br>
             - When you sign up as a lawyer<br>
-            - When you request free or paid legal documents<br>
             - When you book a consultation<br>
             - When you subscribe to legal updates or blogs<br>
 
             <br><br><b>Examples include:</b><br><br>
             - Name, email, phone number<br>
             - City and state<br>
-            - Legal issue type or document details<br>
+            - Legal issue type<br>
             - Lawyer profile details (for advocates)<br>
            <br>
            <br>
