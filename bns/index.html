@@ -35,5 +35,14 @@
             
     <!-- JavaScript to fix the menu on top while scrolling-->
     <script src="/src/fix_menu.js"></script>
+
+    <script>
+      fetch("/src/footer.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("footer-placeholder").innerHTML = data;
+        });
+    </script>    
   </body>
 </html>
+
