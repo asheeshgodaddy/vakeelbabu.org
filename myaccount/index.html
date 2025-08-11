@@ -16,70 +16,29 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
   <style>
-    body {
-      font-family: aptos, sans-serif;
-      background-color: #e6ebf1;
-      margin: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    input, button, select {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #phoneStatus, #otpMessage, #message {
-      text-align: center;
-      font-weight: bold;
-    }
-    #otpMessage, #message {
-      color: green;
-    }
-    #phoneInput.valid {
-      border: 2px solid green;
-    }
-    #phoneInput.invalid {
-      border: 2px solid red;
-    }
-    #phoneStatus {
-      color: red;
-      font-size: 0.9em;
-      margin-top: 4px;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    
-    .checkbox-group input[type="checkbox"] {
-      width: auto;
-      height: 16px;
-    }
+    body { font-family: aptos, sans-serif; background-color: #e6ebf1; margin: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    input, button, select { width: 100%; padding: 10px; margin: 10px 0; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+    button { background-color: #007bff; color: white; font-weight: bold; cursor: pointer; border: none; }
+    button[disabled] { opacity: 0.6; cursor: not-allowed; }
+    button:hover:not([disabled]) { background-color: #0056b3; }
+    #phoneStatus, #otpMessage, #message, #loginMessage { text-align: center; font-weight: bold; }
+    #otpMessage, #message, #loginMessage { color: green; }
+    #phoneInput.valid { border: 2px solid green; }
+    #phoneInput.invalid { border: 2px solid red; }
+    #phoneStatus { color: red; font-size: 0.9em; margin-top: 4px; }
+    .row { display:flex; gap:10px; }
+    .hidden { display:none; }
+    .small { font-size:0.9em; color:#666; }
   </style>
 
   <script>
+    // === CONFIG - UPDATE THESE ===
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcwcDUzeCG1DcHatExMOKEKZOPb1YxmRbSBDsGUArm_wkJ2wuTmd8ct93VkZ6sD-2o/exec"; // your Apps Script deploy URL
+    const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // replace with production key when ready
+    // ==============================
+
+    // Firebase config (already in your page)
     const firebaseConfig = {
       apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
       authDomain: "vakeelbabu-org.firebaseapp.com",
@@ -90,268 +49,402 @@
       measurementId: "G-3CVWS84Y4X"
     };
     firebase.initializeApp(firebaseConfig);
+
+    // ---- Utility: SHA-256 (returns hex string) ----
+    async function hashSHA256(str) {
+      const enc = new TextEncoder();
+      const data = enc.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ---- DOM references ----
+    let phoneInput, phoneStatus, mainContainer;
+    let loginSection, registerSection;
+    let recaptchaVerifier, confirmationResult;
+    let submitButton;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      phoneInput = document.getElementById('phoneInput');
+      phoneStatus = document.getElementById('phoneStatus');
+      mainContainer = document.querySelector('.container');
+
+      loginSection = document.getElementById('loginSection');
+      registerSection = document.getElementById('registerSection');
+      submitButton = document.getElementById('finalSubmit');
+
+      // Initialize invisible reCAPTCHA
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+      recaptchaVerifier.render().catch(()=>{ /* ignore render error in non-https dev */ });
+
+      // phone input listener
+      phoneInput.addEventListener('input', onPhoneInput);
+    });
+
+    let debounceTimer;
+    function onPhoneInput(e) {
+      const v = (e.target.value || '').replace(/\D/g,'').slice(0,10);
+      phoneInput.value = v;
+      phoneStatus.textContent = '';
+
+      if (v.length === 10) {
+        phoneInput.classList.add('valid'); phoneInput.classList.remove('invalid');
+        phoneStatus.textContent = "Checking phone...";
+        // debounce
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => checkPhone(v), 300);
+      } else {
+        phoneInput.classList.remove('valid');
+        phoneInput.classList.add('invalid');
+        hideSections();
+      }
+    }
+
+    function hideSections() {
+      loginSection.classList.add('hidden');
+      registerSection.classList.add('hidden');
+      document.getElementById('otpSection').classList.add('hidden');
+      document.getElementById('otpMessage').textContent = '';
+      submitButton.disabled = true;
+    }
+
+    // ---- Check phone with Apps Script (POST JSON) ----
+    async function checkPhone(phone) {
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'checkPhone', phone })
+        });
+        const json = await res.json();
+        if (json.exists) {
+          phoneStatus.style.color = 'red';
+          phoneStatus.textContent = "🚫 Phone already registered — enter password to login.";
+          showLogin();
+        } else {
+          phoneStatus.style.color = 'green';
+          phoneStatus.textContent = "✅ Phone not registered — please verify by OTP to create account.";
+          showRegister();
+        }
+      } catch (err) {
+        phoneStatus.style.color = 'red';
+        phoneStatus.textContent = "⚠️ Error checking phone.";
+        hideSections();
+        console.error(err);
+      }
+    }
+
+    // ---- Show login UI for existing user ----
+    function showLogin() {
+      document.getElementById('signupPhoneLogin').value = phoneInput.value;
+      loginSection.classList.remove('hidden');
+      registerSection.classList.add('hidden');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const phone = document.getElementById('signupPhoneLogin').value.trim();
+      const pwd = document.getElementById('loginPassword').value;
+      if (!pwd) { document.getElementById('loginMessage').style.color='red'; document.getElementById('loginMessage').textContent='Enter password.'; return; }
+      document.getElementById('loginMessage').textContent = 'Checking...';
+      const passwordHash = await hashSHA256(pwd);
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'loginUser', phone, passwordHash })
+        });
+        const json = await res.json();
+        if (json.success) {
+          if (json.active) {
+            document.getElementById('loginMessage').style.color = 'green';
+            document.getElementById('loginMessage').textContent = `Welcome back, ${json.name}. Subscription valid until ${json.subscriptionEnd}.`;
+            // optionally redirect to dashboard
+          } else {
+            document.getElementById('loginMessage').style.color = 'orange';
+            document.getElementById('loginMessage').textContent = `Subscription expired on ${json.subscriptionEnd}. Please renew.`;
+          }
+        } else {
+          document.getElementById('loginMessage').style.color = 'red';
+          document.getElementById('loginMessage').textContent = json.message || 'Login failed';
+        }
+      } catch (err) {
+        document.getElementById('loginMessage').style.color = 'red';
+        document.getElementById('loginMessage').textContent = 'Server error';
+        console.error(err);
+      }
+    }
+
+    // ---- Show registration UI for new user ----
+    function showRegister() {
+      document.getElementById('signupPhone').value = phoneInput.value;
+      registerSection.classList.remove('hidden');
+      loginSection.classList.add('hidden');
+    }
+
+    // ---- OTP functions (Firebase) ----
+    function sendOTP() {
+      const phone = "+91" + document.getElementById('signupPhone').value;
+      document.getElementById('otpMessage').textContent = "Sending OTP...";
+      firebase.auth().signInWithPhoneNumber(phone, recaptchaVerifier)
+        .then(result => {
+          confirmationResult = result;
+          document.getElementById('otpSection').classList.remove('hidden');
+          document.getElementById('otpMessage').style.color = 'green';
+          document.getElementById('otpMessage').textContent = "OTP sent. Enter OTP to verify.";
+        })
+        .catch(err => {
+          document.getElementById('otpMessage').style.color = 'red';
+          document.getElementById('otpMessage').textContent = "OTP send failed. Check console.";
+          console.error(err);
+        });
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById('otpInput').value.trim();
+      if (!code) { document.getElementById('otpMessage').textContent = "Enter OTP."; return; }
+      document.getElementById('otpMessage').textContent = "Verifying...";
+      confirmationResult.confirm(code)
+        .then(() => {
+          document.getElementById('verifiedOTP').value = "true";
+          document.getElementById('otpMessage').style.color = 'green';
+          document.getElementById('otpMessage').textContent = "OTP verified — now fill remaining details and pay.";
+          submitButton.disabled = false;
+        })
+        .catch(err => {
+          document.getElementById('otpMessage').style.color = 'red';
+          document.getElementById('otpMessage').textContent = "Invalid OTP.";
+          console.error(err);
+        });
+    }
+
+    // ---- Registration form submit -> payment -> registerUser ----
+    document.addEventListener('submit', function(e){
+      if (e.target && e.target.id === 'myaccountForm') {
+        e.preventDefault();
+        startRegistrationFlow();
+      }
+    });
+
+    async function startRegistrationFlow() {
+      // basic validations
+      const verified = document.getElementById('verifiedOTP').value === 'true';
+      if (!verified) { alert('Please verify phone with OTP first.'); return; }
+
+      const name = document.querySelector("input[name='name']").value.trim();
+      const city = document.querySelector("input[name='city']").value.trim();
+      const email = document.querySelector("input[name='email']").value.trim();
+      const businessType = document.querySelector("select[name='businessType']").value;
+      const password = document.querySelector("input[name='password']").value;
+
+      if (!name || !city || !email || !businessType || !password) {
+        alert('Please fill all fields.');
+        return;
+      }
+
+      // read photo as base64
+      const file = document.getElementById('photoInput').files[0];
+      if (!file) { alert('Please upload a photo.'); return; }
+
+      // disable submit to prevent duplicate clicks
+      submitButton.disabled = true;
+
+      const base64 = await fileToBase64(file);
+      const passwordHash = await hashSHA256(password);
+
+      // Prepare payment
+      const amountINR = 999; // rupees
+      const amountPaise = amountINR * 100;
+
+      const options = {
+        key: RAZORPAY_KEY,
+        amount: amountPaise,
+        currency: 'INR',
+        name: 'Vakeel Babu',
+        description: '12-month subscription',
+        handler: function (response) {
+          // response.razorpay_payment_id etc.
+          // Send registration payload to Apps Script
+          const payload = {
+            action: 'registerUser',
+            phone: document.getElementById('signupPhone').value,
+            name,
+            city,
+            email,
+            businessType,
+            passwordHash,
+            photoBase64: base64,
+            paymentId: response.razorpay_payment_id,
+            amount: amountINR
+          };
+          sendRegistration(payload);
+        },
+        prefill: {
+          contact: "+91" + document.getElementById('signupPhone').value,
+          name
+        },
+        modal: {
+          ondismiss: function() {
+            // user closed the payment form
+            submitButton.disabled = false;
+          }
+        },
+        theme: { color: '#007bff' }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+
+    // convert file to base64 (no mime prefix)
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const full = reader.result;
+          const parts = full.split(',');
+          resolve(parts[1]); // base64 part without data:*/*;base64,
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // send registration to Apps Script
+    async function sendRegistration(payload) {
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success) {
+          // show modal
+          document.getElementById('userNameDisplay').textContent = payload.name;
+          document.getElementById('successModal').style.display = 'flex';
+          // reset form after short delay
+          document.getElementById('myaccountForm').reset();
+          document.getElementById('verifiedOTP').value = 'false';
+          submitButton.disabled = true;
+        } else {
+          alert(json.message || 'Registration failed.');
+          submitButton.disabled = false;
+        }
+      } catch (err) {
+        alert('Server error. Try again.');
+        submitButton.disabled = false;
+        console.error(err);
+      }
+    }
+
+    // ---- Misc helpers ----
+    function closeModal() {
+      document.getElementById('successModal').style.display = 'none';
+      location.reload();
+    }
+
+    // ---- Attach login handler ----
+    document.addEventListener('click', function(e){
+      if (e.target && e.target.id === 'loginBtn') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+      }
+    });
+
   </script>
 </head>
 
 <body>
   <header>
     <div id="nav-placeholder"></div>
-      <script>
-        fetch("/src/menu.html")
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("nav-placeholder").innerHTML = data;
-          });
-      </script>
+    <script>
+      fetch("/src/menu.html").then(r=>r.text()).then(t=>document.getElementById('nav-placeholder').innerHTML=t);
+    </script>
   </header>
-  <div class="container">
-    <h2>Create You Account OR Login (if already a Subscriber)</h2>
 
-    <!-- ✅ Step 1: Phone Number Check -->
-    <form id="phoneCheckForm">
+  <div class="container">
+    <h2>Create Your Account OR Login (if already a Subscriber)</h2>
+
+    <!-- Step 1: Phone -->
+    <form id="phoneCheckForm" onsubmit="return false;">
       <input type="tel" id="phoneInput" placeholder="Enter your 10-digit phone number" required pattern="\d{10}" maxlength="10" inputmode="numeric">
       <p id="phoneStatus"></p>
     </form>
 
-    <!-- ✅ Step 2: Actual Form (Hidden initially) -->
-    <form id="myaccountForm" style="display:none;">
-      <input name="name" placeholder="Full Name" required>
-      <input name="city" placeholder="City" required>
-      <input type="hidden" name="phone" id="signupPhone">
-      <input type="file" id="photoInput" accept="image/*" required>
-      <input type="hidden" name="photo" id="photoField">
-      <input type="hidden" name="verifiedOTP" id="verifiedOTP" value="false">
-      <input type="hidden" name="payment_id" id="payment_id">
-      <input type="hidden" name="payment_amount" id="payment_amount">
+    <!-- EXISTING USER LOGIN -->
+    <div id="loginSection" class="hidden" style="margin-top:10px;">
+      <h3>Existing Subscriber — Login</h3>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="hidden" id="signupPhoneLogin" name="phone">
+        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+        <button id="loginBtn" type="submit">Login</button>
+        <p id="loginMessage"></p>
+      </form>
+    </div>
 
-      <button type="button" onclick="sendOTP()">Send OTP</button>
-      <div id="recaptcha-container"></div>
+    <!-- NEW USER REGISTRATION -->
+    <div id="registerSection" class="hidden" style="margin-top:10px;">
+      <h3>New User — Register</h3>
+      <form id="myaccountForm">
+        <input name="name" placeholder="Full Name" required>
+        <input name="city" placeholder="City" required>
+        <input name="email" placeholder="Email" type="email" required>
 
-      <div id="otpSection" style="display:none;">
-        <input type="text" id="otpInput" placeholder="Enter OTP" required>
-        <button type="button" onclick="verifyOTP()">Verify OTP</button>
-        <p id="otpMessage"></p>
-      </div>
-     
-      <button type="submit" id="finalSubmit" disabled>Submit</button>
-      <p id="message"></p>
-    </form>
-  </div>
-  
-  <script src="/src/g_trans.js"></script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  <!-- JavaScript to fix the menu on top while scrolling-->
-  <script src="/src/fix_menu.js"></script>
-  
-  <script>
-    const myAccount = myAccount;
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVz-4gPVjIog4Bc2JzjVfXTJMUaZeI1-2DCfvo-fpNFTy6AqG3PlPlgvi6CQn1LTaU7Q/exec"
-    const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
+        <label class="small">Business Type</label>
+        <select name="businessType" required>
+          <option value="">Select Business Type</option>
+          <option value="Proprietor">Proprietor</option>
+          <option value="Brokerage">Brokerage</option>
+          <option value="NGO">NGO</option>
+          <option value="Law Firm">Law Firm</option>
+          <option value="Startup">Startup</option>
+          <option value="Other">Other</option>
+        </select>
 
-    let confirmationResult, recaptchaVerifier;
+        <input type="password" name="password" placeholder="Choose a password" required>
 
-    const phoneInput = document.getElementById("phoneInput");
-    const statusMsg = document.getElementById("phoneStatus");
-  
-    phoneInput.addEventListener("input", function () {
-      // Remove non-digit characters as user types
-      this.value = this.value.replace(/\D/g, '');
-  
-      if (this.value.length === 10) {
-        this.classList.add("valid");
-        this.classList.remove("invalid");
-        statusMsg.textContent = "";
-      } else {
-        this.classList.remove("valid");
-        this.classList.add("invalid");
-        statusMsg.textContent = "Please enter exactly 10 digits.";
-      }
-    });
+        <label class="small">Upload Photo (for profile)</label>
+        <input type="file" id="photoInput" accept="image/*" required>
 
-    window.onload = () => {
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible'
-      });
-      recaptchaVerifier.render();
-    };
+        <input type="hidden" name="phone" id="signupPhone">
+        <input type="hidden" id="photoField" name="photoBase64">
+        <input type="hidden" id="verifiedOTP" value="false">
 
-    // ✅ Check phone before anything
-    const phoneStatus = document.getElementById("phoneStatus");
-    const myaccountForm = document.getElementById("myaccountForm");
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="sendOTP()">Send OTP</button>
+          <div id="recaptcha-container"></div>
+        </div>
 
-    phoneInput.addEventListener("input", () => {
-      const phone = phoneInput.value.trim();
-      if (phone.length === 10) {
-        phoneStatus.textContent = "Kindly allowing us to verify if this number is already registered with us...";
-        fetch(`${SCRIPT_URL}?action=checkDuplicatePhone&phone=${phone}`)
-          .then(res => res.text())
-          .then(result => {
-            if (result === "DUPLICATE") {
-              phoneStatus.style.color = "red";
-              phoneStatus.textContent = "🚫 Phone number already registered.";
-              myaccountForm.style.display = "none";
-            } else {
-              phoneStatus.style.color = "green";
-              phoneStatus.textContent = "✅ Phone number is not registered with us. Kindly proceed with the registration process.";
-              myaccountForm.style.display = "block";
-              document.getElementById("signupPhone").value = phone;
-            }
-          })
-          .catch(() => {
-            phoneStatus.style.color = "red";
-            phoneStatus.textContent = "⚠️ Error checking phone.";
-            myaccountForm.style.display = "none";
-          });
-      } else {
-        phoneStatus.textContent = "";
-        myaccountForm.style.display = "none";
-      }
-    });
+        <div id="otpSection" class="hidden">
+          <input type="text" id="otpInput" placeholder="Enter OTP">
+          <button type="button" onclick="verifyOTP()">Verify OTP</button>
+          <p id="otpMessage"></p>
+        </div>
 
-    function sendOTP() {
-      const fullPhone = "+91" + document.getElementById("signupPhone").value;
-      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
-        .then(result => {
-          confirmationResult = result;
-          document.getElementById("otpSection").style.display = "block";
-          document.getElementById("otpMessage").textContent = "OTP sent!";
-        })
-        .catch(() => {
-          document.getElementById("otpMessage").textContent = "OTP send failed.";
-        });
-    }
-
-    function verifyOTP() {
-      const code = document.getElementById("otpInput").value;
-      confirmationResult.confirm(code)
-        .then(() => {
-          document.getElementById("verifiedOTP").value = "true";
-          document.getElementById("otpMessage").textContent = "🎉🎉🎉 OTP verified successfully!";
-          document.getElementById("finalSubmit").disabled = false;
-        })
-        .catch(() => {
-          document.getElementById("otpMessage").textContent = "Invalid OTP ❌";
-        });
-    }
-
-    document.getElementById('myaccountForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      if (document.getElementById("verifiedOTP").value !== "true") {
-        alert("Please verify OTP first.");
-        return;
-      }
-
-      const file = document.getElementById('photoInput').files[0];
-      if (!file) {
-        alert("Upload a photo.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (evt) {
-        const base64 = evt.target.result.split(',')[1];
-        document.getElementById('photoField').value = base64;
-
-        if (myAccount === "myAccount") {
-          const amount = 99900;
-          const options = {
-            key: RAZORPAY_KEY,
-            amount: amount,
-            currency: "INR",
-            name: "Vakeel Babu",
-            description: `${myAccount} myAccount`,
-            handler: function (response) {
-              document.getElementById('payment_id').value = response.razorpay_payment_id;
-              document.getElementById('payment_amount').value = amount / 100;
-              submitForm();
-            },
-            prefill: {
-              contact: "+91" + document.getElementById("signupPhone").value
-            },
-            theme: { color: "#007bff" }
-          };
-          const rzp = new Razorpay(options);
-          rzp.open();
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function submitForm() {
-      const form = document.getElementById("myaccountForm");
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: new FormData(form)
-      })
-        .then(res => res.json())
-        .then(data => {
-          const msg = document.getElementById('message');
-          if (data.success) {
-          //  msg.textContent = "🎉 Submitted successfully!";
-          //  form.reset();
-          //  document.getElementById("finalSubmit").disabled = true;
-          //  setTimeout(() => location.reload(), 3000);
-            const name = document.querySelector("input[name='name']").value;
-            form.reset();
-            document.getElementById("finalSubmit").disabled = true;
-            showSuccessModal(name); // ✅ Show modal instead of auto-reload
-          } else {
-            msg.style.color = "red";
-            msg.textContent = data.message || "Something went wrong.";
-          }
-        })
-        .catch(() => {
-          document.getElementById('message').textContent = "Server error. Try again.";
-        });
-    }
-    
-    function showSuccessModal(name) {
-      document.getElementById("userNameDisplay").textContent = name;
-      document.getElementById("successModal").style.display = "flex";
-    }
-    
-    function closeModal() {
-      document.getElementById("successModal").style.display = "none";
-      location.reload();
-    }
-   
-      // Auto-show the modal when the page loads
-      window.onload = function () {
-        // ✅ Initialize Firebase reCAPTCHA
-        recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-          size: 'invisible'
-        });
-        recaptchaVerifier.render();
-      };
-    
-  </script>
-  
-  <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-       background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-    <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
-      <h2 style="color: green;">✅ Success!</h2>
-      <p>Thank you <b id="userNameDisplay"> </b>  !!!<br>Your account has been created successfully.</p>
-      <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff;
-              color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
+        <button type="submit" id="finalSubmit" disabled>Pay ₹999 & Subscribe</button>
+        <p id="message" class="small"></p>
+      </form>
     </div>
   </div>
 
-  <!-- 📞 Floating Call Button -->
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px; margin: 100px auto;">
+      <h2 style="color: green;">✅ Success!</h2>
+      <p>Thank you <b id="userNameDisplay"></b>!<br>Your account has been created and subscription is active.</p>
+      <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
+    </div>
+  </div>
+
+  <!-- Floating buttons -->
   <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
-  
-  <!-- 💬 Floating WhatsApp Button -->
   <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
 
   <div id="footer-placeholder"></div>
-    <script>
-      fetch("/src/footer.html")
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById("footer-placeholder").innerHTML = data;
-        });
-    </script>  
-  
+  <script>
+    fetch("/src/footer.html").then(r=>r.text()).then(t=>document.getElementById('footer-placeholder').innerHTML=t);
+  </script>
 </body>
 </html>
-
