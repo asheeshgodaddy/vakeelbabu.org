@@ -1,49 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Account</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>My Account | Vakeel Babu</title>
+<style>
+  /* small styling — keep your existing CSS as needed */
+  body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#e6ebf1;margin:0;padding:20px}
+  .container{max-width:720px;margin:30px auto;background:#fff;padding:24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+  input,select,button{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #ccc;box-sizing:border-box}
+  button{background:#007bff;color:#fff;border:0;font-weight:600;cursor:pointer}
+  .row{display:flex;gap:12px}
+  .row > *{flex:1}
+  .hidden{display:none}
+  .small{font-size:0.9rem;color:#666}
+  #successModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);align-items:center;justify-content:center;z-index:999}
+  #successModal .card{background:white;padding:24px;border-radius:10px;max-width:420px;margin:auto;text-align:center}
+</style>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<!-- Firebase (placeholders below) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 </head>
 <body>
-  <h2>My Account</h2>
-  <form id="myAccountForm">
-    <label>Name:</label>
-    <input type="text" name="name" required><br><br>
+  <div class="container">
+    <h2>Create Account or Login</h2>
 
-    <label>Phone:</label>
-    <input type="tel" name="phone" pattern="\d{10}" maxlength="10" required><br><br>
+    <!-- Phone input -->
+    <label>Phone (10 digits)</label>
+    <input id="phoneInput" type="tel" maxlength="10" pattern="\d{10}" inputmode="numeric" placeholder="Enter 10-digit phone" required>
+    <p id="phoneStatus" class="small"></p>
 
-    <label>Email:</label>
-    <input type="email" name="email" required><br><br>
+    <!-- existing user -->
+    <div id="loginSection" class="hidden">
+      <h3>Existing user — Login</h3>
+      <input id="signupPhoneLogin" type="hidden" name="phone">
+      <input id="loginPassword" type="password" placeholder="Enter password">
+      <button id="loginBtn">Login</button>
+      <p id="loginMessage" class="small"></p>
+    </div>
 
-    <button type="submit">Save</button>
-  </form>
+    <!-- new user register form -->
+    <div id="registerSection" class="hidden">
+      <h3>New User — Register</h3>
+      <form id="myaccountForm">
+        <input name="name" placeholder="Full name" required>
+        <input name="city" placeholder="City" required>
+        <input name="email" type="email" placeholder="Email" required>
 
-  <p id="status"></p>
+        <label class="small">Plan</label>
+        <select name="plan" required>
+          <option value="">Select Plan</option>
+          <option value="monthlySubscription">Monthly — ₹899</option>
+          <option value="yearlySubscription">Yearly — ₹5999</option>
+        </select>
 
-  <script>
-    document.getElementById('myAccountForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+        <input name="password" type="password" placeholder="Choose password" required>
 
-      const formData = new FormData(this);
-      const searchParams = new URLSearchParams();
-      for (const pair of formData) {
-        searchParams.append(pair[0], pair[1]);
+        <label class="small">Upload Photo</label>
+        <input id="photoInput" type="file" accept="image/*" required>
+
+        <input type="hidden" id="signupPhone" name="phone">
+        <input type="hidden" id="photoBase64Field" name="photoBase64">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="button" id="sendOtpBtn">Send OTP</button>
+          <div id="recaptcha-container"></div>
+        </div>
+
+        <div id="otpSection" class="hidden">
+          <input id="otpInput" placeholder="Enter OTP">
+          <button type="button" id="verifyOtpBtn">Verify OTP</button>
+          <p id="otpMessage" class="small"></p>
+        </div>
+
+        <button id="payAndSubscribe" type="button" disabled>Pay & Subscribe</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- success modal -->
+  <div id="successModal">
+    <div class="card">
+      <h2>✅ Success!</h2>
+      <p id="successText"></p>
+      <button id="closeSuccess">OK</button>
+    </div>
+  </div>
+
+<script>
+/* ------------- CONFIG - replace placeholders ------------- */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzzPhx9p-fwKK78EqZBBUXMiZFPIcOOLpcbExsKjj1p8HAWsNzgAw1MZDz2B4KotZB/exec";
+const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // <-- replace with your Razorpay test key (placeholder)
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAJbtnYX5nIOuexkaZ28t96grmbPQun1zg",
+  authDomain: "vakeelbabu-org.firebaseapp.com",
+  projectId: "vakeelbabu-org",
+  storageBucket: "vakeelbabu-org.appspot.com",
+  messagingSenderId: "972570830530",
+  appId: "1:972570830530:web:609292922896728b16fd5b",
+  measurementId: "G-3CVWS84Y4X"
+};
+firebase.initializeApp(FIREBASE_CONFIG);
+/* -------------------------------------------------------- */
+
+let recaptchaVerifier, confirmationResult;
+window.addEventListener('DOMContentLoaded', () => {
+  recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+  recaptchaVerifier.render().catch(e=>console.warn('reCAPTCHA render:', e));
+
+  // DOM refs
+  phoneInput = document.getElementById('phoneInput');
+  phoneStatus = document.getElementById('phoneStatus');
+  loginSection = document.getElementById('loginSection');
+  registerSection = document.getElementById('registerSection');
+  signupPhone = document.getElementById('signupPhone');
+  signupPhoneLogin = document.getElementById('signupPhoneLogin');
+  otpSection = document.getElementById('otpSection');
+  otpMessage = document.getElementById('otpMessage');
+  sendOtpBtn = document.getElementById('sendOtpBtn');
+  verifyOtpBtn = document.getElementById('verifyOtpBtn');
+  payAndSubscribe = document.getElementById('payAndSubscribe');
+  photoInput = document.getElementById('photoInput');
+  photoBase64Field = document.getElementById('photoBase64Field');
+
+  // listeners
+  phoneInput.addEventListener('input', onPhoneInput);
+  document.getElementById('loginBtn').addEventListener('click', handleLoginClick);
+  sendOtpBtn.addEventListener('click', sendOTP);
+  verifyOtpBtn.addEventListener('click', verifyOTP);
+  payAndSubscribe.addEventListener('click', startRegistrationFlow);
+  document.getElementById('closeSuccess').addEventListener('click', ()=>location.reload());
+});
+
+let debounceTimer;
+function onPhoneInput(e){
+  const v = (e.target.value||'').replace(/\D/g,'').slice(0,10);
+  phoneInput.value = v;
+  phoneStatus.textContent = '';
+  if (v.length === 10) {
+    phoneStatus.textContent = 'Checking phone…';
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(()=>checkPhone(v), 250);
+  } else {
+    hideAll();
+  }
+}
+
+function hideAll(){
+  loginSection.classList.add('hidden');
+  registerSection.classList.add('hidden');
+  otpSection.classList.add('hidden');
+  payAndSubscribe.disabled = true;
+  otpMessage.textContent = '';
+}
+
+async function checkPhone(phone){
+  // Using form-encoded POST to avoid preflight
+  try {
+    const body = new URLSearchParams();
+    body.append('action','checkPhone');
+    body.append('phone', phone);
+
+    const res = await fetch(SCRIPT_URL, { method:'POST', body });
+    const json = await res.json();
+
+    if (json.exists) {
+      phoneStatus.style.color = 'red';
+      phoneStatus.textContent = '🚫 Phone registered — enter password to login.';
+      signupPhoneLogin.value = phone;
+      loginSection.classList.remove('hidden');
+      registerSection.classList.add('hidden');
+    } else {
+      phoneStatus.style.color = 'green';
+      phoneStatus.textContent = '✅ Phone not registered — verify with OTP to create account.';
+      signupPhone.value = phone;
+      registerSection.classList.remove('hidden');
+      loginSection.classList.add('hidden');
+    }
+  } catch (err) {
+    console.error(err);
+    phoneStatus.style.color='red';
+    phoneStatus.textContent='⚠️ Error checking phone.';
+    hideAll();
+  }
+}
+
+/* ------------ Login flow (existing user) ------------ */
+async function handleLoginClick(e){
+  const phone = signupPhoneLogin.value.trim();
+  const pwd = document.getElementById('loginPassword').value;
+  if (!pwd) { document.getElementById('loginMessage').textContent='Enter password'; return; }
+  document.getElementById('loginMessage').textContent='Checking…';
+
+  // compute hash (same as server expects)
+  const hash = await sha256Hex(pwd);
+
+  try {
+    const body = new URLSearchParams();
+    body.append('action','loginUser');
+    body.append('phone', phone);
+    body.append('passwordHash', hash);
+
+    const res = await fetch(SCRIPT_URL, { method:'POST', body });
+    const json = await res.json();
+    if (json.success) {
+      if (json.active) {
+        document.getElementById('loginMessage').style.color='green';
+        document.getElementById('loginMessage').textContent=`Welcome ${json.name}. Subscription until ${json.subscriptionEnd}`;
+      } else {
+        document.getElementById('loginMessage').style.color='orange';
+        document.getElementById('loginMessage').textContent=`Subscription expired on ${json.subscriptionEnd}`;
       }
+    } else {
+      document.getElementById('loginMessage').style.color='red';
+      document.getElementById('loginMessage').textContent=json.message || 'Login failed';
+    }
+  } catch(err){
+    console.error(err);
+    document.getElementById('loginMessage').textContent='Server error';
+  }
+}
 
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwUIrjtjnXcqz9OETDjj2yrGsof83TNzxjg4Jq4be_t81Na1SzfuAqLJR1xyLmQNMtS/exec', {
-          method: 'POST',
-          body: searchParams,
-        });
-
-        const result = await response.text();
-        document.getElementById('status').textContent = result;
-      } catch (error) {
-        document.getElementById('status').textContent = 'Error: ' + error;
-      }
+/* ------------ OTP (Firebase Phone) ------------ */
+function sendOTP(){
+  const phone = "+91" + (document.getElementById('signupPhone').value || '');
+  if (!phone) { alert('Enter phone'); return; }
+  otpMessage.textContent = 'Sending OTP…';
+  firebase.auth().signInWithPhoneNumber(phone, recaptchaVerifier)
+    .then(result=>{
+      confirmationResult = result;
+      otpSection.classList.remove('hidden');
+      otpMessage.style.color='green';
+      otpMessage.textContent='OTP sent, enter it below';
+    })
+    .catch(err=>{
+      console.error(err);
+      otpMessage.style.color='red';
+      otpMessage.textContent='OTP send failed. Check console.';
     });
-  </script>
+}
+
+function verifyOTP(){
+  const code = document.getElementById('otpInput').value.trim();
+  if (!code) { otpMessage.textContent='Enter OTP'; return; }
+  otpMessage.textContent='Verifying…';
+  confirmationResult.confirm(code)
+    .then(() => {
+      otpMessage.style.color='green';
+      otpMessage.textContent='OTP verified — fill details and pay';
+      payAndSubscribe.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      otpMessage.style.color='red';
+      otpMessage.textContent='Invalid OTP';
+    });
+}
+
+/* ------------ Registration + Payment ------------- */
+async function startRegistrationFlow(){
+  // gather fields
+  const form = document.getElementById('myaccountForm');
+  const name = form.name.value.trim();
+  const city = form.city.value.trim();
+  const email = form.email.value.trim();
+  const plan = form.plan.value;
+  const password = form.password.value;
+  const phone = document.getElementById('signupPhone').value;
+
+  if (!name || !city || !email || !plan || !password) { alert('Fill all fields'); return; }
+
+  // read photo as base64
+  const file = photoInput.files[0];
+  if (!file) { alert('Upload photo'); return; }
+  const base64 = await readFileAsBase64(file);
+  // strip prefix if present
+  const b64 = base64.split(',')[1] || base64;
+
+  // compute password hash
+  const passwordHash = await sha256Hex(password);
+
+  // amount mapping
+  const priceMap = { monthlySubscription: 899, yearlySubscription: 5999 };
+  const amountINR = priceMap[plan] || 899;
+  const amountPaise = amountINR * 100;
+
+  // Open Razorpay (one-time charge for first period)
+  const rzp = new Razorpay({
+    key: RAZORPAY_KEY,
+    amount: amountPaise,
+    currency: 'INR',
+    name: 'Vakeel Babu',
+    description: plan === 'monthlySubscription' ? 'Monthly subscription' : 'Yearly subscription',
+    handler: function(response){
+      // after successful payment -> POST registration (form-encoded)
+      const params = new URLSearchParams();
+      params.append('action','registerUser');
+      params.append('phone', phone);
+      params.append('name', name);
+      params.append('city', city);
+      params.append('email', email);
+      params.append('businessType', ''); // not used here, kept empty
+      params.append('passwordHash', passwordHash);
+      params.append('photoBase64', b64);
+      params.append('paymentId', response.razorpay_payment_id);
+      params.append('amount', amountINR);
+      params.append('plan', plan);
+
+      fetch(SCRIPT_URL, { method:'POST', body: params })
+        .then(r=>r.json())
+        .then(json=>{
+          if (json.success) showSuccess(json.message || 'Registered successfully', json.subscriptionEnd);
+          else { alert(json.message || 'Registration failed'); payAndSubscribe.disabled=false; }
+        })
+        .catch(err=>{
+          console.error(err);
+          alert('Server error. Try again.');
+          payAndSubscribe.disabled=false;
+        });
+    },
+    prefill: { contact:'+91'+phone, name },
+    theme: { color: '#007bff' }
+  });
+
+  rzp.open();
+  payAndSubscribe.disabled=true;
+}
+
+/* ---------- Helpers ---------- */
+function readFileAsBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function sha256Hex(msg){
+  const enc = new TextEncoder();
+  const data = enc.encode(msg);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  const h = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return h;
+}
+
+function showSuccess(message, subscriptionEnd){
+  document.getElementById('successText').innerHTML = `${message}<br>Subscription valid until <b>${subscriptionEnd || ''}</b>`;
+  document.getElementById('successModal').style.display='flex';
+}
+</script>
 </body>
 </html>
