@@ -52,6 +52,13 @@
         <input name="city" placeholder="City" required>
         <input name="email" type="email" placeholder="Email" required>
 
+        <label class="small">Business Type</label>
+        <select name="businessType" required>
+          <option value="">Select Business Type</option>
+          <option value="propBroker">Property Brokerage House</option>
+          <option value="ngo">NGO</option>
+        </select>
+
         <label class="small">Plan</label>
         <select name="plan" required>
           <option value="">Select Plan</option>
@@ -304,7 +311,7 @@ async function startRegistrationFlow(){
       params.append('name', name);
       params.append('city', city);
       params.append('email', email);
-      params.append('businessType', ''); // not used here, kept empty
+      params.append('businessType', businessType); 
       params.append('passwordHash', passwordHash);
       params.append('photoBase64', b64);
       params.append('paymentId', response.razorpay_payment_id);
@@ -356,3 +363,4 @@ function showSuccess(message, subscriptionEnd){
 </script>
 </body>
 </html>
+
