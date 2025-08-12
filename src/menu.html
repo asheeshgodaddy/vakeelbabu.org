@@ -1,109 +1,29 @@
 <!-- menu.html -->
+<!--           -->
 <nav>
   <!-- Logo Banner -->
   <div class="flex justify-center my-4">
     <a href="/">
-      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers"
-        style="height: auto; width: 100%; display: block; margin: 0 auto;">
+      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers" style="height: auto; width: 100%; display: block; margin: 0 auto;">
     </a>
   </div>
+
   <!-- Bottom Menu -->
   <div class="scrollmenu overflow-x-auto whitespace-nowrap" id="scrollmenu">
     <div class="menu flex flex-nowrap items-center justify-start gap-4 w-full">
       <a href="/home/">Home</a>
       <a href="/about/">About Us</a>
       <a href="/find_lawyer/">Find a Lawyer</a>
-      <!-- Lawyer's Area Dropdown -->
-      <div class="dropdown">
-        <a href="javascript:void(0)" class="blinking-red">Lawyer's Area ▼</a>
-        <div class="dropdown-content">
-          <a href="/lawyer_sign_up/" class="blinking-red">Lawyer Sign-Up</a>
-          <a href="/upgrade_plan/" class="blinking-red">Lawyer Upgrade</a>
-        </div>
-      </div>
+      <a href="/lawyer_sign_up/" class="blinking-red">Lawyer Sign-Up</a>
+      <a href="/upgrade_plan/" class="blinking-red">Lawyer Upgrade</a>
       <a href="/documents/">Legal Documents <span class="new-tag">New</span></a>
       <a href="/myaccount/" class="blinking-red">My Account</a>
       <a href="/blog/">Blogs</a>
-      <!-- Consultation Dropdown -->
-      <div class="dropdown">
-        <a href="javascript:void(0)" class="blinking-red">Consultation ▼</a>
-        <div class="dropdown-content">
-          <a href="/legal_advice/"><span class="new-tag">FREE</span> Advice</a>
-          <a href="/online_consultation/" class="blinking-red">Online Consultation <span class="new-tag">New</span></a>
-        </div>
-      </div>
+      <a href="/legal_advice/"><span class="new-tag">FREE</span> Advice</a>  
+      <a href="/online_consultation/" class="blinking-red">Online Consultation <span class="new-tag">New</span></a>
       <a href="/contact/">Contact</a>
+      <!--span class="blinking-red font-bold text-yellow-400">📞 +91-9555007911</span-->
     </div>
     <div class="language-selector ml-4" id="google_translate_element"></div>
   </div>
 </nav>
-<!-- Dropdown CSS -->
-<!-- FIXED CSS -->
-<style>
-  /* Allow dropdown to escape scroll container */
-  #scrollmenu {
-    overflow: visible !important;
-  }
-  .menu {
-    overflow: visible !important;
-  }
-
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-
-  .dropdown > a {
-    cursor: pointer;
-  }
-
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: rgb(61, 104, 205);
-    min-width: 200px;
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
-    z-index: 9999;
-  }
-
-  .dropdown-content a {
-    display: block;
-    padding: 8px 12px;
-    white-space: nowrap;
-    color: black;
-    text-decoration: none;
-  }
-
-  .dropdown-content a:hover {
-    background: #1f1666;
-  }
-
-  /* Desktop hover */
-  @media (hover: hover) {
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-  }
-
-  /* Touch-friendly click toggle */
-  .dropdown.open .dropdown-content {
-    display: block;
-  }
-</style>
-
-<!-- Touch device script -->
-<script>
-  document.querySelectorAll('.dropdown > a').forEach(el => {
-    el.addEventListener('click', function (e) {
-      if (window.matchMedia("(hover: none)").matches) {
-        e.preventDefault();
-        document.querySelectorAll('.dropdown').forEach(d => {
-          if (d !== this.parentElement) d.classList.remove('open');
-        });
-        this.parentElement.classList.toggle('open');
-      }
-    });
-  });
-</script>
