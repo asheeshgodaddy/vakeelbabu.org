@@ -1,9 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>My Account | Vakeel Babu</title>
+  <meta charset="utf-8" />
+  <!--meta name="viewport" content="width=device-width,initial-scale=1" /-->
+  <title>My Account | Vakeel Babu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/calling.css">
+  <link rel="icon" href="/images/favicon.png" type="image/png">
+  
 <style>
   /* small styling — keep your existing CSS as needed */
   body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#e6ebf1;margin:0;padding:20px}
@@ -27,6 +32,17 @@
 
 </head>
 <body>
+  <header>
+    <div id="nav-placeholder"></div>
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
+  </header>
+  
   <div class="container">
     <h2>Create Account or Login</h2>
 
@@ -97,7 +113,12 @@
       <button id="closeSuccess">OK</button>
     </div>
   </div>
-
+  
+  <script src="/src/g_trans.js"></script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- JavaScript to fix the menu on top while scrolling-->
+  <script src="/src/fix_menu.js"></script>
+  
 <script>
 /* ------------- CONFIG - replace placeholders ------------- */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzzPhx9p-fwKK78EqZBBUXMiZFPIcOOLpcbExsKjj1p8HAWsNzgAw1MZDz2B4KotZB/exec";
@@ -362,8 +383,25 @@ function showSuccess(message, subscriptionEnd){
   document.getElementById('successModal').style.display='flex';
 }
 </script>
+
+  <!-- 📞 Floating Call Button -->
+  <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
+  
+  <!-- 💬 Floating WhatsApp Button -->
+  <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
+
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch("/src/footer.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+      });
+  </script> 
+  
 </body>
 </html>
+
 
 
 
