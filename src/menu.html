@@ -56,6 +56,16 @@
     cursor: pointer;
   }
 
+  .navbar, .menu {
+    overflow: visible;
+  }
+  
+  /* Ensure dropdown is on top of other content */
+  .dropdown-menu {
+    position: absolute;
+    z-index: 9999; /* large number to bring it forward */
+  }
+
   .dropdown-content {
     display: none;
     position: absolute;
