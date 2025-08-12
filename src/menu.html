@@ -1,29 +1,100 @@
 <!-- menu.html -->
-<!--           -->
 <nav>
   <!-- Logo Banner -->
   <div class="flex justify-center my-4">
     <a href="/">
-      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers" style="height: auto; width: 100%; display: block; margin: 0 auto;">
+      <img src="/images/full_banner.png" alt="Trusted Legal Advice in India - Vakeel Babu Lawyers"
+        style="height: auto; width: 100%; display: block; margin: 0 auto;">
     </a>
   </div>
 
   <!-- Bottom Menu -->
   <div class="scrollmenu overflow-x-auto whitespace-nowrap" id="scrollmenu">
     <div class="menu flex flex-nowrap items-center justify-start gap-4 w-full">
+
       <a href="/home/">Home</a>
       <a href="/about/">About Us</a>
       <a href="/find_lawyer/">Find a Lawyer</a>
-      <a href="/lawyer_sign_up/" class="blinking-red">Lawyer Sign-Up</a>
-      <a href="/upgrade_plan/" class="blinking-red">Lawyer Upgrade</a>
+
+      <!-- Lawyer's Area Dropdown -->
+      <div class="dropdown">
+        <a href="javascript:void(0)">Lawyer's Area ▼</a>
+        <div class="dropdown-content">
+          <a href="/lawyer_sign_up/" class="blinking-red">Lawyer Sign-Up</a>
+          <a href="/upgrade_plan/" class="blinking-red">Lawyer Upgrade</a>
+        </div>
+      </div>
+
       <a href="/documents/">Legal Documents <span class="new-tag">New</span></a>
       <a href="/myaccount/" class="blinking-red">My Account</a>
       <a href="/blog/">Blogs</a>
-      <a href="/legal_advice/"><span class="new-tag">FREE</span> Advice</a>  
-      <a href="/online_consultation/" class="blinking-red">Online Consultation <span class="new-tag">New</span></a>
+
+      <!-- Consultation Dropdown -->
+      <div class="dropdown">
+        <a href="javascript:void(0)">Consultation ▼</a>
+        <div class="dropdown-content">
+          <a href="/legal_advice/"><span class="new-tag">FREE</span> Advice</a>
+          <a href="/online_consultation/" class="blinking-red">Online Consultation <span class="new-tag">New</span></a>
+        </div>
+      </div>
+
       <a href="/contact/">Contact</a>
-      <!--span class="blinking-red font-bold text-yellow-400">📞 +91-9555007911</span-->
     </div>
+
     <div class="language-selector ml-4" id="google_translate_element"></div>
   </div>
 </nav>
+
+<!-- Dropdown CSS -->
+<style>
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown > a {
+    cursor: pointer;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background: white;
+    min-width: 200px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+    z-index: 999;
+    flex-direction: column;
+  }
+
+  .dropdown-content a {
+    display: block;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  /* Touch-friendly: Toggle on click for mobile */
+  @media (hover: none) {
+    .dropdown > a {
+      pointer-events: auto;
+    }
+    .dropdown.open .dropdown-content {
+      display: block;
+    }
+  }
+</style>
+
+<!-- Touch device script -->
+<script>
+  document.querySelectorAll('.dropdown > a').forEach(el => {
+    el.addEventListener('click', function (e) {
+      if (window.matchMedia("(hover: none)").matches) {
+        e.preventDefault();
+        this.parentElement.classList.toggle('open');
+      }
+    });
+  });
+</script>
