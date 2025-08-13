@@ -1,0 +1,71 @@
+<html> 
+  <head>
+    <title>Services Offered by Vakeel Babu | Trusted Legal Advice Platform in India</title>
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <meta name="description" content="Services Offered by Vakeel Babu - a legal advice platform connecting Indians with expert lawyers for free and affordable legal help.">
+    <meta name="keywords" content="about Vakeel Babu, legal platform India, online legal consultancy, legal help India, legal awareness">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/calling.css">
+  </head>
+
+  <body> 
+   <header>
+      <div id="nav-placeholder"></div>
+
+      <script>
+        fetch("/src/menu.html")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("nav-placeholder").innerHTML = data;
+          });
+      </script>
+    </header>
+    <div class="container">
+      <div class="text-container">
+        <br>
+        <h1> Other Services Offered by Vakeel Babu</h1>
+        <p class="text-section">
+            <br>At <b><i>Vakeel Babu</i></b> connects individuals, businesses, and organizations with trusted legal experts across India. 
+            <br>
+            We offer translation of legal documents, affordable legal consultations by trusted legal experts, ready-to-use legal documents, and easy lawyer discovery based on location and specialization. Our platform ensures quick, transparent, and reliable legal solutions for every need.
+            <br>
+            <br>
+        </p>
+        <ul class="justified-list">
+          <li><b>Translation of Legal Documents (English / Hindi)</b></li>
+          <li><a href="/documents/" style="color: #00ffe0">Legal Documents - Generate and Download</a></li>
+          <li><a href="/blog/" style="color: #00ffe0">Legal Knowledge Sharing via Blogs</a></li>
+          <li><a href="/find_lawyer/" style="color: #00ffe0">Find Lawyers Based on the location</a></li>
+          <li><a href="/online_consultation/" style="color: #00ffe0">Affordable legal consultations by trusted legal experts</a></li>
+        </ul>
+        <br>
+      </div>
+      <div class="image-section">
+        <img src="/images/sc.png" alt="Lawyer at work">
+      </div>
+    </div>  
+    <script src="/src/g_trans.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- JavaScript to fix the menu on top while scrolling-->
+    <script src="/src/fix_menu.js"></script>
+
+    <!-- 📞 Floating Call Button -->
+    <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
+    
+    <!-- 💬 Floating WhatsApp Button -->
+    <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+      fetch("/src/footer.html")
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("footer-placeholder").innerHTML = data;
+        });
+    </script>
+
+  </body>
+</html>
