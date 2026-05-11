@@ -555,8 +555,9 @@
       const phoneStatus = document.getElementById("phoneStatus");
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
   
-      if (phone.length < 6) {
-        phoneStatus.textContent = "❌ Please enter a valid phone number.";
+      if (!iti.isValidNumber()) {
+        phoneStatus.textContent =
+          "❌ Please enter a valid phone number.";
         return;
       }
   
@@ -683,6 +684,21 @@
     const statusMsg = document.getElementById("phoneStatus");
   
     phoneInput.addEventListener("input", function () {
+    
+      const phone = this.value.trim();
+    
+      // Don't validate very short numbers
+      if (phone.length < 6) {
+    
+        this.classList.remove("valid");
+        this.classList.remove("invalid");
+    
+        statusMsg.textContent = "";
+    
+        return;
+      }
+    
+      // Validate using intl-tel-input
       if (iti.isValidNumber()) {
     
         this.classList.add("valid");
@@ -699,7 +715,7 @@
           "Please enter a valid phone number.";
       }
     });
-
+    
     const isPaid = true; // set false/true later when needed
     document.getElementById('signupForm').addEventListener('submit', function (e) {
       e.preventDefault();
