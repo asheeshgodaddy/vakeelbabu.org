@@ -586,17 +586,26 @@
           "button[onclick='sendOTP()']"
         );
     
-      const fullPhone = iti.getNumber();
-    
-      console.log("Sending OTP to:", fullPhone);
-    
-      if (!fullPhone || fullPhone.length < 10) {
-    
+      const rawPhone =
+        document.getElementById("phoneInput")
+          .value
+          .replace(/\D/g, '');
+      
+      if (rawPhone.length < 8) {
+      
         phoneStatus.textContent =
           "❌ Please enter a valid phone number.";
-    
+      
         return;
       }
+      
+      const countryData =
+        iti.getSelectedCountryData();
+      
+      const fullPhone =
+        "+" + countryData.dialCode + rawPhone;
+      
+      console.log("Sending OTP to:", fullPhone);
     
       document.getElementById("signupPhone").value =
         fullPhone;
