@@ -11,6 +11,7 @@
   <title>Online Lawyer Consultation | VakeelBabu</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/calling.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/css/intlTelInput.css">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -528,17 +529,17 @@
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
   
       if (phone.length < 6) {
-        phoneStatus.textContent = "❌ Please enter a valid 10-digit phone number.";
+        phoneStatus.textContent = "❌ Please enter a valid phone number.";
         return;
       }
   
       // Save phone in hidden field for later
-      document.getElementById("signupPhone").value = fullPhone;
-      const countryCode =
-        document.getElementById("countryCode").value;
+      const countryCode = document.getElementById("countryCode").value;
       
-      const fullPhone =
-        countryCode.replace("-CA", "") + phone;
+      const fullPhone = countryCode.replace("-CA", "") + phone;
+      
+      // Save phone in hidden field
+      document.getElementById("signupPhone").value = fullPhone;
   
       sendOTPBtn.disabled = true;
       startResendTimer(sendOTPBtn, 30);
@@ -684,7 +685,7 @@
           amount: consultationAmountPaise,
           currency: "INR",
           name: "Vakeel Babu",
-          description: userCountry === "IN"
+          consultationAmount === 499
             ? "India Lawyer Consultation"
             : "International Lawyer Consultation",
           handler: function (response) {
@@ -843,5 +844,6 @@
         });
     </script>
   
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
 </body>
 </html>
