@@ -555,7 +555,10 @@
       const phoneStatus = document.getElementById("phoneStatus");
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
   
-      if (!iti.isValidNumber()) {
+      if (
+        !iti.getNumber() ||
+        !iti.isValidNumber()
+      ) {
         phoneStatus.textContent =
           "❌ Please enter a valid phone number.";
         return;
@@ -675,8 +678,14 @@
         console.error("Country detection failed:", error);
     
         // fallback to India pricing
-        consultationAmount = 499;
-        consultationAmountPaise = 49900;
+        consultationAmount = 4999;
+        consultationAmountPaise = 499900;
+
+        document.querySelector(".price-discount").innerHTML =
+          "<strong>₹4999</strong> for International Legal Consultation";
+        
+        document.getElementById("finalSubmit").innerHTML =
+          "🌍 Pay ₹4999 - 📞 Book International Consultation";
       }
     }
 
@@ -685,21 +694,10 @@
   
     phoneInput.addEventListener("input", function () {
     
-      const phone = this.value.trim();
+      const phone = this.value.replace(/\D/g, '');
     
-      // Don't validate very short numbers
-      if (phone.length < 6) {
-    
-        this.classList.remove("valid");
-        this.classList.remove("invalid");
-    
-        statusMsg.textContent = "";
-    
-        return;
-      }
-    
-      // Validate using intl-tel-input
-      if (iti.isValidNumber()) {
+      // Basic validation only
+      if (phone.length >= 8) {
     
         this.classList.add("valid");
         this.classList.remove("invalid");
@@ -792,6 +790,9 @@
           if (data.success) {
             const name = document.querySelector("input[name='name']").value;
             form.reset();
+            phoneInput.classList.remove("valid");
+            phoneInput.classList.remove("invalid");
+            statusMsg.textContent = "";
             iti.setCountry("in");
             showSuccessModal(name);
           } else {
