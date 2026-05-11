@@ -340,7 +340,7 @@
           <br>&nbsp;&nbsp;&nbsp;💰 Fair prices
           <br>&nbsp;&nbsp;&nbsp;⚖️ Comprehensive litigation
           <br>&nbsp;&nbsp;&nbsp;📂 Documentation
-          <br>&nbsp;&nbsp;&nbsp;🔒 Confidential & Secure Consultationssupport
+          <br>&nbsp;&nbsp;&nbsp;🔒 Confidential & Secure Consultations support
         </div>
       </div>
       
@@ -422,7 +422,7 @@
         <div><input name="form_type" value="consultation" type="hidden"></div>
         <div><input type="email" name="email" id="email" placeholder="Email Address *" required></div>
         <div><input name="name" placeholder="Full Name" required></div>
-        <div style="display:flex; gap:10px;">
+        <div>
             <input
               type="tel"
               id="phoneInput"
@@ -618,7 +618,7 @@
           consultationAmountPaise = 499900;
     
           document.querySelector(".price-discount").innerHTML =
-            "<strong>₹4999</strong> for International Lawyer Consultation";
+            "<strong>₹4999</strong> for International Legal Consultation";
     
           document.getElementById("finalSubmit").innerHTML =
             "🌍 Pay ₹4999 - 📞 Book International Consultation";
@@ -677,9 +677,15 @@
             consultationAmount === 499
               ? "India Lawyer Consultation"
               : "International Lawyer Consultation",
+          
           handler: function (response) {
             isPaymentInProgress = false;
-            document.getElementById('payment_id').value = response.razorpay_payment_id;
+          
+            document.getElementById('payment_id').value =
+              response.razorpay_payment_id;
+          
+            document.getElementById("finalSubmit").disabled = false;
+          
             submitForm();
           },
           prefill: {
@@ -690,6 +696,7 @@
           theme: { color: "#007bff" }
         };
         isPaymentInProgress = true;
+        document.getElementById("finalSubmit").disabled = true;
         const rzp = new Razorpay(options);
         rzp.open();
       } else {
@@ -726,6 +733,7 @@
           if (data.success) {
             const name = document.querySelector("input[name='name']").value;
             form.reset();
+            iti.setCountry("in");
             showSuccessModal(name);
           } else {
             msg.style.color = "red";
@@ -801,7 +809,7 @@
     <!--div class="modal-content" style="background-color: #e9f4ff;"-->
     <div class="modal-content" style="background-color: #e9f4ff; width: 50%; max-width: 700px; padding: 30px; border-radius: 10px;">
       <span class="close-btn" onclick="closePlanInfo()">&times;</span>
-      <h3 style="color: #005a9e;">📣 Book Legal Consultation with VakeelBabau in Just 3 Steps</h3>
+      <h3 style="color: #005a9e;">📣 Book Legal Consultation with VakeelBabu in Just 3 Steps</h3>
       <ul class="justified-list" style="color: #005a9e;">
         <li><b style="color:#007bff;">💎 Fill your details below.</b></li>
         <li><b style="color:#17a2b8;">✔ Verify your phone with OTP.</b></li>
