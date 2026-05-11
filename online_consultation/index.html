@@ -374,20 +374,20 @@
           <span class="blink-dot"></span>
         </span>
         <span class="badge badge-good">
-          <span id="call-count"></span> ?? ongoing calls
+          <span id="call-count"></span> 📞 ongoing calls
           <span class="blink-dot"></span>
         </span>
       </div>
       <div class="info-description">
         <div class="info-bullets">Expert legal services at affordable rates: 
-          <br>&nbsp;&nbsp;&nbsp;?? Fair prices
-          <br>&nbsp;&nbsp;&nbsp;?? Comprehensive litigation
-          <br>&nbsp;&nbsp;&nbsp;?? Documentation
-          <br>&nbsp;&nbsp;&nbsp;?? Confidential & Secure Consultations support
+          <br>&nbsp;&nbsp;&nbsp;💰 Fair prices
+          <br>&nbsp;&nbsp;&nbsp;⚖️ Comprehensive litigation
+          <br>&nbsp;&nbsp;&nbsp;📂 Documentation
+          <br>&nbsp;&nbsp;&nbsp;🔒 Confidential & Secure Consultations support
         </div>
       </div>
       
-      <div class="info-bullets"><br><br><br>? We stand by our service. <b>If you're not completely satisfied, we’ll issue a full refund — no hassle</b>.<br><br><br></div>
+      <div class="info-bullets"><br><br><br>✅ We stand by our service. <b>If you're not completely satisfied, we’ll issue a full refund — no hassle</b>.<br><br><br></div>
 
       
       <section class="consult-flow">
@@ -395,43 +395,43 @@
         <div class="flow-container">
           <div class="flow-step">
             <div class="tile">
-              <span class="tile-icon">??</span>
+              <span class="tile-icon">📝</span>
               <h3>Fill the Form</h3>
               <p>Enter your details & legal issue. Verify phone via OTP.</p>
             </div>
-            <div class="arrow">??</div>
+            <div class="arrow">➡️</div>
           </div>
       
           <div class="flow-step">
             <div class="tile">
-              <span class="tile-icon">??</span>
+              <span class="tile-icon">💳</span>
               <h3>Make Payment</h3>
-              <p>Pay ?499 for users in India / ?4999 for international users securely for a 30-minute consultation.</p>
+              <p>Pay ₹ 499 for users in India / ₹ 4999 for international users securely for a 30-minute consultation.</p>
             </div>
-            <div class="arrow">??</div>
+            <div class="arrow">➡️</div>
           </div>
       
           <div class="flow-step">
             <div class="tile">
-              <span class="tile-icon">??</span>
+              <span class="tile-icon">📤</span>
               <h3>Data Sent</h3>
               <p>Your request is securely stored & processed.</p>
             </div>
-            <div class="arrow">??</div>
+            <div class="arrow">➡️</div>
           </div>
       
           <div class="flow-step">
             <div class="tile">
-              <span class="tile-icon">??</span>
+              <span class="tile-icon">📧</span>
               <h3>Email Sent</h3>
               <p>You receive an email with payment & case details.</p>
             </div>
-            <div class="arrow">??</div>
+            <div class="arrow">➡️</div>
           </div>
       
           <div class="flow-step">
             <div class="tile">
-              <span class="tile-icon">??</span>
+              <span class="tile-icon">📞</span>
               <h3>Get a Call</h3>
               <p>We call you within 2 hours to schedule your session.</p>
             </div>
@@ -521,10 +521,10 @@
             <option>Emergency</option>
         	</select>
         </div>
-        <div class="price-discount"><strong>?499 for users in India ???? / ?4999 for international users ??</strong> for a 30-minute Lawyer Consultation</div>
-        <button type="submit" id="finalSubmit" disabled style="opacity: 0.6; cursor: not-allowed;">?Pay and ?? Book Consultation</button>
+        <div class="price-discount"><strong>₹499 for users in India 🇮🇳 / ₹4999 for international users 🌍</strong> for a 30-minute Lawyer Consultation</div>
+        <button type="submit" id="finalSubmit" disabled style="opacity: 0.6; cursor: not-allowed;">⚡Pay and 📞 Book Consultation</button>
         <p id="submittingMsg" style="display:none; text-align:center; font-weight:bold; color:#007bff;">
-          ? Submitting, please wait...
+          ⏳ Submitting, please wait...
         </p>
         <p id="message"></p>
       </form>
@@ -572,7 +572,7 @@
     
       recaptchaVerifier.render().catch(err => {
         console.error("reCAPTCHA failed:", err);
-        document.getElementById("otpMessage").textContent = "? reCAPTCHA failed. Check your internet.";
+        document.getElementById("otpMessage").textContent = "❌ reCAPTCHA failed. Check your internet.";
       });
     });
   
@@ -652,14 +652,14 @@
       const code = document.getElementById("otpInput").value;
     
       if (!window.confirmationResult) {
-        document.getElementById("otpMessage").textContent = "? Please click 'Send OTP' again.";
+        document.getElementById("otpMessage").textContent = "❌ Please click 'Send OTP' again.";
         return;
       }
     
       window.confirmationResult.confirm(code)
         .then(() => {
           document.getElementById("verifiedOTP").value = "true";
-          document.getElementById("otpMessage").textContent = "?????? OTP verified successfully!";
+          document.getElementById("otpMessage").textContent = "🎉🎉🎉 OTP verified successfully!";
           document.getElementById("finalSubmit").disabled = false; // ? Enable submit button here
           document.getElementById("finalSubmit").style.opacity = "1";
           document.getElementById("finalSubmit").style.cursor = "pointer";          
@@ -667,7 +667,7 @@
         })
         .catch((error) => {
           console.error("OTP Verification Failed:", error);
-          document.getElementById("otpMessage").textContent = "? Invalid OTP. Please try again.";
+          document.getElementById("otpMessage").textContent = "❌ Invalid OTP. Please try again.";
         });
     }
 
@@ -706,7 +706,7 @@
     
         userCountry = data.country || "IN";
     
-        // ???? India
+        // 🇮🇳 India
         const selectedCountryData = iti.getSelectedCountryData();
         
         const selectedCountryCode = selectedCountryData.dialCode;
@@ -715,21 +715,21 @@
           consultationAmount = 499;
           consultationAmountPaise = 49900;
     
-          document.querySelector(".price-discount").innerHTML = "<strong>?499</strong> for a 30-minute Lawyer Consultation";
+          document.querySelector(".price-discount").innerHTML = "<strong>₹499</strong> for a 30-minute Lawyer Consultation";
     
-          document.getElementById("finalSubmit").innerHTML = "?Pay ?499 -  ?? Book Consultation";
+          document.getElementById("finalSubmit").innerHTML = "⚡Pay ₹499 -  📞Book Consultation";
         }
     
-        // ?? International Users
+        // 🌍 International Users
         else {
           consultationAmount = 4999;
           consultationAmountPaise = 499900;
     
           document.querySelector(".price-discount").innerHTML =
-            "<strong>?4999</strong> for International Legal Consultation";
+            "<strong>₹4999</strong> for International Legal Consultation";
     
           document.getElementById("finalSubmit").innerHTML =
-            "?? Pay ?4999 - ?? Book International Consultation";
+            "🌍 Pay ₹4999 - 📞Book International Consultation";
         }
     
         console.log("Detected country:", userCountry);
@@ -743,10 +743,10 @@
         consultationAmountPaise = 499900;
 
         document.querySelector(".price-discount").innerHTML =
-          "<strong>?4999</strong> for International Legal Consultation";
+          "<strong>₹4999</strong> for International Legal Consultation";
         
         document.getElementById("finalSubmit").innerHTML =
-          "?? Pay ?4999 - ?? Book International Consultation";
+          🌍 Pay ₹4999 - 📞 Book International Consultation";
       }
     }
 
@@ -793,8 +793,8 @@
           name: "Vakeel Babu",
           description:
             consultationAmount === 499
-              ? "India Lawyer Consultation"
-              : "International Lawyer Consultation",
+              🇮🇳 "India Lawyer Consultation"
+              🌍 "International Lawyer Consultation",
           
           handler: function (response) {
             isPaymentInProgress = false;
@@ -818,20 +818,20 @@
         const rzp = new Razorpay(options);
         rzp.open();
       } else {
-        submitForm(); // ?? Free consultation flow
+        submitForm(); // 🔁 Free consultation flow
       }
     });
 
     function submitForm() {
       document.getElementById('submittingMsg').style.display = "block";
-      console.log("? submitForm called");
+      console.log("✅ submitForm called");
       if (document.getElementById("verifiedOTP").value !== "true") {
         alert("Please verify OTP first.");
         return;
       }
       
       if (isSubmitting || isPaymentInProgress) {
-        console.warn("? Submission blocked: Already submitting or payment pending.");
+        console.warn("⛔ Submission blocked: Already submitting or payment pending.");
         return;
       }
     
@@ -912,7 +912,7 @@
 
   <div id="successModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
-      <h2 style="color: green;">? Success!</h2>
+      <h2 style="color: green;">✅ Success!</h2>
       <p>Thank you <b id="userNameDisplay"> </b>  !!!<br>Your consultation request have been registered successfully. <br>An expert will contact you soon.</p>
       <button onclick="closeModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
@@ -920,7 +920,7 @@
 
   <div id="otpRequiredModal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
     <div style="background: white; padding: 30px 20px; border-radius: 10px; text-align: center; max-width: 400px;">
-      <h3 style="color: red;">? OTP Required</h3>
+      <h3 style="color: red;">❗OTP Required</h3>
       <p>Please verify the OTP before booking your consultation.</p>
       <button onclick="closeOTPModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">OK</button>
     </div>
@@ -931,13 +931,13 @@
     <!--div class="modal-content" style="background-color: #e9f4ff;"-->
     <div class="modal-content" style="background-color: #e9f4ff; width: 50%; max-width: 700px; padding: 30px; border-radius: 10px;">
       <span class="close-btn" onclick="closePlanInfo()">&times;</span>
-      <h3 style="color: #005a9e;">?? Book Legal Consultation with VakeelBabu in Just 3 Steps</h3>
+      <h3 style="color: #005a9e;">📣 Book Legal Consultation with VakeelBabu in Just 3 Steps</h3>
       <ul class="justified-list" style="color: #005a9e;">
-        <li><b style="color:#007bff;">?? Fill your details below.</b></li>
-        <li><b style="color:#17a2b8;">? Verify your phone with OTP.</b></li>
-        <li><b style="color:#6c757d;">?? Make a secure payment to confirm your booking.</b></li>
+        <li><b style="color:#007bff;">💎Fill your details below.</b></li>
+        <li><b style="color:#17a2b8;">✔ Verify your phone with OTP.</b></li>
+        <li><b style="color:#6c757d;">💳 Make a secure payment to confirm your booking.</b></li>
       </ul>
-      <p style="color:#201f1f;"><i><br>All done..... ?? We will call you within 2 hours!</i><br><br><b>Trusted by thousands of clients across India ????</b></p>
+      <p style="color:#201f1f;"><i><br>All done..... 📞 We will call you within 2 hours!</i><br><br><b>Trusted by thousands of clients across India.</b></p>
       <button onclick="closePlanInfo()" class="modal-contact-btn" style="background-color: #007bff;">Got it, Proceed for consultation !!</button>
     </div>
   </div>
@@ -951,11 +951,11 @@
     });
   </script>
 
-  <!-- ?? Floating Call Button -->
-  <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">?? Call Us</a>
+  <!-- 📞 Floating Call Button -->
+  <a href="tel:+919555007911" class="call-button" aria-label="Call VakeelBabu">📞 Call Us</a>
   
-  <!-- ?? Floating WhatsApp Button -->
-  <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">?? WhatsApp</a>
+  <!-- 💬 Floating WhatsApp Button -->
+  <a href="https://wa.me/919555007911" class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">💬 WhatsApp</a>
 
   <div id="footer-placeholder"></div>
     <script>
