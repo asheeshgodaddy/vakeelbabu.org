@@ -577,44 +577,64 @@
     });
   
     function sendOTP() {
-      const phone = document.getElementById("phoneInput").value.trim();
-      const phoneStatus = document.getElementById("phoneStatus");
-      const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
-  
-      const rawPhone =
-        document.getElementById("phoneInput")
-          .value
-          .replace(/\D/g, '');
-      
-      if (!iti.isValidNumber()) {
-      
+    
+      const phoneStatus =
+        document.getElementById("phoneStatus");
+    
+      const sendOTPBtn =
+        document.querySelector(
+          "button[onclick='sendOTP()']"
+        );
+    
+      const fullPhone = iti.getNumber();
+    
+      console.log("Sending OTP to:", fullPhone);
+    
+      if (!fullPhone || fullPhone.length < 10) {
+    
         phoneStatus.textContent =
-          "? Please enter a valid phone number.";
-      
+          "❌ Please enter a valid phone number.";
+    
         return;
       }
-      
-      const countryData =
-        iti.getSelectedCountryData();
-      
-      const fullPhone = iti.getNumber();
-  
-      // Save phone in hidden field
-      document.getElementById("signupPhone").value = fullPhone;
-  
+    
+      document.getElementById("signupPhone").value =
+        fullPhone;
+    
       sendOTPBtn.disabled = true;
+    
       startResendTimer(sendOTPBtn, 30);
-  
-      firebase.auth().signInWithPhoneNumber(fullPhone, recaptchaVerifier)
+    
+      firebase.auth()
+        .signInWithPhoneNumber(
+          fullPhone,
+          recaptchaVerifier
+        )
+    
         .then(result => {
+    
           window.confirmationResult = result;
-          document.getElementById("otpSection").style.display = "block";
-          document.getElementById("otpInput").focus();
-          document.getElementById("otpMessage").textContent = "? OTP sent to " + fullPhone
+    
+          document.getElementById("otpSection")
+            .style.display = "block";
+    
+          document.getElementById("otpInput")
+            .focus();
+    
+          document.getElementById("otpMessage")
+            .textContent =
+              "✅ OTP sent to " + fullPhone;
         })
+    
         .catch(error => {
+    
           console.error("OTP Error:", error);
-          document.getElementById("otpMessage").textContent = "? Failed to send OTP. " + (error.message || "Try again.");
+    
+          document.getElementById("otpMessage")
+            .textContent =
+              "❌ Failed to send OTP. " +
+              (error.message || "Try again.");
+    
           sendOTPBtn.disabled = false;
         });
     }
