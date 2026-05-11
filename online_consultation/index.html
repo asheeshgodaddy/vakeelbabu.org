@@ -533,6 +533,32 @@
   
   <script src="/src/g_trans.js"></script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
+  <script>
+    const phoneInputField =
+      document.querySelector("#phoneInput");
+  
+    const iti =
+      window.intlTelInput(phoneInputField, {
+  
+        initialCountry: "in",
+  
+        preferredCountries: [
+          "in",
+          "us",
+          "gb",
+          "ae",
+          "ca",
+          "au",
+          "sg"
+        ],
+  
+        separateDialCode: true,
+  
+        utilsScript:
+          "https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"
+      });
+  </script>
   <script>
     let recaptchaVerifier;
     let isSubmitting = false;
@@ -560,7 +586,7 @@
           .value
           .replace(/\D/g, '');
       
-      if (rawPhone.length < 8) {
+      if (!iti.isValidNumber()) {
       
         phoneStatus.textContent =
           "? Please enter a valid phone number.";
@@ -571,8 +597,7 @@
       const countryData =
         iti.getSelectedCountryData();
       
-      const fullPhone =
-        "+" + countryData.dialCode + rawPhone;
+      const fullPhone = iti.getNumber();
   
       // Save phone in hidden field
       document.getElementById("signupPhone").value = fullPhone;
@@ -912,31 +937,6 @@
         });
     </script>
   
-  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
-  <script>
-    const phoneInputField =
-      document.querySelector("#phoneInput");
-  
-    const iti =
-      window.intlTelInput(phoneInputField, {
-  
-        initialCountry: "in",
-  
-        preferredCountries: [
-          "in",
-          "us",
-          "gb",
-          "ae",
-          "ca",
-          "au",
-          "sg"
-        ],
-  
-        separateDialCode: true,
-  
-        utilsScript:
-          "https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"
-      });
-  </script>
+
 </body>
 </html>
