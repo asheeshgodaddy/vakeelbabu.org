@@ -469,8 +469,8 @@
             <option>Emergency</option>
         	</select>
         </div>
-        <div class="price-discount"><strong>₹499</strong> for a 30-minute Lawyer Consultation</div>
-        <button type="submit" id="finalSubmit" disabled style="opacity: 0.6; cursor: not-allowed;">⚡Pay ₹499  -  📞 Book Consultation</button>
+        <div class="price-discount"><strong>Pay</strong> for a 30-minute Lawyer Consultation</div>
+        <button type="submit" id="finalSubmit" disabled style="opacity: 0.6; cursor: not-allowed;">⚡Pay and 📞 Book Consultation</button>
         <p id="submittingMsg" style="display:none; text-align:center; font-weight:bold; color:#007bff;">
           ⏳ Submitting, please wait...
         </p>
@@ -576,6 +576,52 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPrmXEpuhLPj_si5p6-rzy7f77m0OPgAvZW6p37w8aQmllE2bcrcyBA-lmZGQs7e83/exec";
     const RAZORPAY_KEY = "rzp_test_5hUlHD5xojSBJn"; // Change in production
+    let consultationAmount = 499;
+    let consultationAmountPaise = 49900;
+    let userCountry = "IN";
+
+    async function detectUserCountry() {
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+    
+        userCountry = data.country || "IN";
+    
+        // 🇮🇳 India
+        if (userCountry === "IN") {
+          consultationAmount = 499;
+          consultationAmountPaise = 49900;
+    
+          document.querySelector(".price-discount").innerHTML =
+            "<strong>₹499</strong> for a 30-minute Lawyer Consultation";
+    
+          document.getElementById("finalSubmit").innerHTML =
+            "⚡Pay ₹499  -  📞 Book Consultation";
+        }
+    
+        // 🌍 International Users
+        else {
+          consultationAmount = 5000;
+          consultationAmountPaise = 500000;
+    
+          document.querySelector(".price-discount").innerHTML =
+            "<strong>₹5000</strong> for International Lawyer Consultation";
+    
+          document.getElementById("finalSubmit").innerHTML =
+            "🌍 Pay ₹5000 - 📞 Book International Consultation";
+        }
+    
+        console.log("Detected country:", userCountry);
+        console.log("Consultation amount:", consultationAmount);
+    
+      } catch (error) {
+        console.error("Country detection failed:", error);
+    
+        // fallback to India pricing
+        consultationAmount = 499;
+        consultationAmountPaise = 49900;
+      }
+    }
 
     const phoneInput = document.getElementById("phoneInput");
     const statusMsg = document.getElementById("phoneStatus");
@@ -608,10 +654,12 @@
       if (isPaid) {
         const options = {
           key: RAZORPAY_KEY,
-          amount: 49900,
+          amount: consultationAmountPaise,
           currency: "INR",
           name: "Vakeel Babu",
-          description: "Paid consultation",
+          description: userCountry === "IN"
+            ? "India Lawyer Consultation"
+            : "International Lawyer Consultation",
           handler: function (response) {
             isPaymentInProgress = false;
             document.getElementById('payment_id').value = response.razorpay_payment_id;
@@ -698,6 +746,7 @@
     window.onload = function () {
       // ✅ Only show modal here
       showPlanInfo();
+      detectUserCountry();
     };
 
     function showOTPRequiredModal() {
