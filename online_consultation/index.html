@@ -423,18 +423,15 @@
         <div><input type="email" name="email" id="email" placeholder="Email Address *" required></div>
         <div><input name="name" placeholder="Full Name" required></div>
         <div style="display:flex; gap:10px;">
-          <select id="countryCode"
-                  style="width:35%;">
-        
-            <option value="+91">🇮🇳 +91</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+971">🇦🇪 +971</option>
-            <option value="+61">🇦🇺 +61</option>
-            <option value="+65">🇸🇬 +65</option>
-            <option value="+1-CA">🇨🇦 +1</option>
-        
-          </select>
+          <div>
+            <input
+              type="tel"
+              id="phoneInput"
+              placeholder="Enter Phone Number"
+              required
+              style="width:100%;"
+            >
+          </div>
         
           <input
             type="tel"
@@ -534,9 +531,7 @@
       }
   
       // Save phone in hidden field for later
-      const countryCode = document.getElementById("countryCode").value;
-      
-      const fullPhone = countryCode.replace("-CA", "") + phone;
+      const fullPhone = iti.getNumber();
       
       // Save phone in hidden field
       document.getElementById("signupPhone").value = fullPhone;
@@ -617,8 +612,11 @@
         userCountry = data.country || "IN";
     
         // 🇮🇳 India
-        const selectedCountryCode = document.getElementById("countryCode").value;
-        if (userCountry === "IN" && selectedCountryCode === "+91") {
+        const selectedCountryData = iti.getSelectedCountryData();
+        
+        const selectedCountryCode = selectedCountryData.dialCode;
+        
+        if (userCountry === "IN" && selectedCountryCode === "91") {
           consultationAmount = 499;
           consultationAmountPaise = 49900;
     
@@ -685,9 +683,10 @@
           amount: consultationAmountPaise,
           currency: "INR",
           name: "Vakeel Babu",
-          consultationAmount === 499
-            ? "India Lawyer Consultation"
-            : "International Lawyer Consultation",
+          description:
+            consultationAmount === 499
+              ? "India Lawyer Consultation"
+              : "International Lawyer Consultation",
           handler: function (response) {
             isPaymentInProgress = false;
             document.getElementById('payment_id').value = response.razorpay_payment_id;
@@ -775,8 +774,7 @@
       // ✅ Only show modal here
       showPlanInfo();
       detectUserCountry();
-      document.getElementById("countryCode")
-        .addEventListener("change", detectUserCountry);
+      phoneInputField.addEventListener("countrychange", detectUserCountry
     };
 
     function showOTPRequiredModal() {
@@ -845,5 +843,30 @@
     </script>
   
   <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/intlTelInput.min.js"></script>
+  <script>
+    const phoneInputField =
+      document.querySelector("#phoneInput");
+  
+    const iti =
+      window.intlTelInput(phoneInputField, {
+  
+        initialCountry: "in",
+  
+        preferredCountries: [
+          "in",
+          "us",
+          "gb",
+          "ae",
+          "ca",
+          "au",
+          "sg"
+        ],
+  
+        separateDialCode: true,
+  
+        utilsScript:
+          "https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.0/build/js/utils.js"
+      });
+  </script>
 </body>
 </html>
