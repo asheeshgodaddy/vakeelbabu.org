@@ -423,7 +423,6 @@
         <div><input type="email" name="email" id="email" placeholder="Email Address *" required></div>
         <div><input name="name" placeholder="Full Name" required></div>
         <div style="display:flex; gap:10px;">
-          <div>
             <input
               type="tel"
               id="phoneInput"
@@ -431,18 +430,6 @@
               required
               style="width:100%;"
             >
-          </div>
-        
-          <input
-            type="tel"
-            id="phoneInput"
-            placeholder="Phone Number"
-            required
-            maxlength="15"
-            inputmode="numeric"
-            style="width:65%;"
-          >
-        
         </div>
         <div><button type="button" onclick="sendOTP()">Send OTP</button></div>
         
@@ -653,17 +640,20 @@
     const statusMsg = document.getElementById("phoneStatus");
   
     phoneInput.addEventListener("input", function () {
-      // Remove non-digit characters as user types
-      this.value = this.value.replace(/\D/g, '');
-  
-      if (this.value.length === 10) {
+      if (iti.isValidNumber()) {
+    
         this.classList.add("valid");
         this.classList.remove("invalid");
+    
         statusMsg.textContent = "";
+    
       } else {
+    
         this.classList.remove("valid");
         this.classList.add("invalid");
-        statusMsg.textContent = "Please enter exactly 10 digits.";
+    
+        statusMsg.textContent =
+          "Please enter a valid phone number.";
       }
     });
 
@@ -771,10 +761,14 @@
     }
        
     window.onload = function () {
-      // ✅ Only show modal here
       showPlanInfo();
+    
       detectUserCountry();
-      phoneInputField.addEventListener("countrychange", detectUserCountry
+    
+      phoneInputField.addEventListener(
+        "countrychange",
+        detectUserCountry
+      );
     };
 
     function showOTPRequiredModal() {
