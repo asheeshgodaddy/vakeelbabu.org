@@ -579,7 +579,8 @@
     function sendOTP() {
     
       const phoneStatus =
-        document.getElementById("phoneStatus");
+        document.getElementById("phoneStatus")
+          .textContent = "";
     
       const sendOTPBtn =
         document.querySelector(
@@ -633,11 +634,15 @@
           document.getElementById("otpMessage")
             .textContent =
               "✅ OTP sent to " + fullPhone;
+          
+          sendOTPBtn.disabled = false;
         })
     
         .catch(error => {
     
           console.error("OTP Error:", error);
+
+          alert(error.message);
     
           document.getElementById("otpMessage")
             .textContent =
@@ -717,7 +722,7 @@
     
           document.querySelector(".price-discount").innerHTML = "<strong>₹499</strong> for a 30-minute Lawyer Consultation";
     
-          document.getElementById("finalSubmit").innerHTML = "⚡Pay ₹499 -  📞Book Consultation";
+          document.getElementById("finalSubmit").innerHTML = "⚡Pay ₹499 -  📞 Book Consultation";
         }
     
         // 🌍 International Users
@@ -729,7 +734,7 @@
             "<strong>₹4999</strong> for International Legal Consultation";
     
           document.getElementById("finalSubmit").innerHTML =
-            "🌍 Pay ₹4999 - 📞Book International Consultation";
+            "🌍 Pay ₹4999 - 📞 Book International Consultation";
         }
     
         console.log("Detected country:", userCountry);
@@ -746,7 +751,7 @@
           "<strong>₹4999</strong> for International Legal Consultation";
         
         document.getElementById("finalSubmit").innerHTML =
-          🌍 Pay ₹4999 - 📞 Book International Consultation";
+          "🌍 Pay ₹4999 - 📞 Book International Consultation";
       }
     }
 
@@ -793,8 +798,8 @@
           name: "Vakeel Babu",
           description:
             consultationAmount === 499
-              🇮🇳 "India Lawyer Consultation"
-              🌍 "International Lawyer Consultation",
+              ? "India Lawyer Consultation"
+              : "International Lawyer Consultation",
           
           handler: function (response) {
             isPaymentInProgress = false;
@@ -855,6 +860,7 @@
             phoneInput.classList.remove("invalid");
             statusMsg.textContent = "";
             iti.setCountry("in");
+            isSubmitting = false;
             showSuccessModal(name);
           } else {
             msg.style.color = "red";
