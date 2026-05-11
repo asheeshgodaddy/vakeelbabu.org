@@ -555,15 +555,24 @@
       const phoneStatus = document.getElementById("phoneStatus");
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
   
-      const fullPhone = iti.getNumber();
-
-      if (!fullPhone || fullPhone.length < 10) {
+      const rawPhone =
+        document.getElementById("phoneInput")
+          .value
+          .replace(/\D/g, '');
+      
+      if (rawPhone.length < 8) {
       
         phoneStatus.textContent =
           "❌ Please enter a valid phone number.";
       
         return;
       }
+      
+      const countryData =
+        iti.getSelectedCountryData();
+      
+      const fullPhone =
+        "+" + countryData.dialCode + rawPhone;
   
       // Save phone in hidden field
       document.getElementById("signupPhone").value = fullPhone;
@@ -831,10 +840,11 @@
     
       detectUserCountry();
     
-      phoneInputField.addEventListener(
-        "countrychange",
-        detectUserCountry
-      );
+      document.querySelector("#phoneInput")
+        .addEventListener(
+              "countrychange",
+              detectUserCountry
+            );
     };
 
     function showOTPRequiredModal() {
