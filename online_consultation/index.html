@@ -555,18 +555,16 @@
       const phoneStatus = document.getElementById("phoneStatus");
       const sendOTPBtn = document.querySelector("button[onclick='sendOTP()']");
   
-      if (
-        !iti.getNumber() ||
-        !iti.isValidNumber()
-      ) {
+      const fullPhone = iti.getNumber();
+
+      if (!fullPhone || fullPhone.length < 10) {
+      
         phoneStatus.textContent =
           "❌ Please enter a valid phone number.";
+      
         return;
       }
   
-      // Save phone in hidden field for later
-      const fullPhone = iti.getNumber();
-      
       // Save phone in hidden field
       document.getElementById("signupPhone").value = fullPhone;
   
