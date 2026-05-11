@@ -362,7 +362,7 @@
             <div class="tile">
               <span class="tile-icon">💳</span>
               <h3>Make Payment</h3>
-              <p>Pay ₹499 securely for a 30-minute consultation.</p>
+              <p>Pay ₹499 for users in India / ₹4999 for international users securely for a 30-minute consultation.</p>
             </div>
             <div class="arrow">➡️</div>
           </div>
@@ -469,7 +469,7 @@
             <option>Emergency</option>
         	</select>
         </div>
-        <div class="price-discount"><strong>Pay</strong> for a 30-minute Lawyer Consultation</div>
+        <div class="price-discount"><strong>₹499 for users in India 🇮🇳 / ₹4999 for international users 🌍</strong> for a 30-minute Lawyer Consultation</div>
         <button type="submit" id="finalSubmit" disabled style="opacity: 0.6; cursor: not-allowed;">⚡Pay and 📞 Book Consultation</button>
         <p id="submittingMsg" style="display:none; text-align:center; font-weight:bold; color:#007bff;">
           ⏳ Submitting, please wait...
@@ -593,22 +593,22 @@
           consultationAmountPaise = 49900;
     
           document.querySelector(".price-discount").innerHTML =
-            "<strong>₹499</strong> for a 30-minute Lawyer Consultation";
+            "<strong>₹499 for users in India 🇮🇳 / ₹4999 for international users 🌍</strong> for a 30-minute Lawyer Consultation";
     
           document.getElementById("finalSubmit").innerHTML =
-            "⚡Pay ₹499  -  📞 Book Consultation";
+            "⚡Pay ₹499 (in India 🇮🇳) / ₹4999 (international users 🌍)  -  📞 Book Consultation";
         }
     
         // 🌍 International Users
         else {
-          consultationAmount = 5000;
-          consultationAmountPaise = 500000;
+          consultationAmount = 4999;
+          consultationAmountPaise = 499900;
     
           document.querySelector(".price-discount").innerHTML =
-            "<strong>₹5000</strong> for International Lawyer Consultation";
+            "<strong>₹4999</strong> for International Lawyer Consultation";
     
           document.getElementById("finalSubmit").innerHTML =
-            "🌍 Pay ₹5000 - 📞 Book International Consultation";
+            "🌍 Pay ₹4999 - 📞 Book International Consultation";
         }
     
         console.log("Detected country:", userCountry);
